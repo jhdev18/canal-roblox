@@ -1,0 +1,46 @@
+<!doctype html><html><body style="margin:0;background:#000">
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {GTAOPass} from 'three/addons/postprocessing/GTAOPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+const modo=new URLSearchParams(location.search).get('modo')||'roblox';
+const C=await (await fetch('cena.json')).json();
+const r=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+r.setPixelRatio(2); r.setSize(C.w,C.h); document.body.appendChild(r.domElement);
+r.shadowMap.enabled=true; r.shadowMap.type=THREE.PCFSoftShadowMap;
+r.toneMapping = modo==='bonito'?THREE.NeutralToneMapping:THREE.NoToneMapping;
+r.toneMappingExposure = modo==='bonito'?1.35:1;
+const s=new THREE.Scene(); s.background=new THREE.Color(C.ceu);
+s.fog=new THREE.Fog(C.ceu, 60, modo==='bonito'?220:300);
+const cam=new THREE.PerspectiveCamera(C.cam.fov,C.w/C.h,0.1,1000);
+cam.position.set(...C.cam.pos); cam.lookAt(...C.cam.alvo);
+s.add(new THREE.HemisphereLight(0xcfe8ff,0x6b8a5a, modo==='bonito'?1.3:1.6));
+const sun=new THREE.DirectionalLight(C.sol.cor, modo==='bonito'?3.4:2.3);
+const d=new THREE.Vector3(...C.sol.dir).normalize(); sun.position.copy(d.multiplyScalar(60)); sun.castShadow=true;
+Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,far:200}); sun.shadow.mapSize.set(4096,4096);
+sun.shadow.radius=modo==='bonito'?6:2; sun.shadow.bias=-0.0004; s.add(sun);
+const tex=new THREE.TextureLoader();
+for(const o of C.obj){
+  let g,m=new THREE.MeshStandardMaterial({color:new THREE.Color(o.c||'#fff'),roughness:o.t==='sph'&&o.p[1]>30?1:0.75,metalness:0});
+  if(o.t==='box') g=o.round?new RoundedBoxGeometry(...o.s,6,o.round):new THREE.BoxGeometry(...o.s);
+  if(o.t==='cyl') g=new THREE.CylinderGeometry(o.rad,o.rad,o.h,24);
+  if(o.t==='sph'){ g=new THREE.SphereGeometry(o.rad,32,16); if(o.p[1]>30){m=new THREE.MeshLambertMaterial({color:0xffffff,emissive:0xb8c8dc,fog:false});} }
+  if(o.t==='face'){ g=new THREE.PlaneGeometry(o.s,o.s); const t=await tex.loadAsync(o.tex); t.colorSpace=THREE.SRGBColorSpace;
+     m=new THREE.MeshStandardMaterial({map:t,transparent:true,roughness:0.8,polygonOffset:true,polygonOffsetFactor:-2}); }
+  const mesh=new THREE.Mesh(g,m); mesh.castShadow=o.t!=='face'&&!(o.t==='sph'&&o.p[1]>30); mesh.receiveShadow=true;
+  if(o.pivot){ const grp=new THREE.Group(); grp.position.set(...o.pivot);
+     mesh.position.set(o.p[0]-o.pivot[0],o.p[1]-o.pivot[1],o.p[2]-o.pivot[2]);
+     grp.rotation.set(...o.r.map(a=>a*Math.PI/180)); grp.add(mesh); s.add(grp);}
+  else { mesh.position.set(...o.p); if(o.r) mesh.rotation.set(...o.r.map(a=>a*Math.PI/180)); s.add(mesh); }
+}
+if(modo==='bonito'){
+  const comp=new EffectComposer(r); comp.addPass(new RenderPass(s,cam));
+  const ao=new GTAOPass(s,cam,C.w*2,C.h*2); ao.updateGtaoMaterial({radius:1.2,distanceFallOff:1,thickness:1}); ao.blendIntensity=1; comp.addPass(ao);
+  comp.addPass(new OutputPass()); comp.render();
+} else r.render(s,cam);
+window.PRONTO=true;
+</script></body></html>
