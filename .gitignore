@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 cache/
 saida/
+assets/vozes/*.onnx
+assets/vozes/*.onnx.json

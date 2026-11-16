@@ -1,0 +1,17 @@
+{
+  "name": "canal-roblox",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Gerador local de shorts animados estilo Roblox (three.js + Piper + FFmpeg)",
+  "scripts": {
+    "gerar": "node gerar.mjs",
+    "preview": "node gerar.mjs --preview",
+    "catalogo": "node gerar.mjs --catalogo"
+  },
+  "dependencies": {
+    "playwright": "1.63.0",
+    "three": "0.170.0",
+    "yaml": "2.6.1"
+  }
+}

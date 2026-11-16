@@ -1,0 +1,23 @@
+# Elenco reutilizável. Use pelo nome no roteiro ou herde com `base:`.
+# Campos: pele, camisa, calca, rosto, extras (rosto), acessorios, roupa, cabelo_cor, escala, mangas, *_cor
+# Cores: nome da paleta (amarelo, azul, verde_noob, vermelho, preto, branco, rosa, roxo, ...) ou "#rrggbb".
+noob:        { pele: amarelo, camisa: azul, calca: verde_noob }
+garoto:      { base: noob }
+amigo:       { base: noob, camisa: vermelho }
+pai:         { base: noob, extras: [barba] }
+pai_terno:   { base: pai, roupa: terno, camisa: preto, calca: preto }
+mae:         { pele: amarelo, camisa: rosa, calca: azul, acessorios: [cabelo_longo], cabelo_cor: marrom, extras: [cilios, blush] }
+menina:      { pele: amarelo, camisa: roxo, calca: azul, acessorios: [rabo_de_cavalo, laco], cabelo_cor: "#3a2416", extras: [cilios, blush] }
+noiva:       { pele: amarelo, camisa: branco, calca: branco, roupa: vestido, acessorios: [cabelo_longo, veu], cabelo_cor: "#e0207a", extras: [cilios, blush] }
+nerd:        { pele: pele_clara, camisa: "#2b4c7e", calca: preto, acessorios: [cabelo_baguncado], cabelo_cor: preto, extras: [oculos] }
+valentao:    { pele: pele_media, camisa: preto, calca: cinza_escuro, acessorios: [bone], bone_cor: vermelho, rosto: malandro }
+medico:      { pele: pele_clara, camisa: branco, calca: azul, roupa: jaleco, acessorios: [careca_lados], cabelo_cor: cinza, extras: [oculos] }
+professora:  { pele: pele_clara, camisa: roxo, calca: preto, acessorios: [coque], cabelo_cor: marrom, extras: [oculos, cilios] }
+padre:       { pele: pele_clara, camisa: preto, calca: preto, roupa: terno, acessorios: [careca_lados], cabelo_cor: cinza, extras: [oculos] }
+vovo:        { pele: pele_clara, camisa: bege, calca: marrom, acessorios: [careca_lados], cabelo_cor: branco, extras: [bigode, oculos] }
+rei:         { base: noob, camisa: vinho, acessorios: [coroa, capa], capa_cor: vermelho, extras: [barba] }
+policial:    { pele: pele_media, camisa: "#1d3b72", calca: "#1d3b72", acessorios: [bone], bone_cor: "#1d3b72", roupa: uniforme }
+anjo:        { pele: amarelo, camisa: branco, calca: branco, acessorios: [aureola, asas] }
+demonio:     { pele: vermelho, camisa: preto, calca: preto, acessorios: [chifres], chifre_cor: preto, rosto: malandro }
+bebe:        { base: noob, escala: 0.6 }
+gamer:       { base: noob, camisa: verde, acessorios: [fone, cabelo_espetado], cabelo_cor: laranja }

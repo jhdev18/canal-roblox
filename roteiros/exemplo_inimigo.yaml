@@ -1,0 +1,60 @@
+# Exemplo completo. Cada cena = 1 corte (~1,5 s). Campos omitidos usam padrões inteligentes.
+titulo: Nesse mundo todos sabem quem é seu inimigo
+destaque: [inimigo, pai]          # palavras da legenda em amarelo
+# musica: tensa                   # arquivo em assets/musicas/ (opcional)
+
+elenco:
+  garoto: noob
+  amigo: amigo
+  pai: pai
+  mae: mae
+
+cenas:
+  - fala: Nesse mundo, todo mundo recebe uma mensagem
+    onde: rua
+    cam: medio
+    atores: [garoto andar malandro]
+    mov: seguir
+  - fala: dizendo quem é o seu inimigo.
+    onde: celular
+    tela: { tipo: mensagem, de: "Destino", texto: "Seu inimigo é..." }
+  - fala: Quando o garoto fez dez anos,
+    onde: quarto
+    cam: close
+    atores: [garoto celular desconfiado]
+  - fala: ele confiava em todo mundo.
+    onde: escola
+    cam: aberto
+    atores: [garoto falar feliz, amigo parado sorriso]
+  - fala: Até os melhores amigos se separaram
+    onde: rua
+    cam: aberto
+    atores: [{ id: garoto, acao: andar, vira: -90, x: 2 }, { id: amigo, acao: andar, vira: 90, x: -2 }]
+  - fala: com medo do que iam ler.
+    onde: fachada
+    cam: close
+    atores: [amigo assustar]
+    mov: tremor
+  - fala: Mas o garoto recebeu a dele
+    onde: rua
+    cam: baixo
+    atores: [garoto celular surpreso]
+    mov: zoom_rapido
+  - fala: e lá estava o nome do seu pai.
+    onde: celular
+    tela: { tipo: notificacao, app: Destino, titulo: Seu inimigo, texto: "PAI" }
+  - fala: Ele não acreditou.
+    onde: sala
+    cam: medio
+    atores: [garoto triste, { id: pai, acao: parado, rosto: feliz, x: 3 }]
+  - fala: Anos depois, na festa da família,
+    onde: casamento
+    cam: aberto
+    atores: [pai_terno comemorar, mae acenar, garoto palmas]
+  - fala: o pai passou mal.
+    onde: hospital
+    cam: medio
+    atores: [{ id: pai, acao: deitar, rosto: triste, x: 3, z: 0 }, { id: garoto, acao: chorar, x: -2.5 }]
+  - fala: E então ele entendeu.
+    onde: celular
+    tela: { tipo: alarme, hora: "06:30" }
