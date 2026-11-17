@@ -1,0 +1,46 @@
+# Para continuar numa conversa nova
+
+Leia este arquivo primeiro. Ele resume o que já existe, as regras de trabalho combinadas e o que falta.
+
+## Regras de trabalho (combinadas com o dono do canal)
+- **Não renderizar vídeos.** Quem gera os vídeos é o usuário, na GTX 1050 Ti. Para conferir, use só fotos de cena (ferramentas abaixo) e só quando necessário — imagens deixam a conversa cara.
+- Todo vídeo tem **rascunho primeiro** (`node gerar.mjs roteiros/x.yaml`, voz grátis). A versão final (`--final`, ElevenLabs) só depois do rascunho aprovado.
+- A chave do ElevenLabs fica **só** no `.env` do usuário. Nunca commitar `.env`.
+- Responder em português, de forma direta. Agrupar ajustes; evitar ciclos longos de teste.
+- Branch de trabalho: `claude/youthful-ride-6o7mku`. Commitar e dar push ao fim de cada etapa.
+
+## Onde está cada coisa
+- Formato do roteiro e catálogo completo: `docs/ROTEIRO.md` (leia antes de escrever roteiro; não precisa ler `src/`).
+- Concorrentes (narrações reconstruídas e a fórmula): `docs/REFERENCIAS.md`.
+- Histórias originais aprovadas: `docs/HISTORIAS.md`.
+- Mapa do mundo integrado: `docs/preview/mapa_mundo.jpg`; interiores: `docs/preview/interiores_mundo.jpg`; assentos: `docs/preview/assentos_mundo.jpg`.
+- Conferir sem gerar vídeo:
+  - `node ferramentas/folha_cenas.mjs roteiros/x.yaml saida.jpg 1-16` → 1 foto por cena (no máx. 16 por folha).
+  - `node ferramentas/quadros_cena.mjs roteiros/x.yaml saida.jpg 3,7` → cada cena em 0 s / 1,5 s / 3 s.
+  - `node ferramentas/preview_assets.mjs [categoria]` → atualiza `docs/preview/*.jpg`.
+- Validar roteiro sem render: `node -e "import('./src/node/roteiro.mjs').then(m=>m.carregarRoteiro('roteiros/x.yaml'))"`.
+
+## Roteiros prontos para rascunho (todos no mundo integrado)
+| Roteiro | Formato | Situação |
+|---|---|---|
+| `quem_salva_sua_vida_mundo.yaml` | curto, 15 cenas | conferido cena a cena |
+| `fantasmas_seu_nono.yaml` | curto, 14 cenas (comédia em lista) | conferido |
+| `reflexo_adiantado.yaml` | curto, 14 cenas (terror) | conferido |
+| `nuvem_da_bia.yaml` | curto, 15 cenas (terror → emoção) | conferido |
+| `quem_boceja_dorme.yaml` | longo, 48 cenas (~2 min, comédia em cadeia) | conferido |
+| `peso_das_promessas.yaml` | longo, 48 cenas (~2 min, aventura) | conferido; cenas do telhado (33–41) ajustadas por último |
+
+Quando o usuário mandar o retorno do rascunho, ajuste **só** as cenas citadas.
+
+## Recursos que os roteiros já podem usar (resumo — detalhes em `docs/ROTEIRO.md`)
+- Mundo integrado: `onde: mundo` + `local:` (+ `dentro: true` / `comodo:`). Prédios grandes, móveis na escala do personagem, assentos reais (`sentar`), filas com curva, portas automáticas, corte de parede, ninguém atravessa obstáculo.
+- `sobre:` = a regra visível acima da cabeça (`zzz`, `{ texto }`, ou prop como `nuvem_cabeca`, `pedra`, `saco_pedras`, com `altura/x/z/escala/fixo`).
+- `spec:` no ator (ajuste só na cena), `alvo_xz:` na cena (para onde a câmera mira), `hora: vermelho` (céu em chamas).
+- Multidão `modo: natural` (sozinhos, conversas soltas, quem passa, quem senta).
+- Personagens especiais: `fantasma: true`, `reflexo: true`. Ações novas: `bocejar`, `cochilar`, `nadar`.
+
+## Pendências
+1. **Músicas:** o usuário vai escolher faixas. Colocar em `assets/musicas/<clima>/` e registrar origem/licença em `assets/musicas/LICENCA.md`.
+2. **Escola, hospital e delegacia com vários cômodos** (corredor, salas, cantina, enfermaria…). Atenção: as tentativas anteriores foram cortadas pelo filtro de segurança várias vezes; fazer em passos pequenos, começando pela escola (só paredes internas), e deixar a delegacia por último ou pular.
+3. **Movimento automático nas ruas** (figurantes e carros por padrão) — o usuário pediu para deixar de fora por enquanto.
+4. Cenários antigos fora do mundo (`hospital`, `escola`, `interior_*`) continuam simples; roteiros novos devem usar `onde: mundo`.

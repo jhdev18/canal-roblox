@@ -2,8 +2,11 @@
 
 Pipeline: roteiro YAML → voz (ElevenLabs via .env; Piper/espeak como alternativa) → cenas 3D (three.js no Chromium, quadro a quadro) → FFmpeg (legenda palavra por palavra + música).
 
+## Comece por aqui
+Leia `docs/CONTINUAR.md`: estado atual, roteiros prontos, pendências e regras combinadas (não renderizar vídeos — o usuário gera na máquina dele; conferir só com fotos de cena via `ferramentas/folha_cenas.mjs`, e com moderação).
+
 ## Para criar um vídeo novo (economize tokens)
-1. Leia **só** `docs/ROTEIRO.md` (formato + catálogo completo). Não leia `src/` para escrever roteiros.
+1. Leia **só** `docs/ROTEIRO.md` (formato + catálogo completo) e, para o estilo, `docs/REFERENCIAS.md`. Não leia `src/` para escrever roteiros.
 2. Escreva `roteiros/<nome>.yaml` reaproveitando personagens de `assets/personagens.yaml`.
 3. Valide com o rascunho grátis: `node gerar.mjs roteiros/<nome>.yaml` (erros de nome vêm com sugestão).
    A versão final (`--final`, ElevenLabs) só roda depois de um rascunho do roteiro atual — e quem renderiza é o usuário, na máquina dele. Não renderize sem ele pedir.

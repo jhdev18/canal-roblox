@@ -71,11 +71,11 @@ cenas:
     local: casa
     hora: tarde
     cam: medio
-    atores: [{ id: pai, acao: acenar, rosto: sorriso, x: 1.6, z: 1, vira: -30 }, { id: clara, acao: acenar, x: -1.4, z: 1.6, vira: 30 }, { id: leo, acao: parado, x: -2.6, z: 0.6, vira: 30 }]
+    atores: [{ id: pai, acao: acenar, rosto: sorriso, x: -7.6, z: 0.6, vira: 30 }, { id: clara, acao: acenar, x: -3.2, z: 3, vira: -40 }, { id: leo, acao: parado, x: -4.6, z: 2.6, vira: -60 }]
   - fala: e nunca voltou.
     hora: tarde
-    cam: aberto
-    atores: [{ id: leo, acao: triste, x: -1.2, z: 1.4 }]
+    cam: medio
+    atores: [{ id: leo, acao: triste, x: -4.6, z: 2.6 }]
   - fala: O vizinho, Seu Bento, é o contrário. Carrega uma mochila de pedras nas costas.
     onde: mundo
     local: rua_bairro
@@ -203,57 +203,63 @@ cenas:
     onde: mundo
     local: casa
     hora: tarde
-    cam: medio
-    alvo_xz: [0, -4]
+    cam: aberto
+    altura: 5
+    alvo_xz: [0, -2]
     props: [{ tipo: chuva, largura: 30, prof: 30 }, { tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: clara, acao: implorar, rosto: chorando, x: 0, y: 8.2, z: -3.6 }]
+    atores: [{ id: clara, acao: implorar, rosto: chorando, x: 0, y: 8.6, z: -4.5 }]
   - fala: presa no telhado da casa.
     hora: tarde
-    cam: close
+    cam: medio
+    altura: 3
+    alvo_xz: [0, -4.5]
     props: [{ tipo: chuva, largura: 30, prof: 30 }, { tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: clara, acao: chorar, x: 0, y: 8.2, z: -3.6 }]
+    atores: [{ id: clara, acao: chorar, x: 0, y: 8.6, z: -4.5 }]
   - fala: O barco não chegava lá.
     hora: tarde
     cam: aberto
-    alvo_xz: [0, 2]
-    props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }, { tipo: barco, x: 0, y: 3.1, z: 6, vira: 0 }]
-    atores: [{ id: bento, acao: triste, x: 0.4, y: 2.7, z: 7, vira: 180 }, { id: leo, acao: apontar, x: -0.4, y: 2.7, z: 5, vira: 180 }]
+    alvo_xz: [0, 6]
+    props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }, { tipo: barco, x: 0, y: 3.1, z: 10, vira: 0 }]
+    atores: [{ id: bento, acao: triste, x: 0.4, y: 2.7, z: 11, vira: 180 }, { id: leo, acao: apontar, x: -0.4, y: 2.7, z: 9, vira: 180 }]
   - fala: "O Léo pulou na água e, pela primeira vez na vida, prometeu:"
     hora: tarde
     cam: medio
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: leo, acao: nadar, rosto: confiante, x: 0, y: 0.6, z: 2.6, vira: 180 }]
+    atores: [{ id: leo, acao: nadar, rosto: confiante, x: 0, y: 0.6, z: 6.5, vira: 180 }]
   - fala: "\"Eu volto pra te buscar.\""
     hora: tarde
     cam: close
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: leo, acao: falar, rosto: confiante, x: 0, y: 0.6, z: 2.6 }]
+    atores: [{ id: leo, acao: falar, rosto: confiante, x: 0, y: 0.6, z: 6.5 }]
   - fala: Uma pedra apareceu no bolso dele. Pesada.
     hora: tarde
     cam: medio
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: leo, acao: maos_pra_cima, rosto: assustado, x: 0, y: -1.0, z: 2.6, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 2.4 } }]
+    atores: [{ id: leo, acao: maos_pra_cima, rosto: assustado, x: 0, y: -1.0, z: 6.5, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 2.4 } }]
   - fala: Ele afundou… mas nadou.
     hora: tarde
-    cam: medio
+    cam: aberto
+    altura: 3
+    alvo_xz: [0, 1]
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: leo, acao: nadar, rosto: bravo, x: 0, y: -0.4, z: 0.4, vira: 180, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 2.4 } }]
+    atores: [{ id: leo, acao: nadar, rosto: bravo, x: 0, y: -0.4, z: 5.4, vira: 180, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 2.4 } }]
   - fala: Chegou no telhado e abraçou a Clara.
     hora: tarde
-    cam: medio
-    alvo_xz: [0, -3.6]
+    cam: aberto
+    altura: 5
+    alvo_xz: [0, -2]
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: leo, acao: abracar, rosto: chorando, x: -0.7, y: 8.2, z: -3.6, vira: 70 }, { id: clara, acao: abracar, rosto: chorando, x: 0.6, y: 8.2, z: -3.6, vira: -70 }]
+    atores: [{ id: leo, acao: abracar, rosto: chorando, x: -0.7, y: 8.6, z: -4.5, vira: 70 }, { id: clara, acao: abracar, rosto: chorando, x: 0.6, y: 8.6, z: -4.5, vira: -70 }]
   - fala: E nadou de volta.
     hora: tarde
     cam: medio
-    props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }, { tipo: barco, x: 1.2, y: 3.1, z: 6, vira: 0 }]
-    atores: [{ id: leo, acao: nadar, x: -0.6, y: 0.4, z: 2.4, vira: 0, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 2.4 } }, { id: clara, acao: abracar, x: -0.6, y: 1.6, z: 1.4, vira: 0 }]
+    props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }, { tipo: barco, x: 1.6, y: 3.1, z: 10, vira: 0 }]
+    atores: [{ id: leo, acao: nadar, x: -0.6, y: 0.4, z: 6.4, vira: 0, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 2.4 } }, { id: clara, acao: abracar, x: -0.6, y: 1.6, z: 5.4, vira: 0 }]
   - fala: A pedra virou pó na mão dele.
     hora: tarde
     cam: close
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: leo, acao: comemorar, rosto: rindo, x: 0, y: 0.6, z: 2.4 }]
+    atores: [{ id: leo, acao: comemorar, rosto: rindo, x: 0, y: 0.6, z: 6.4 }]
 
   # ---------- o final ----------
   - fala: Quando a água baixou, tinha um homem parado na porta da casa,
