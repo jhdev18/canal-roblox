@@ -218,6 +218,22 @@ export const PROPS = {
     ...[[-0.95, 0.85], [0.95, 0.85], [-0.95, -0.85], [0.95, -0.85]].map(([x, z]) => caixa(0.15, 0.95, 0.15, o.cor || '#f2f3f3', { pos: [x, 0.47, z] }))]),
   saco_lixo: () => grupo([esfera(0.6, '#1b1b1b', { pos: [0, 0.55, 0], mat: { rough: 0.3 } }), esfera(0.5, '#1b1b1b', { pos: [0.8, 0.45, 0.2], mat: { rough: 0.3 } })]),
   vaso_flor: (o = {}) => grupo([cilindro(0.45, 0.35, 0.8, '#b5653b', { pos: [0, 0.4, 0] }), ...[0, 1, 2, 3].map(i => esfera(0.22, o.cor || ['#ff4f8b', '#ffd23f', '#e53935', '#b06bff'][i], { pos: [Math.sin(i * 1.6) * 0.25, 1.05, Math.cos(i * 1.6) * 0.25] }))]),
+  // --- mobiliário urbano ---
+  ponto_onibus: (o = {}) => { const g = grupo([caixa(6.4, 0.15, 2.6, '#c3c7cf', { pos: [0, 0.08, 0] }), caixa(6.8, 0.25, 3.0, o.cor || '#1d3b72', { pos: [0, 6.5, 0.1] }),
+      caixa(6.2, 4.6, 0.08, new THREE.MeshStandardMaterial({ color: 0xdff2ff, transparent: true, opacity: 0.3, roughness: 0.05, depthWrite: false }), { pos: [0, 3.2, -1.1], sombra: false })]);
+    for (const x of [-3, 3]) g.add(caixa(0.2, 6.4, 0.2, '#5a5d66', { pos: [x, 3.25, -1.1] }));
+    const b = PROPS.banco({ cor: '#5a5d66' }); b.position.set(0, 0.15, -0.4); g.add(b);
+    const pl = placaTexto(o.texto || 'ÔNIBUS', 2.4, 0.7, { fundo: '#f5b800', corTexto: '#1d3b72' }); pl.position.set(0, 6.0, 1.62); g.add(pl); return g; },
+  placa_rua: (o = {}) => { const g = grupo([cilindro(0.1, 0.1, 7.2, '#5a5d66', { pos: [0, 3.6, 0], seg: 8 })]);
+    for (const v of [0, Math.PI]) { const p = placaTexto(o.texto || 'RUA DA MATRIZ', 3.6, 0.7, { fundo: '#1d6fd9', corTexto: '#ffffff' }); p.position.set(1.9 * Math.cos(v), 6.8, 0.06 * (v ? -1 : 1)); p.rotation.y = v; g.add(p); }
+    return g; },
+  banca_jornal: (o = {}) => { const g = grupo([caixa(4.4, 5, 3, '#1f7a3a', { pos: [0, 2.5, -0.2] }), caixa(5, 0.25, 4, '#17602d', { pos: [0, 5.1, 0.1] }), caixa(3.6, 3.0, 0.1, '#0f3d1c', { pos: [0, 2.6, 1.31] })]);
+    const cs = ['#e53935', '#1e88e5', '#fdd835', '#8e24aa', '#43a047', '#fb8c00'];
+    for (let i = 0; i < 12; i++) g.add(caixa(0.55, 0.75, 0.05, cs[i % 6], { pos: [-1.5 + (i % 6) * 0.6, 1.8 + Math.floor(i / 6) * 1.1, 1.37], sombra: false }));   // revistas
+    const pl = placaTexto(o.texto || 'BANCA', 3.4, 0.8, { fundo: '#ffd23f', corTexto: '#1f7a3a' }); pl.position.set(0, 4.5, 1.32); g.add(pl); return g; },
+  bicicletario: () => { const g = grupo([caixa(5, 0.1, 0.3, '#5a5d66', { pos: [0, 0.05, 0] })]);
+    for (let i = 0; i < 4; i++) { const x = -1.8 + i * 1.2; g.add(caixa(0.1, 1.6, 0.1, '#9aa0aa', { pos: [x, 0.8, -0.35] })); g.add(caixa(0.1, 1.6, 0.1, '#9aa0aa', { pos: [x, 0.8, 0.35] })); g.add(caixa(0.1, 0.1, 0.8, '#9aa0aa', { pos: [x, 1.6, 0] })); }
+    for (const x of [-1.2, 1.2]) { const b = PROPS.bicicleta(); b.position.set(x, 0, 0); b.rotation.y = Math.PI / 2; g.add(b); } return g; },
   poste_fios: (o = {}) => { const g = grupo([cilindro(0.22, 0.28, 11, '#9a9a9a', { pos: [0, 5.5, 0] }), caixa(2.6, 0.25, 0.25, '#7a7a7a', { pos: [0, 10, 0] }),
     cilindro(0.35, 0.35, 0.9, '#6d6f75', { pos: [0.6, 8.6, 0] })]);
     if (o.noite) { g.add(caixa(0.7, 0.25, 0.5, mat('#eee', { emissive: '#ffe2a0', emissiveIntensity: 2 }), { pos: [0, 8.0, 0.7] })); const l = new THREE.PointLight(0xffd59a, 35, 22, 1.6); l.position.set(0, 7.6, 1); g.add(l); }

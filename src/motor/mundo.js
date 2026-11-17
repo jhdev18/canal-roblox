@@ -91,8 +91,13 @@ function predioOco(o0, ctx) {
   if (o.letreiro) { const p = placaTexto(o.letreiro.texto, Math.min(w - 1.2, o.letreiro.largura || w - 1.2), 1.1, { fundo: o.letreiro.fundo, corTexto: o.letreiro.cor || '#fff', emissivo: n }); p.position.set(0, h - 0.2, 0.42); fr.add(p); }
   fachadaDetalhes(fr, o, w, h, P, n);
   g.add(unidade(fr, unidades));
-  const fu = parede(w, h, o.cor, (o.janelas?.fundo || []).map(x => ({ x, w: 2.4, y0: 2.4, y1: 4.6, vidro: true })), n); fu.position.set(0, 0, -d + 0.2); g.add(unidade(fu, unidades));
-  for (const [s, k] of [[-1, 'esq'], [1, 'dir']]) { const la = parede(d, h, o.cor, (o.janelas?.[k] || []).map(z => ({ x: s < 0 ? z + d / 2 : -(z + d / 2), w: 2.4, y0: 2.4, y1: 4.6, vidro: true })), n);
+  // janelas altas (basculantes) automáticas: acima dos móveis, em fundos e laterais que seriam paredes lisas
+  const altas = (len, livres) => { const out = [], y1 = h - 1.6, y0 = Math.max(5.2, y1 - 1.6); if (h < 8.5) return out;
+    for (let x = -len / 2 + 3; x <= len / 2 - 3; x += 5) if (!livres.some(v => Math.abs(v - x) < 2.8)) out.push({ x, w: 2.4, y0, y1, vidro: true }); return out; };
+  const jf = (o.janelas?.fundo || []).map(x => ({ x, w: 2.4, y0: 2.4, y1: 4.6, vidro: true }));
+  const fu = parede(w, h, o.cor, [...jf, ...altas(w, jf.map(v => v.x))], n); fu.position.set(0, 0, -d + 0.2); g.add(unidade(fu, unidades));
+  for (const [s, k] of [[-1, 'esq'], [1, 'dir']]) { const jl = (o.janelas?.[k] || []).map(z => ({ x: s < 0 ? z + d / 2 : -(z + d / 2), w: 2.4, y0: 2.4, y1: 4.6, vidro: true }));
+    const la = parede(d, h, o.cor, [...jl, ...altas(d, jl.map(v => v.x))], n);
     la.rotation.y = Math.PI / 2; la.position.set(s * (w / 2 - 0.2), 0, -d / 2); g.add(unidade(la, unidades)); }
   const teto = grupo([caixa(w, 0.3, d, '#d8d8d8', { pos: [0, h + 0.15, -d / 2] })]);
   if (o.telhado) { const inc = 30 * RAD, lado = (w / 2 + 0.6) / Math.cos(inc);                                                      // duas águas (ex.: igreja)
@@ -161,15 +166,21 @@ const PREDIOS_MUNDO = {
       por(gi, 'extintor', {}, [12.5, 0.2, -1.0], -90); por(gi, 'lixeira', { cor: '#c4281c' }, [-5.4, 0.2, -1.0], 0, 0.7); por(gi, 'tapete', { largura: 3.4, prof: 1.4, cor: '#5a5d66' }, [-8, 0.2, -1.1]);
       for (const x of [-6, 4]) por(gi, 'ventilador_teto', {}, [x, 11, -9]);
       return { atender: [4.6, 0.2, -4, -90], fila: { inicio: [1.4, -4.0], vira: 90, cresce: [-1, 0.25] } }; } },
-  banco: { tam: [18, 18, 11], w: 12, d: 12, h: 8, cor: '#b8bcc6', piso: '#b8bcc6', letreiro: { texto: 'BANCO', fundo: '#1d3b72', largura: 6 }, porta: { x: 0, w: 3, vidro: true }, vitrines: [{ x: -4, w: 2.4 }, { x: 4, w: 2.4 }],
-    interior(gi) { for (const [i, x] of [-2.6, 2.6].entries()) por(gi, 'guiche', { largura: 4.6, cor: '#8c909a', numero: i + 1 }, [x, 0.2, -7.5]);
-      const atm = grupo([caixa(1.4, 3.4, 1.2, '#5a5d66', { pos: [0, 1.7, 0] }), plano(0.9, 0.7, mat('#5fb0ff', { emissive: '#3a8fd8', emissiveIntensity: 0.9 }), { pos: [0, 2.7, 0.61] })]);
-      atm.position.set(-5.2, 0.2, -3); atm.rotation.y = Math.PI / 2; gi.add(atm); por(gi, 'fila_cordao', { n: 2 }, [-1.5, 0.2, -4]);
-      por(gi, 'cadeiras_espera', { n: 3, cor: '#1d3b72' }, [5.0, 0.2, -3.5], -90); por(gi, 'planta', {}, [5.2, 0.2, -0.9]); por(gi, 'planta', {}, [-5.2, 0.2, -5.2]);
-      por(gi, 'extintor', {}, [-5.6, 0.2, -0.6], 90); por(gi, 'lixeira', { cor: '#5a5d66' }, [-3.6, 0.2, -1.0], 0, 0.7); por(gi, 'relogio_parede', {}, [5.75, 6.4, -6.5], -90);
-      por(gi, 'arquivo', {}, [-4.8, 0.2, -10.6], 0); por(gi, 'cofre', {}, [4.4, 0.2, -10.6]); por(gi, 'mesa_trabalho', {}, [0, 0.2, -10.4], 0);
-      por(gi, 'mural', { texto: 'ABRA SUA CONTA', largura: 3.4, altura: 1.6, cor: '#1d3b72', cor_texto: '#ffd23f' }, [-5.75, 5.2, -4.2], 90);
-      return { atender: [-2.6, 0.2, -9.2, 0], fila: { inicio: [-2.6, -5.4], vira: 180, cresce: [0.4, 1] } }; } },
+  banco: { w: 18, d: 18, h: 11, cor: '#b8bcc6', piso: '#d9dce2', letreiro: { texto: 'BANCO', fundo: '#1d3b72', largura: 6 }, porta: { x: 0, w: 3, vidro: true }, vitrines: [{ x: -5.5, w: 3.6 }, { x: 5.5, w: 3.6 }],
+    interior(gi) {   // 3 guichês no fundo, espera com painel de senha, autoatendimento na entrada, mesa do gerente
+      for (const [i, x] of [-5, 0, 5].entries()) por(gi, 'guiche', { largura: 4.6, cor: '#8c909a', numero: i + 1 }, [x, 0.2, -13]);
+      por(gi, 'placa_suspensa', { texto: 'SENHA 042 · GUICHÊ 2', cor: '#111', cor_texto: '#ff4f4f', largura: 5 }, [0, 9, -10]);
+      for (const z of [-6.4, -9.0]) por(gi, 'cadeiras_espera', { n: 3, cor: '#1d3b72' }, [-1.5, 0.2, z], 0);
+      for (const z of [-2.6, -5.0]) { const atm = grupo([caixa(1.4, 3.4, 1.2, '#5a5d66', { pos: [0, 1.7, 0] }), plano(0.9, 0.7, mat('#5fb0ff', { emissive: '#3a8fd8', emissiveIntensity: 0.9 }), { pos: [0, 2.7, 0.61] })]);
+        atm.position.set(-8.1, 0.2, z); atm.rotation.y = Math.PI / 2; gi.add(atm); }
+      por(gi, 'placa_suspensa', { texto: 'AUTOATENDIMENTO', cor: '#1d3b72', largura: 3.6 }, [-7.6, 8, -3.8]);
+      por(gi, 'mesa_escritorio', {}, [6.6, 0.2, -6.6], 0, 0.75); por(gi, 'cadeira', { cor: '#1d3b72' }, [6.6, 0.2, -8.4], 0); por(gi, 'cadeira', { cor: '#5a5d66' }, [6.6, 0.2, -4.6], 180);
+      por(gi, 'computador', {}, [7.2, 0.2, -6.9], 0, 0.75); por(gi, 'mural', { texto: 'ABRA SUA CONTA', largura: 3.6, altura: 1.6, cor: '#1d3b72', cor_texto: '#ffd23f' }, [8.75, 5.4, -6.6], -90);
+      por(gi, 'arquivo', {}, [-7.6, 0.2, -16.6], 0, 0.85); por(gi, 'mesa_trabalho', {}, [5, 0.2, -16.3]);
+      for (const [x, z] of [[7.8, -1.0], [-7.8, -10.2], [7.8, -11]]) por(gi, 'planta', {}, [x, 0.2, z]);
+      por(gi, 'fila_cordao', { n: 2 }, [-4.6, 0.2, -11]); por(gi, 'relogio_parede', {}, [0, 9.4, -17.75]);
+      por(gi, 'extintor', {}, [8.5, 0.2, -14], -90); por(gi, 'lixeira', { cor: '#5a5d66' }, [3.4, 0.2, -1.0], 0, 0.7); por(gi, 'tapete', { largura: 3, prof: 1.4, cor: '#1d3b72' }, [0, 0.2, -1.1]);
+      return { atender: [0, 0.2, -14.5, 0], fila: { inicio: [0, -11.2], vira: 180, cresce: [0, 1], caminho: [[2.4, -11.2], [2.4, -2.6]] } }; } },
   prefeitura: { w: 32, d: 22, h: 12, cor: '#f4f1ea', faixa: '#1d3b72', piso: '#9b7b5a', letreiro: { texto: 'PREFEITURA MUNICIPAL', fundo: '#f4f1ea', cor: '#1d3b72', largura: 16 },
     porta: { x: 0, w: 3.6, cor: '#5a3a22' }, vitrines: [{ x: -10, w: 4 }, { x: 10, w: 4 }], janelas: { fundo: [-10, 10] },
     interior(gi) {   // hall com tapete vermelho; à esquerda o protocolo (atendimento e espera); à direita o gabinete do prefeito
@@ -350,6 +361,10 @@ function calcadao(g, n, r, RI) {
   for (const s of [-1, 1]) for (const t of [-22, 22]) { por(g, 'banco', {}, [t, 0.34, s * (M + 2.6)], s > 0 ? 0 : 180); por(g, 'banco', {}, [s * (M + 2.6), 0.34, t], s > 0 ? 90 : -90); }
   for (const s of [-1, 1]) for (const t of [-RI + 2, -8, 8, RI - 2]) { por(g, 'poste', { noite: n }, [t, 0.34, s * (RI - 1.2)], s > 0 ? 0 : 180); }
   for (const [x, z] of [[-RI + 3, -RI + 3], [RI - 3, -RI + 3], [-RI + 3, RI - 3], [RI - 3, RI - 3]]) por(g, 'lixeira', {}, [x, 0.34, z], 0, 0.8);
+  // mobiliário urbano: pontos de ônibus virados para o anel, banca de jornal, bicicletário
+  por(g, 'ponto_onibus', {}, [16, 0.34, -(RI - 1.8)], 180); por(g, 'ponto_onibus', {}, [-16, 0.34, RI - 1.8], 0);
+  por(g, 'banca_jornal', {}, [RI - 2.4, 0.34, -11], 90); por(g, 'bicicletario', {}, [-27, 0.34, RI - 1.4]);
+  for (const [x, z, t] of [[-AN - 1.5, -AN - 1.5, 'RUA DA MATRIZ'], [AN + 1.5, -AN - 1.5, 'RUA DO COMÉRCIO'], [-AN - 1.5, AN + 1.5, 'RUA DA ESCOLA'], [AN + 1.5, AN + 1.5, 'AV. CENTRAL']]) por(g, 'placa_rua', { texto: t }, [x, 0.2, z], 45);
 }
 
 export function construirMundo(o, g, r) {
@@ -380,6 +395,7 @@ export function construirMundo(o, g, r) {
     if (lado > 0 && Math.abs(x - CAMPINHO.x) < CAMPINHO.w / 2 + 10) continue;   // campinho + folga de gramado dos dois lados
     por(g, r() < 0.3 ? 'sobrado' : 'casa_br', { cor: r.item(cores), noite: n, largura: 9 }, [x, 0, lado * 13], lado > 0 ? 180 : 0);
     por(g, 'muro', { largura: 12, cor: '#e9e6dc', portao_x: r.entre(-2, 2) }, [x, 0, lado * 8.1], lado > 0 ? 180 : 0); }
+  por(g, 'placa_rua', { texto: 'RUA DAS FLORES' }, [AN + 5, 0.2, 7.6], 90); por(g, 'ponto_onibus', { cor: '#2e7d32' }, [150, 0.2, 7.4], 0); por(g, 'bicicletario', {}, [126, 0.2, 7.6]);
   for (let x = 82; x <= 200 + BX; x += 16) por(g, 'poste_fios', { noite: n }, [x, 0, -5.6]);
   por(g, 'posto_gasolina', { noite: n }, [52 + BX, 0.2, 9], 180);
   for (const [x, z, v, c] of [[-RM, 16, 0, '#1d3b72'], [RM, 12, 180, '#f2f3f3'], [10, RM, 90, '#f5c400']]) por(g, c === '#f5c400' ? 'taxi' : 'carro', { cor: c }, [x, 0.2, z], v);
