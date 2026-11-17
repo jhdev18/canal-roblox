@@ -1,0 +1,100 @@
+titulo: Nesse mundo o celular diz quem vai salvar sua vida
+clima: triste                      # piano emocionante (história com virada emotiva)
+destaque: [valentão, salvar, vida]
+# Versão no mundo integrado: todas as cenas no mesmo mapa (rua da casa, praça, escola, posto de saúde).
+
+elenco:
+  garoto: noob
+  valentao: valentao
+  menina: menina
+  amigo: amigo
+  medico: medico
+
+cenas:
+  # --- gancho ---
+  - fala: Nesse mundo, quando você faz dez anos,
+    onde: mundo
+    local: rua_bairro
+    cam: medio
+    mov: seguir
+    foco: garoto
+    atores: [{ id: garoto, acao: andar, rosto: feliz, x: -5, vira: 90 }]
+  - fala: o celular diz quem vai salvar a sua vida.
+    onde: celular
+    tela: { tipo: notificacao, app: Destino, titulo: Quem vai salvar sua vida, texto: "..." }
+  - fala: Todo mundo recebia um herói.
+    onde: mundo
+    local: coreto
+    cam: aberto
+    atores: [menina comemorar, amigo comemorar]
+
+  # --- problema ---
+  - fala: "Mas o garoto recebeu o pior nome possível:"
+    onde: mundo
+    local: casa
+    comodo: quarto
+    cam: close
+    mov: zoom_rapido
+    atores: [garoto celular surpreso]
+  - fala: o valentão da escola.
+    onde: celular
+    tela: { tipo: notificacao, app: Destino, titulo: Quem vai salvar sua vida, texto: "O valentão da escola" }
+  - fala: O mesmo que roubava o lanche dele todo dia.
+    onde: mundo
+    local: escola
+    dentro: true
+    cam: medio
+    atores: [{ id: valentao, acao: bravo, x: -1.8 }, { id: garoto, acao: triste, x: 1.8 }]
+  - fala: Por anos, o garoto fugiu dele.
+    onde: mundo
+    local: escola                  # calçada da escola, na saída da aula
+    cam: aberto
+    mov: seguir
+    foco: garoto
+    atores: [{ id: garoto, acao: correr_medo, vira: 90, x: -2 }, { id: valentao, acao: correr, vira: 90, x: -9, rosto: malandro }]
+
+  # --- virada ---
+  - fala: Até que, numa noite,
+    onde: mundo
+    local: rua_bairro
+    hora: noite
+    cam: baixo
+    atores: [garoto celular desconfiado]
+  - fala: um carro veio na direção dele.
+    cam: aberto
+    angulo: -35
+    mov: tremor
+    props: [{ tipo: carro, x: -4.5, z: 2.5, vira: 90, cor: "#f2f3f3" }]
+    atores: [{ id: garoto, acao: assustar, x: 1 }]
+  - fala: E alguém o empurrou pra longe.
+    cam: lado
+    mov: zoom_rapido
+    atores: [{ id: valentao, acao: empurrar, x: -2, vira: 90, rosto: bravo }, { id: garoto, acao: cair, x: 1, vira: -90 }]
+  - fala: Era o valentão, ferido no lugar dele.
+    onde: mundo
+    local: posto_saude
+    dentro: true
+    hora: dia
+    cam: aberto
+    foco: valentao                 # a maca fica no consultório, à direita da recepção
+    atores: [{ id: valentao, acao: deitar, rosto: triste }, { id: garoto, acao: chorar, x: 5.6, z: -1.2, vira: 60 }]
+  - fala: O garoto doou sangue e salvou a vida dele.
+    cam: close
+    foco: garoto
+    atores: [{ id: garoto, acao: falar, rosto: triste, x: -1.4, vira: 60 }, { id: medico, acao: parado, rosto: feliz, x: 1.4, vira: -60 }]
+  - fala: Foi aí que o valentão mostrou o celular dele.
+    cam: medio
+    foco: valentao
+    atores: [{ id: valentao, acao: deitar, rosto: nervoso }, { id: garoto, acao: parado, rosto: surpreso, x: 5.6, z: -1.2, vira: 60 }]
+  - fala: Quem ia salvar a vida dele era o garoto.
+    onde: celular
+    tela: { tipo: notificacao, app: Destino, titulo: Quem vai salvar sua vida, texto: "O garoto que você mais maltratou" }
+
+  # --- final ---
+  - fala: Os dois nasceram pra salvar um ao outro.
+    onde: mundo
+    local: coreto
+    hora: tarde
+    cam: aberto
+    mov: orbita
+    atores: [{ id: garoto, acao: abracar, rosto: feliz, x: -1.3, vira: 60 }, { id: valentao, acao: abracar, rosto: feliz, x: 1.3, vira: -60 }]
