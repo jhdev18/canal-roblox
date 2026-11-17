@@ -65,7 +65,7 @@ function posNoTempo(a, t) { // posição da raiz do ator no tempo t (sem tocar n
 async function montar(c) {
   if (atual) { cena.remove(atual.raiz); }
   const raiz = new THREE.Group(); cena.add(raiz);
-  const cen = construirCenario(c.cenario, { local: c.local, comodo: c.comodo, dentro: c.dentro, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque });
+  const cen = construirCenario(c.cenario, { local: c.local, comodo: c.comodo, dentro: c.dentro, alcance: c.alcance, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque });
   raiz.add(cen.grupo);
   cena.background = cor(cen.ceu); cena.fog = new THREE.Fog(cor(cen.ceu), cen.nevoa[0], cen.nevoa[1]);
   const sr = cen.sombra || 35; Object.assign(sol.shadow.camera, { left: -sr, right: sr, top: sr, bottom: -sr, far: 120 + sr * 2 }); sol.shadow.camera.updateProjectionMatrix();
@@ -255,6 +255,6 @@ async function preview() {
 
 /** Posição na tela (pixels) de pontos do mundo [[x,y,z],...] — usado para escrever nomes no mapa. */
 function projetar(pts) { posar(0); cam.updateMatrixWorld(); return pts.map(p => { const v = new THREE.Vector3(...p).project(cam); return [(v.x + 1) / 2 * cfg.largura, (1 - v.y) / 2 * cfg.altura]; }); }
-window.motor = { iniciar, montar, quadro, quadros, preview, projetar, pronto: true, depurar: () => { const rc = new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(0, 0), cam); const h = rc.intersectObjects(cena.children, true).slice(0, 3);
-  return { camera: cam.position.toArray().map(v => +v.toFixed(2)), toques: h.map(x => ({ d: +x.distance.toFixed(2), cor: x.object.material?.color?.getHexString?.(), geo: x.object.geometry?.parameters, pos: x.object.getWorldPosition(new THREE.Vector3()).toArray().map(v => +v.toFixed(1)) })) }; } };
+window.motor = { iniciar, montar, quadro, quadros, preview, projetar, pronto: true, depurar: () => { const nObj = (() => { let k = 0; atual.cen.grupo.traverse(o => { if (o.isMesh) k++; }); return k; })(); const nLuz = (() => { let k = 0; cena.traverse(o => { if (o.isLight) k++; }); return k; })(); const rc = new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(0, 0), cam); const h = rc.intersectObjects(cena.children, true).slice(0, 3);
+  return { malhas: nObj, luzes: nLuz, camera: cam.position.toArray().map(v => +v.toFixed(2)), toques: h.map(x => ({ d: +x.distance.toFixed(2), cor: x.object.material?.color?.getHexString?.(), geo: x.object.geometry?.parameters, pos: x.object.getWorldPosition(new THREE.Vector3()).toArray().map(v => +v.toFixed(1)) })) }; } };
 if (new URLSearchParams(location.search).has('preview')) preview();

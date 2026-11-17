@@ -295,6 +295,24 @@ function povoar(g, n, r) {
   for (let i = 0; i < 10; i++) por(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(55, 200), 0, r.item([-1, 1]) * r.entre(40, 60)]);
 }
 
+/**
+ * Mantém só o pedaço do mundo em volta do local gravado (o resto deixa de existir na cena).
+ * Chão, morros e ruas enormes ficam (senão vira vazio); o prédio/casa da cena sempre fica.
+ */
+export function recortarMundo(g, raio, manter = []) {
+  if (!isFinite(raio)) return 0;
+  g.updateMatrixWorld(true); const caixa3 = new THREE.Box3(), tam = new THREE.Vector3(), origem = new THREE.Vector3(0, 0, 0); let removidos = 0;
+  for (const ch of [...g.children]) {
+    if (manter.includes(ch)) continue;
+    caixa3.setFromObject(ch); if (caixa3.isEmpty()) continue; caixa3.getSize(tam);
+    if (Math.max(tam.x, tam.z) > 150) continue;
+    if (caixa3.distanceToPoint(origem) > raio) { g.remove(ch); removidos++; }
+  }
+  const dentroDoMundo = (o) => { while (o) { if (o === g) return true; o = o.parent; } return false; };
+  g.userData.unidades = (g.userData.unidades || []).filter(dentroDoMundo); g.userData.portas = (g.userData.portas || []).filter(dentroDoMundo);
+  return removidos;
+}
+
 /** Leva o ponto da cena para a origem (atores), com o fundo em -Z e a câmera em +Z. Devolve as âncoras já transformadas. */
 export function enquadrarMundo(g, { local, dentro, comodo }) {
   if (!local || local === 'vista') { g.position.set(0, -0.45, 0); return { ancoras: {} }; }

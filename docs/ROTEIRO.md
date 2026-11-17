@@ -53,6 +53,8 @@ ligados por portas) e o posto de gasolina.
 praca, coreto, fonte, parquinho, estatua, rua_bairro, posto_gasolina, vista.
 
 - **Mapa com os nomes:** `docs/preview/mapa_mundo.jpg`. Câmera de cima para cenas: `cam: mapa` (e `alvo_xz: [x, z]` para escolher o centro).
+- **Só o local gravado existe na cena:** o resto do mundo é removido ao montar cada cena (mais leve para a GPU).
+  Alcance padrão: 80 na calçada, 30 dentro de prédio, só a casa num cômodo, mapa inteiro na `vista`. Mude com `alcance: 120` na cena.
 - **Portas abrem sozinhas** quando alguém chega perto e fecham depois. A porta fica em `x` = −3 na farmácia/padaria, 0 na lotérica/banco/posto de saúde/igreja/prefeitura, −5 no mercado, 2,5 na delegacia, −2 no bar e −6 na casa (em relação ao ponto da calçada).
 - **Paredes e tetos somem sozinhos** quando ficam entre a câmera e o ator (vista em corte), e voltam depois. Com `foco:`, só o ator em foco abre o corte.
 - Dentro da casa, os móveis dos outros cômodos ficam escondidos para não atrapalhar a câmera.
@@ -143,6 +145,7 @@ Dica: `cam: aberto` + `angulo: -55` mostra a fila de lado.
 | `multidao` | figurantes gerados automaticamente (abaixo) | — |
 | `fila` | fila de pessoas em interiores com balcão/guichê (`fila: 6`) | — |
 | `comodo` | cômodo da `casa_protagonista` | quarto |
+| `alcance` | (mundo/cidade) até onde o mundo existe em volta do local gravado | 80 fora · 30 dentro · casa |
 
 ## Atores
 

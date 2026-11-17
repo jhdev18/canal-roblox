@@ -7,7 +7,7 @@ import { PROPS, placaTexto } from './props.js';
 import { construirCidade, enquadrarLocal } from './cidade.js';
 import { INTERIORES } from './interiores.js';
 import { construirCasa, enquadrarComodo } from './casa.js';
-import { construirMundo, enquadrarMundo } from './mundo.js';
+import { construirMundo, enquadrarMundo, recortarMundo } from './mundo.js';
 export { LOCAIS_MUNDO, LOCAIS_COM_INTERIOR, COMODOS_DO_MUNDO } from './mundo.js';
 export { COMODOS_CASA } from './casa.js';
 export { INTERIOR_DO_LOCAL } from './interiores.js';
@@ -233,9 +233,13 @@ export const CENARIOS = {
     add(g, 'semaforo', { luz: 'verde' }, [-6.8, 0, 5.5]);
     if (!n) nuvens(g, r); else lua(g);
   },
-  cidade_pequena(o, g, r) { construirCidade(o, g, r); },
+  cidade_pequena(o, g, r) { construirCidade(o, g, r); if (o.local && o.local !== 'vista') { enquadrarLocal(g, o.local); recortarMundo(g, o.alcance ?? 80); g.userData.jaEnquadrado = true; } },
   mundo(o, g, r) { // MUNDO INTEGRADO: praça no centro, prédios ocos por fora e por dentro, portas automáticas, casa do protagonista
     construirMundo(o, g, r); const e = enquadrarMundo(g, o);
+    // só existe o pedaço do mundo em volta do local gravado
+    const vista = !o.local || o.local === 'vista', principal = g.children.find(c => c.userData?.lote?.id === o.local);
+    const raio = o.alcance ?? (vista ? Infinity : o.comodo ? 4 : o.dentro ? 30 : 80);
+    g.userData.recortados = recortarMundo(g, raio, principal ? [principal] : []);
     if (o.comodo === 'quarto_pais' && e.ancoras.deitar_pais) { e.ancoras.deitar = e.ancoras.deitar_pais; e.ancoras.dormir = e.ancoras.deitar_pais; }
     g.userData.ancoras = e.ancoras; },
   casa_protagonista(o, g, r) { construirCasa(o, g, r); const e = enquadrarComodo(g, o.comodo); g.userData.ancoras = e.ancoras; g.userData.limites = e.limites; },   // casa completa (use `comodo:`)   // modelo da cidade inteira (use `local:` para escolher onde a cena acontece)
@@ -271,7 +275,7 @@ export function construirCenario(nome, o = {}) {
   const fn = CENARIOS[nome] || CENARIOS.vazio;
   const g = new THREE.Group(); const r = rng(o.seed ?? nome);
   fn(o, g, r);
-  if (nome === 'cidade_pequena') enquadrarLocal(g, o.local);
+  if (nome === 'cidade_pequena' && !g.userData.jaEnquadrado) enquadrarLocal(g, o.local);
   g.traverse(m => { if (m.isMesh) { m.receiveShadow = true; if (m.castShadow === undefined) m.castShadow = true; } });
   const interno = INTERNOS.has(nome) || (nome === 'mundo' && !!(o.dentro || o.comodo));
   const amb = ambiente(o.hora || 'dia', interno);

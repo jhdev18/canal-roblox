@@ -73,7 +73,7 @@ export function carregarRoteiro(arquivo) {
       camera: c.cam ?? c.camera ?? CAM_CICLO[i % CAM_CICLO.length][0], mov: c.mov, angulo: c.angulo ?? (c.cam || c.camera ? undefined : CAM_CICLO[i % CAM_CICLO.length][1]),
       dist: c.dist, altura: c.altura, inclinar: c.inclinar, foco: c.foco, props: c.props || [],
       multidao: c.multidao,
-      texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque,
+      texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque, alcance: c.alcance,
     };
     if (c.fila) { // fila de pessoas (lotérica, banco, mercado, padaria, farmácia, posto de saúde)
       const f = typeof c.fila === 'number' ? { n: c.fila } : c.fila;
