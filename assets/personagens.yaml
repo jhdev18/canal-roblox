@@ -66,3 +66,9 @@ nina:          { base: menina, camisa: laranja, laco_cor: amarelo }
 seu_nono:      { base: vovo, camisa: "#4f6f8f", calca: bege, extras: [bigode], rosto: neutro }
 fantasma:      { pele: branco, camisa: branco, calca: branco, rosto: assustado, fantasma: true }
 motorista:     { base: vendedor, camisa: rosa, acessorios: [bone], bone_cor: branco }
+davi:          { base: noob, camisa: "#2e7d32", acessorios: [cabelo_curto], cabelo_cor: "#2b1d14" }
+bia:           { base: menina, camisa: "#7fb8ff", acessorios: [cabelo_longo], cabelo_cor: "#5a3a22", escala: 0.85 }
+leo:           { base: noob, camisa: "#f5b800", acessorios: [cabelo_espetado], cabelo_cor: "#3a2416", escala: 0.85 }
+clara:         { base: menina, camisa: "#ff8fb1", escala: 0.6 }
+bento:         { base: vizinho, camisa: "#b7e1a1" }
+pai_leo:       { base: pai, camisa: cinza, calca: "#3a3d44", acessorios: [cabelo_curto], cabelo_cor: "#2b1d14" }

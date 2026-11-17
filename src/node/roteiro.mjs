@@ -19,7 +19,7 @@ function rostosValidos() {
 export function catalogo() {
   return { cenarios: NOMES_CENARIOS, acoes: NOMES_ACOES, rostos: rostosValidos(), extras_rosto: Object.keys(EXTRAS_ROSTO), acessorios: NOMES_ACESSORIOS,
     roupas: NOMES_ROUPAS, props: NOMES_PROPS, props_mao: NOMES_PROPS_MAO, cameras: NOMES_CAMERAS, movimentos: MOVIMENTOS,
-    personagens: Object.keys(carregarPersonagens()), locais: LOCAIS, locais_mundo: LOCAIS_MUNDO, comodos: COMODOS_CASA, horas: ['dia', 'tarde', 'noite'], telas: ['mensagem', 'notificacao', 'alarme', 'ligacao'] };
+    personagens: Object.keys(carregarPersonagens()), locais: LOCAIS, locais_mundo: LOCAIS_MUNDO, comodos: COMODOS_CASA, horas: ['dia', 'tarde', 'noite', 'vermelho'], telas: ['mensagem', 'notificacao', 'alarme', 'ligacao'] };
 }
 
 function checar(tipo, nome, lista, onde) {

@@ -215,7 +215,7 @@ function colocarSobre(a) {
     const t = v.texto || 'Zzz'; g.strokeText(t, 128, 64); g.fillStyle = v.cor || '#ffffff'; g.fillText(t, 128, 64);
     o = new THREE.Sprite(new THREE.SpriteMaterial({ map: texturaCanvas(cv), transparent: true, depthWrite: false })); o.scale.set(v.tamanho || 2.2, (v.tamanho || 2.2) / 2, 1); o.layers.set(1); }   // camada 1: desenhada por cima, sem AO
   else { o = criarProp({ tipo: v.tipo, ...v }); if (!o) return; }
-  o.position.set(0.4, v.altura ?? 6.6, 0); a.ator.raiz.add(o); a.sobreObj = o; a.sobreY = o.position.y;
+  if (v.escala) o.scale.multiplyScalar(v.escala); o.position.set(v.x ?? 0.4, v.altura ?? 6.6, v.z ?? 0); a.ator.raiz.add(o); a.sobreObj = o; a.sobreY = o.position.y; a.sobreX = o.position.x; a.sobreFixo = !!v.fixo;
 }
 
 /** Imagem final: cena com AO/sombras e, por cima, a camada 1 (indicadores flutuantes como "Zzz", que o AO estragaria). */
@@ -230,7 +230,7 @@ function posar(t) {
   const { atores, c, dur } = atual;
   for (const [i, a] of atores.entries()) {
     a.ator.posar(a.acao, t + (a.atraso || 0), dur, a.p || {}, a.base);
-    if (a.sobreObj) { a.sobreObj.position.y = a.sobreY + Math.sin(t * 2.4 + i) * 0.18; a.sobreObj.position.x = 0.4 + Math.sin(t * 1.3 + i) * 0.12; }
+    if (a.sobreObj && !a.sobreFixo) { a.sobreObj.position.y = a.sobreY + Math.sin(t * 2.4 + i) * 0.18; a.sobreObj.position.x = a.sobreX + Math.sin(t * 1.3 + i) * 0.12; }
     if (a.pet) { // animal de estimação acompanha o dono (ao lado direito, um pouco à frente)
       const rz = a.ator.raiz, ang = rz.rotation.y, ox = a.acao === 'passear_cachorro' ? 0.9 : -1.9, oz = a.acao === 'passear_cachorro' ? 2.6 : 0.6;
       a.pet.position.set(rz.position.x + ox * Math.cos(ang) + oz * Math.sin(ang), Math.abs(Math.sin(t * 11)) * (LOCOMOCAO.has(a.acao) ? 0.1 : 0), rz.position.z - ox * Math.sin(ang) + oz * Math.cos(ang));

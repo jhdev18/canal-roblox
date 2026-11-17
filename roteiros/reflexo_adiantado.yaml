@@ -1,0 +1,124 @@
+titulo: Nesse mundo todo reflexo é atrasado
+clima: suspense
+destaque: [reflexo, antes, aprendendo]
+# História original (docs/HISTORIAS.md · curta 1) — terror, ~35 s. Reflexo = cópia translúcida atrás do vidro (spec reflexo: true)
+# com `atraso`: −1 = um segundo atrasado, +1 = um segundo adiantado. Um vidro na calçada da padaria (x ≈ 8); o reflexo fica logo atrás dele.
+
+elenco:
+  davi: davi
+  refl: { base: davi, reflexo: true }
+  mulher: cidada
+  refl_m: { base: cidada, reflexo: true }
+  homem: cidadao
+  refl_h: { base: cidadao, reflexo: true }
+  colega: crianca
+  colega2: { base: crianca, camisa: roxo }
+
+cenas:
+  - fala: Nesse mundo, todo reflexo se mexe um segundo atrasado.
+    onde: mundo
+    local: padaria
+    cam: medio
+    dist: 1.25
+    angulo: 35
+    foco: mulher
+    alvo_xz: [8, 0]
+    props: [{ tipo: vidro, x: 8, z: -0.1 }]
+    atores: [{ id: mulher, acao: acenar, x: 8, z: 1.4, vira: 180 }, { id: refl_m, acao: acenar, x: 8, z: -1.6, vira: 0, atraso: -1 }]
+  - fala: As pessoas acreditam que é o espelho pensando, e que isso dá sorte.
+    cam: medio
+    dist: 1.25
+    angulo: -35
+    foco: homem
+    alvo_xz: [7, 0]
+    props: [{ tipo: vidro, x: 7, z: -0.1 }]
+    atores: [{ id: homem, acao: comemorar, x: 7, z: 1.4, vira: 180 }, { id: refl_h, acao: comemorar, x: 7, z: -1.6, vira: 0, atraso: -1 }]
+  - fala: Mas o reflexo do Davi era diferente.
+    cam: medio
+    dist: 1.25
+    angulo: 35
+    foco: davi
+    alvo_xz: [8, 0]
+    props: [{ tipo: vidro, x: 8, z: -0.1 }]
+    atores: [{ id: davi, acao: parado, x: 8, z: 1.4, vira: 180 }, { id: refl, acao: parado, x: 8, z: -1.6, vira: 0 }]
+  - fala: Ele se mexia um segundo antes.
+    cam: medio
+    dist: 1.25
+    angulo: 35
+    foco: davi
+    alvo_xz: [8, 0]
+    props: [{ tipo: vidro, x: 8, z: -0.1 }]
+    atores: [{ id: davi, acao: acenar, x: 8, z: 1.4, vira: 180 }, { id: refl, acao: acenar, x: 8, z: -1.6, vira: 0, atraso: 1 }]
+  - fala: Na escola, ninguém queria sentar do lado dele.
+    onde: mundo
+    local: escola
+    dentro: true
+    cam: medio
+    atores: [{ id: davi, acao: sentar, rosto: triste }, { id: colega, acao: parado, x: -3.1, z: 3.5, vira: 30 }, { id: colega2, acao: parado, x: 3.1, z: 3.5, vira: -30 }]
+  - fala: Diziam que o espelho do Davi era amaldiçoado.
+    cam: medio
+    atores: [{ id: colega, acao: cochichar, x: -3.1, z: 3.5, vira: 40 }, { id: colega2, acao: rir, x: -1.2, z: 3.8, vira: -60 }]
+  - fala: Até que um dia, na vitrine da padaria, o reflexo do Davi parou.
+    onde: mundo
+    local: padaria
+    cam: medio
+    dist: 1.25
+    angulo: 35
+    foco: davi
+    alvo_xz: [8, 0]
+    props: [{ tipo: vidro, x: 8, z: -0.1 }]
+    atores: [{ id: davi, acao: acenar, x: 8, z: 1.4, vira: 180 }, { id: refl, acao: parado, rosto: neutro, x: 8, z: -1.6, vira: 0 }]
+  - fala: E apontou pra janela da casa do outro lado da rua.
+    cam: medio
+    dist: 1.25
+    angulo: 35
+    foco: davi
+    alvo_xz: [8, 0]
+    props: [{ tipo: vidro, x: 8, z: -0.1 }]
+    atores: [{ id: davi, acao: assustar, x: 8, z: 1.4, vira: 180 }, { id: refl, acao: apontar, rosto: neutro, x: 8, z: -1.6, vira: 30 }]
+  - fala: O Davi olhou.
+    cam: close
+    foco: davi
+    atores: [{ id: davi, acao: parado, rosto: assustado, x: 8, z: 0, vira: 0 }]
+  - fala: Todos os reflexos da cidade estavam parados, olhando pra ele.
+    onde: mundo
+    local: rua_bairro
+    hora: tarde
+    cam: costas
+    dist: 1.8
+    foco: davi
+    atores: [{ id: davi, acao: parado, x: 0, z: 2 }, { id: refl_m, acao: parado, x: -6.4, z: -3, vira: 0 }, { id: refl_h, acao: parado, x: 6.4, z: -5, vira: 0 }, { id: refl, acao: parado, rosto: neutro, x: -6.2, z: -10, vira: 0 }]
+  - fala: Foi aí que ele entendeu. Os reflexos nunca estiveram atrasados.
+    cam: close
+    foco: davi
+    atores: [{ id: davi, acao: tremer, rosto: assustado, x: 0, z: 2 }]
+  - fala: Eles estavam aprendendo a imitar a gente.
+    onde: mundo
+    local: padaria
+    hora: tarde
+    cam: medio
+    dist: 1.25
+    angulo: -35
+    foco: mulher
+    alvo_xz: [7, 0]
+    props: [{ tipo: vidro, x: 7, z: -0.1 }]
+    atores: [{ id: mulher, acao: dancar, x: 7, z: 1.4, vira: 180 }, { id: refl_m, acao: dancar, rosto: malandro, x: 7, z: -1.6, vira: 0, atraso: -1 }]
+  - fala: E o dele… já tinha aprendido tudo.
+    cam: medio
+    dist: 1.25
+    angulo: 35
+    foco: davi
+    alvo_xz: [8, 0]
+    props: [{ tipo: vidro, x: 8, z: -0.1 }]
+    atores: [{ id: davi, acao: parado, rosto: assustado, x: 8, z: 1.4, vira: 180 }, { id: refl, acao: parado, rosto: malandro, x: 8, z: -1.6, vira: 0 }]
+  - fala: Naquela noite, o reflexo do Davi sorriu… e o Davi não.
+    onde: mundo
+    local: casa
+    comodo: quarto
+    hora: noite
+    cam: medio
+    dist: 1.2
+    angulo: 40
+    foco: davi
+    props: [{ tipo: espelho, x: 0, y: 4.6, z: -4.4 }]
+    atores: [{ id: davi, acao: tremer, rosto: assustado, x: 0, z: 0, vira: 180 }, { id: refl, acao: parado, rosto: malandro, x: 0, z: -3.6, vira: 0 }]

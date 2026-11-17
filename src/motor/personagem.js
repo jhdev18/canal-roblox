@@ -154,6 +154,7 @@ export function criarPersonagem(spec = {}) {
     (a.onde === 'cabeca' ? cab : torsoAnc).add(a.obj);
   }
   raiz.traverse(o => { if (o.isMesh && o !== rosto) { o.castShadow = true; o.receiveShadow = true; } });
+  if (s.reflexo) raiz.traverse(o => { if (o.isMesh) { o.material = o.material.clone(); Object.assign(o.material, { transparent: true, opacity: 0.55, depthWrite: false }); o.material.color?.lerp(new THREE.Color('#a8c8ff'), 0.25); o.castShadow = false; } });   // reflexo no vidro
   if (s.fantasma) {   // fantasma clássico: sem pernas, com "cauda" de lençol, levemente translúcido e brilhando
     pd.visible = false; pe.visible = false;
     corpo.add(cilindro(1.25, 0.35, 2.0, mat('#eef5ff'), { pos: [0, -0.95, 0], seg: 14 }));
