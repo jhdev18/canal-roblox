@@ -131,7 +131,11 @@ function criarMultidao(m, seed) {
   } else if (modo === 'fila') { // uma pessoa atrás da outra, cada uma olhando para a da frente
     const F = { inicio: [0, -2.2], vira: 180, cresce: [0, 1], ...(m.ancoraFila || {}), ...(m.inicio ? { inicio: m.inicio } : {}), ...(m.cresce ? { cresce: m.cresce } : {}) };
     const L = Math.hypot(...F.cresce) || 1, dx = F.cresce[0] / L, dz = F.cresce[1] / L, esp = m.espaco ?? 2.3;
-    for (let i = 0; i < n; i++) { const curva = Math.sin(i * 0.9) * 0.35; const x = F.inicio[0] + dx * esp * i + dz * curva, z = F.inicio[1] + dz * esp * i - dx * curva;
+    const pts = F.caminho?.length ? [F.inicio, ...F.caminho] : null;   // fila com curvas (cordão): segue os pontos
+    const aoLongo = (d) => { for (let k = 0; k < pts.length - 1; k++) { const [ax, az] = pts[k], [bx, bz] = pts[k + 1], s = Math.hypot(bx - ax, bz - az);
+        if (d <= s || k === pts.length - 2) { const t = d / s; return [ax + (bx - ax) * t, az + (bz - az) * t]; } d -= s; } };
+    for (let i = 0; i < n; i++) { const curva = pts ? 0 : Math.sin(i * 0.9) * 0.35; const [bx, bz] = pts ? aoLongo(esp * i) : [F.inicio[0] + dx * esp * i, F.inicio[1] + dz * esp * i];
+      const x = bx + dz * curva, z = bz - dx * curva;
       const px = i === 0 ? null : lugares[i - 1]; lugares.push({ x, z, vira: px ? Math.atan2(px.x - x, px.z - z) * 180 / Math.PI : F.vira }); }
   } else if (modo === 'passantes') {
     for (let i = 0; i < n; i++) { const lado = r() < 0.5 ? -1 : 1, faixa = m.faixas || [[x0, x0 + 2.5], [x1 - 2.5, x1]];

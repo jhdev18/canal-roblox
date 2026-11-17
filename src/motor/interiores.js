@@ -12,6 +12,10 @@ const CORES_PROD = ['#e53935', '#1e88e5', '#43a047', '#fdd835', '#fb8c00', '#8e2
 /** Placa de parede (texto) já posicionada. */
 function placa(g, texto, w, h, pos, o = {}) { const p = placaTexto(texto, w, h, o); p.position.set(...pos); if (o.rotY) p.rotation.y = o.rotY; g.add(p); return p; }
 
+/** Pão francês: casquinha dourada com o corte em cima. */
+function paoFrances(x, y, z, vira = 0) { const g = grupo([caixa(0.75, 0.36, 0.44, '#d39a52', { pos: [0, 0.18, 0], round: 0.16 }), caixa(0.5, 0.06, 0.1, '#efcb8a', { pos: [0, 0.37, 0], rot: [0, 20, 0], sombra: false })]);
+  g.position.set(x, y, z); g.rotation.y = vira * RAD; return g; }
+
 // ---------------- móveis e objetos de interior ----------------
 export const MOVEIS = {
   balcao: (o = {}) => { const w = o.largura || 8, c = o.cor || '#a8754a'; return grupo([caixa(w, 3.0, 1.6, c, { pos: [0, 1.5, 0] }), caixa(w + 0.3, 0.2, 1.9, o.tampo || '#e8e2d2', { pos: [0, 3.1, 0] }),
@@ -61,9 +65,29 @@ export const MOVEIS = {
       const pl = placaTexto('2 x 1', 1.0, 0.35, { fundo: '#111', corTexto: '#ffd23f', emissivo: true }); pl.position.set(-1.4, 0.9, 0.13); g.add(pl); }
     else g.add(plano(4.1, 2.3, mat('#3c7dd9', { emissive: '#2a6fd0', emissiveIntensity: 0.8 }), { pos: [0, 0, 0.11] }));
     return g; },
-  estufa_paes: (o = {}) => { const w = o.largura || 6, g = grupo([caixa(w, 3.0, 1.8, '#8a5a33', { pos: [0, 1.5, 0] }), caixa(w, 1.8, 1.6, mat('#fff3d6', { rough: 0.05, emissive: '#ffcf7a', emissiveIntensity: 0.35 }), { pos: [0, 3.9, 0], sombra: false })]);
-    for (let i = 0; i < Math.floor(w / 0.7); i++) for (const z of [-0.4, 0.3]) g.add(caixa(0.55, 0.32, 0.4, i % 3 ? '#d9a25a' : '#b87a35', { pos: [-w / 2 + 0.45 + i * 0.7, 3.25, z], round: 0.14 }));
+  estufa_paes: (o = {}) => { const w = o.largura || 6, g = grupo([caixa(w, 3.0, 1.8, '#8a5a33', { pos: [0, 1.5, 0] }), caixa(w, 1.8, 1.6, new THREE.MeshStandardMaterial({ color: 0xfff3d6, transparent: true, opacity: 0.22, roughness: 0.05, depthWrite: false }), { pos: [0, 3.9, 0], sombra: false }), caixa(w, 0.1, 1.6, '#8a5a33', { pos: [0, 4.85, 0] })]);
+    for (let i = 0; i < Math.floor((w - 0.4) / 0.85); i++) for (const z of [-0.45, 0.35]) g.add(paoFrances(-w / 2 + 0.6 + i * 0.85, 3.05, z, (i * 37 + z * 50) % 40 - 20));
     return g; },
+  // --- padaria: pães de verdade ---
+  cesto_paes: (o = {}) => { const g = grupo([cilindro(0.95, 0.75, 0.7, '#a87a3c', { pos: [0, 0.35, 0], seg: 16 }), cilindro(1.0, 1.0, 0.1, '#8a5a2a', { pos: [0, 0.72, 0], seg: 16 })]);
+    for (let i = 0; i < 7; i++) { const a = i * 2.4; g.add(paoFrances(Math.cos(a) * (i ? 0.45 : 0), 0.78 + (i ? 0 : 0.18), Math.sin(a) * (i ? 0.45 : 0), a * 57)); } return g; },
+  prateleira_paes: (o = {}) => { const w = o.largura || 10, g = grupo([caixa(w, 7, 0.3, '#8a5a33', { pos: [0, 3.5, -1.0] })]);
+    for (const x of [-w / 2, w / 2]) g.add(caixa(0.3, 7, 2.2, '#7a4a2a', { pos: [x, 3.5, 0] }));
+    for (const [k, y] of [1.0, 3.0, 5.0].entries()) { g.add(caixa(w, 0.15, 2.0, '#a8754a', { pos: [0, y, 0] }));
+      for (let x = -w / 2 + 1.0; x < w / 2 - 0.6; x += 2.0) {
+        if (k === 0) { const c = MOVEIS.cesto_paes(); c.position.set(x, y + 0.08, 0); c.scale.setScalar(0.85); g.add(c); }
+        else if (k === 1) for (let j = 0; j < 4; j++) g.add(caixa(0.28, 0.28, 1.7, '#c98a3e', { pos: [x - 0.6 + j * 0.4, y + 0.22, 0], rot: [0, 8 - j * 5, 0], round: 0.13 }));   // baguetes
+        else { g.add(cilindro(0.7, 0.7, 0.6, '#7a3e1a', { pos: [x, y + 0.38, 0], seg: 18 })); g.add(cilindro(0.72, 0.72, 0.12, x % 4 ? '#ffffff' : '#ff8fb1', { pos: [x, y + 0.72, 0], seg: 18 })); } } }   // bolos com cobertura
+    return g; },
+  vitrine_doces: (o = {}) => { const w = o.largura || 4, g = grupo([caixa(w, 2.8, 1.8, '#f2f3f3', { pos: [0, 1.4, 0] }), caixa(w, 1.6, 1.7, new THREE.MeshStandardMaterial({ color: 0xeaf6ff, transparent: true, opacity: 0.25, roughness: 0.05, depthWrite: false }), { pos: [0, 3.6, 0], sombra: false })]);
+    for (let i = 0; i < Math.floor(w / 0.9); i++) { const x = -w / 2 + 0.5 + i * 0.9;
+      g.add(esfera(0.3, '#e0a85a', { pos: [x, 3.1, 0.3] })); g.add(esfera(0.12, '#ffffff', { pos: [x, 3.38, 0.3], sombra: false }));   // sonhos com açúcar
+      g.add(caixa(0.6, 0.35, 0.6, i % 2 ? '#7a3e1a' : '#f5d77a', { pos: [x, 3.0, -0.4], round: 0.08 })); }   // fatias de bolo / quindim
+    return g; },
+  forno_padaria: () => { const g = grupo([caixa(4, 6, 2.6, mat('#b8bcc6', { metal: 0.6, rough: 0.35 }), { pos: [0, 3, 0] })]);
+    for (const y of [1.6, 3.4, 5.0]) { g.add(caixa(3.2, 1.3, 0.08, '#222', { pos: [0, y, 1.31] })); g.add(caixa(3.0, 1.0, 0.09, mat('#ff9a3c', { emissive: '#ff7a1a', emissiveIntensity: 0.8 }), { pos: [0, y, 1.32], sombra: false }));
+      g.add(caixa(2.6, 0.1, 0.12, '#ddd', { pos: [0, y + 0.8, 1.4] })); } return g; },
+  cafeteira: () => grupo([caixa(1.1, 1.3, 0.9, '#2b2b2b', { pos: [0, 0.65, 0] }), cilindro(0.3, 0.3, 0.5, mat('#3b2412', { rough: 0.2 }), { pos: [0, 0.4, 0.2], seg: 12 }), caixa(0.9, 0.12, 0.7, '#555', { pos: [0, 1.35, 0] })]),
   cadeiras_espera: (o = {}) => { const n = o.n || 4, P = 2.2, g = grupo([caixa(n * P, 0.15, 0.4, '#5a5d66', { pos: [0, 0.6, 0] })]);   // um assento a cada 2.2 (mesmo passo do `sentar` em grupo)
     for (let i = 0; i < n; i++) { const x = (i - (n - 1) / 2) * P; g.add(caixa(2.0, 0.2, 1.9, o.cor || '#1e88e5', { pos: [x, 0.95, 0], round: 0.08 })); g.add(caixa(2.0, 1.8, 0.2, o.cor || '#1e88e5', { pos: [x, 1.95, -0.9], round: 0.08 })); }
     for (const x of [-(n * P) / 2 + 0.3, (n * P) / 2 - 0.3]) g.add(caixa(0.15, 0.85, 1.4, '#5a5d66', { pos: [x, 0.42, 0] })); return g; },

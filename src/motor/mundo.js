@@ -55,7 +55,7 @@ function mapaInterior(w0, d0, h0, w, d, h) {
   const mover = (obj) => { if (obj.isGroup && !obj.userData.tipo && obj.position.lengthSq() < 1e-9 && obj.rotation.y === 0) { obj.children.forEach(mover); return; }
     obj.position.set(x(obj.position.x), y(obj.position.y), z(obj.position.z)); };
   return { x, z, objetos: (gi) => gi.children.forEach(mover),
-    ancoras: (a) => { const r = {}; for (const [k, v] of Object.entries(a)) r[k] = k === 'fila' ? { ...v, inicio: [x(v.inicio[0]), z(v.inicio[1])] } : [x(v[0]), v[1], z(v[2]), v[3]]; return r; } };
+    ancoras: (a) => { const r = {}; for (const [k, v] of Object.entries(a)) r[k] = k === 'fila' ? { ...v, inicio: [x(v.inicio[0]), z(v.inicio[1])], caminho: v.caminho?.map(p => [x(p[0]), z(p[1])]) } : [x(v[0]), v[1], z(v[2]), v[3]]; return r; } };
 }
 
 /**
@@ -105,23 +105,30 @@ const PREDIOS_MUNDO = {
       por(gi, 'extintor', {}, [-5.5, 0.2, -0.8], 90); por(gi, 'lixeira', { cor: '#9aa0aa' }, [4.7, 0.2, -5.6], 0, 0.7); por(gi, 'planta', {}, [5, 0.2, -9.8]); por(gi, 'tapete', { largura: 2.6, prof: 1.4, cor: '#5a5d66' }, [-3, 0.2, -1.1]);
       por(gi, 'pilha_caixas', { n: 2, seed: 5 }, [-4.6, 0.2, -10.0]);
       return { atender: [0, 0.2, -8.8, 0], fila: { inicio: [0, -5.4], vira: 180, cresce: [-0.5, 1] } }; } },
-  loterica: { tam: [16, 16, 9.5], w: 10, d: 11, h: 6.5, cor: '#1d4fa0', faixa: '#f39c12', piso: '#cfd6e4', letreiro: { texto: 'LOTÉRICA', fundo: '#f5b800', cor: '#1d3b72' }, porta: { x: 0, w: 2.8, vidro: true }, vitrines: [{ x: -3.3, w: 2.2 }, { x: 3.3, w: 2.2 }],
-    interior(gi) { for (const [i, x] of [-2.4, 2.4].entries()) por(gi, 'guiche', { largura: 4.4, cor: '#1d4fa0', numero: i + 1 }, [x, 0.2, -7]);
-      const m = PROPS.mural({ texto: 'PRÊMIO R$ 50 MI', largura: 5, altura: 1.6, cor: '#1d3b72', cor_texto: '#ffd23f' }); m.position.set(0, 5.3, -10.6); gi.add(m);
-      por(gi, 'balcao', { largura: 3, cor: '#f5b800', tampo: '#f2f3f3' }, [-4.0, 0.2, -2.2], 90); por(gi, 'cadeiras_espera', { n: 2, cor: '#f5b800' }, [4.2, 0.2, -3.0], -90);
-      for (const [t, c, z] of [['MEGA', '#16a05d', -2.2], ['QUINA', '#8e24aa', -4.4]]) por(gi, 'poster', { texto: t, cor: c, cor_texto: '#ffffff' }, [4.85, 4.7, z], -90, 0.6);
-      por(gi, 'relogio_parede', {}, [-4.75, 5.0, -9], 90); por(gi, 'ventilador_teto', {}, [0, 6.7, -3]); por(gi, 'lixeira', { cor: '#1d4fa0' }, [4.0, 0.2, -5.6], 0, 0.7);
-      por(gi, 'arquivo', {}, [-3.8, 0.2, -10.0], 0); por(gi, 'pilha_caixas', { n: 2, seed: 2 }, [3.6, 0.2, -10.0]); por(gi, 'tapete', { largura: 2.8, prof: 1.4, cor: '#1d3b72' }, [0, 0.2, -1.1]);
-      return { atender: [-2.4, 0.2, -8.7, 0], fila: { inicio: [-2.4, -4.9], vira: 180, cresce: [0.35, 1] } }; } },
-  padaria: { tam: [18, 18, 10], w: 12, d: 12, h: 7, cor: '#f3d9a4', faixa: '#8a4a1f', piso: '#b98b5e', letreiro: { texto: 'PADARIA', fundo: '#8a4a1f', cor: '#ffe9b0' }, porta: { x: -3, w: 2.6, vidro: true }, vitrines: [{ x: 2.6, w: 5 }],
-    interior(gi) { por(gi, 'estufa_paes', { largura: 6 }, [-1.5, 0.2, -7]); por(gi, 'balcao', { largura: 3.5, cor: '#8a4a1f' }, [3.8, 0.2, -7]); por(gi, 'caixa_registradora', {}, [3.8, 3.4, -7], 180);
-      por(gi, 'prateleira', { largura: 10, altura: 6, cores: ['#d9a25a', '#b87a35', '#f2d6a0', '#8a4a1f'] }, [0, 0.2, -11]);
-      por(gi, 'mesa', { largura: 2.6, cor: '#f2f3f3' }, [3.5, 0.2, -2.6], 0); por(gi, 'cadeira_plastico', {}, [1.3, 0.2, -2.6], 90);
-      por(gi, 'geladeira_vitrine', { largura: 3 }, [-5.0, 0.2, -2.6], 90); por(gi, 'mural', { texto: 'CAFÉ R$ 3 · PÃO R$ 0,80', largura: 3.6, altura: 1.8, cor: '#3a2a1a', cor_texto: '#ffe9b0' }, [-5.75, 4.6, -5.6], 90);
-      por(gi, 'pilha_caixas', { n: 3, cor: '#efe6d0', seed: 7 }, [-4.8, 0.2, -9.8]); por(gi, 'fogao', {}, [-2, 0.2, -9.6], 180); por(gi, 'relogio_parede', {}, [5.75, 5.6, -9], -90);
-      por(gi, 'ventilador_teto', {}, [2.5, 7.2, -3.5]); por(gi, 'lixeira', { cor: '#8a4a1f' }, [5.3, 0.2, -1.0], 0, 0.7); por(gi, 'planta', {}, [-5.2, 0.2, -0.9]);
-      por(gi, 'placa_suspensa', { texto: 'PÃES', cor: '#8a4a1f', cor_texto: '#ffe9b0', largura: 2 }, [-1.5, 5.6, -7]);
-      return { atender: [3.8, 0.2, -8.7, 0], fila: { inicio: [3.8, -5.2], vira: 180, cresce: [-0.6, 1] }, sentar: [1.3, 0.2, -2.6, 90] }; } },
+  loterica: { w: 16, d: 16, h: 9.5, cor: '#1d4fa0', faixa: '#f39c12', piso: '#cfd6e4', letreiro: { texto: 'LOTÉRICA', fundo: '#f5b800', cor: '#1d3b72' }, porta: { x: 0, w: 2.8, vidro: true }, vitrines: [{ x: -5, w: 3.4 }, { x: 5, w: 3.4 }],
+    interior(gi) {   // 3 guichês no fundo e fila em "L" com cordão (cabe 6 pessoas sem bloquear a porta)
+      for (const [i, x] of [-4.8, 0, 4.8].entries()) por(gi, 'guiche', { largura: 4.6, cor: '#1d4fa0', numero: i + 1 }, [x, 0.2, -11.5]);
+      const m = PROPS.mural({ texto: 'PRÊMIO R$ 50 MI', largura: 6, altura: 1.8, cor: '#1d3b72', cor_texto: '#ffd23f' }); m.position.set(0, 7.6, -15.6); gi.add(m);
+      por(gi, 'placa_suspensa', { texto: 'PRÓXIMO: 027', cor: '#111', cor_texto: '#ff4f4f', largura: 3 }, [0, 7.6, -9.5]);
+      por(gi, 'fila_cordao', { n: 3 }, [-6.8, 0.2, -4.4]); por(gi, 'fila_cordao', { n: 1 }, [-1.4, 0.2, -8.2], 90);
+      for (const [t, c, z] of [['MEGA', '#16a05d', -3.5], ['QUINA', '#8e24aa', -7], ['LOTOFÁCIL', '#e0207a', -10.5]]) por(gi, 'poster', { texto: t, cor: c, cor_texto: '#ffffff' }, [-7.55, 5.2, z], 90, 0.6);
+      por(gi, 'balcao', { largura: 4, cor: '#f5b800', tampo: '#f2f3f3' }, [6.9, 0.2, -6.0], -90); por(gi, 'cadeiras_espera', { n: 2, cor: '#f5b800' }, [4.6, 0.2, -1.6], 180);
+      por(gi, 'arquivo', {}, [-6.4, 0.2, -14.6]); por(gi, 'cofre', {}, [6.2, 0.2, -14.6]); por(gi, 'pilha_caixas', { n: 2, seed: 2 }, [3.0, 0.2, -14.8]);
+      por(gi, 'relogio_parede', {}, [7.55, 6.4, -10], -90); por(gi, 'ventilador_teto', {}, [-4, 9.5, -5]); por(gi, 'ventilador_teto', {}, [4, 9.5, -5]);
+      por(gi, 'lixeira', { cor: '#1d4fa0' }, [7.2, 0.2, -1.0], 0, 0.7); por(gi, 'tapete', { largura: 2.8, prof: 1.4, cor: '#1d3b72' }, [0, 0.2, -1.1]); por(gi, 'extintor', {}, [-7.5, 0.2, -0.8], 90);
+      return { atender: [0, 0.2, -12.9, 0], fila: { inicio: [0, -9.0], vira: 180, cresce: [0, 1], caminho: [[0, -6.2], [-6.2, -6.2], [-6.2, -1.6]] } }; } },
+  padaria: { w: 18, d: 18, h: 10, cor: '#f3d9a4', faixa: '#8a4a1f', piso: '#b98b5e', letreiro: { texto: 'PADARIA', fundo: '#8a4a1f', cor: '#ffe9b0' }, porta: { x: -4, w: 2.6, vidro: true }, vitrines: [{ x: 4, w: 7 }],
+    interior(gi) {   // balcão em linha (doces · estufa de pães · caixa), prateleiras de pão ao fundo, forno, mesinhas para o café
+      por(gi, 'vitrine_doces', { largura: 4 }, [-7, 0.2, -11]); por(gi, 'estufa_paes', { largura: 6 }, [-2, 0.2, -11]); por(gi, 'balcao', { largura: 4, cor: '#8a4a1f' }, [4.5, 0.2, -11]);
+      por(gi, 'caixa_registradora', {}, [5.4, 3.4, -11], 180); por(gi, 'cafeteira', {}, [3.2, 3.2, -11.2]); por(gi, 'cesto_paes', {}, [4.6, 3.2, -10.7], 0, 0.7);
+      por(gi, 'prateleira_paes', { largura: 12 }, [-1, 0.2, -16.6]); por(gi, 'forno_padaria', {}, [7.0, 0.2, -16.2]); por(gi, 'pilha_caixas', { n: 3, cor: '#efe6d0', seed: 7 }, [-8, 0.2, -15.6]);
+      por(gi, 'placa_suspensa', { texto: 'PÃO QUENTINHO', cor: '#8a4a1f', cor_texto: '#ffe9b0', largura: 4 }, [-2, 8.2, -11]);
+      por(gi, 'mural', { texto: 'CAFÉ R$ 3 · PÃO R$ 0,80', largura: 4.4, altura: 2, cor: '#3a2a1a', cor_texto: '#ffe9b0' }, [8.75, 5.4, -8], -90);
+      por(gi, 'geladeira_vitrine', { largura: 3 }, [-8.0, 0.2, -5.0], 90); por(gi, 'mesa', { largura: 2.6, cor: '#8a5a33' }, [-7.6, 0.2, -8.6], 90); for (const z of [-9.2, -8.0]) por(gi, 'cesto_paes', {}, [-7.6, 2.45, z], 0, 0.8);
+      for (const z of [-3.4, -7.0]) { por(gi, 'mesa', { largura: 2.6, cor: '#f2f3f3' }, [5, 0.2, z]); por(gi, 'cadeira_plastico', {}, [2.9, 0.2, z], 90); por(gi, 'cadeira_plastico', {}, [7.1, 0.2, z], -90); }
+      por(gi, 'relogio_parede', {}, [8.75, 7.6, -13], -90); por(gi, 'ventilador_teto', {}, [-3, 10, -5]); por(gi, 'ventilador_teto', {}, [4, 10, -5]);
+      por(gi, 'lixeira', { cor: '#8a4a1f' }, [8.2, 0.2, -1.0], 0, 0.7); por(gi, 'planta', {}, [-8.2, 0.2, -1.0]); por(gi, 'tapete', { largura: 2.6, prof: 1.4, cor: '#5a3a22' }, [-4, 0.2, -1.1]);
+      return { atender: [4.5, 0.2, -12.7, 0], fila: { inicio: [4.5, -9.2], vira: 180, cresce: [-0.3, 1] }, sentar: [2.9, 0.2, -3.4, 90] }; } },
   mercado: { tam: [26, 24, 11], w: 16, d: 16, h: 7.5, cor: '#f2f3f3', faixa: '#c4281c', piso: '#dfe2e6', letreiro: { texto: 'MERCADO', fundo: '#c4281c' }, porta: { x: -5, w: 3.2, vidro: true }, vitrines: [{ x: 2.5, w: 8 }],
     janelas: { esq: [-8] },
     interior(gi) { for (const x of [-3.5, 3.5]) por(gi, 'gondola', { largura: 8, seed: x }, [x, 0.2, -10], 90);
@@ -466,7 +473,9 @@ export function enquadrarMundo(g, { local, dentro, comodo }) {
   const ancoras = {};
   if (lote) for (const [k, v] of Object.entries(ancLocal)) {
     if (k === 'fila') { const [ix, iz] = rot(v.inicio[0], v.inicio[1], lote.rot * RAD); const [mx, mz] = [lote.f[0] + ix - S[0], lote.f[1] + iz - S[1]]; const [fx, fz] = rot(mx, mz, th);
-      const [cx, cz] = rot(...rot(v.cresce[0], v.cresce[1], lote.rot * RAD), th); ancoras.fila = { inicio: [fx, fz], vira: v.vira + lote.rot - r, cresce: [cx, cz] }; continue; }
+      const [cx, cz] = rot(...rot(v.cresce[0], v.cresce[1], lote.rot * RAD), th);
+      const pt = (p) => { const [px, pz] = rot(p[0], p[1], lote.rot * RAD); return rot(lote.f[0] + px - S[0], lote.f[1] + pz - S[1], th); };
+      ancoras.fila = { inicio: [fx, fz], vira: v.vira + lote.rot - r, cresce: [cx, cz], caminho: v.caminho?.map(pt) }; continue; }
     const um = (p) => { const [ax, az] = rot(p[0], p[2], lote.rot * RAD); const [fx, fz] = rot(lote.f[0] + ax - S[0], lote.f[1] + az - S[1], th);
       return [fx, (p[1] ?? 0) + 0.2 - chao, fz, (p[3] ?? 0) + lote.rot - r]; };
     ancoras[k] = Array.isArray(v[0]) ? v.map(um) : um(v);
