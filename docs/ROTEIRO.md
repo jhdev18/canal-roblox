@@ -242,6 +242,7 @@ casa_br / sobrado (`cor`, `telhado`, `grade: false`, `caixa_dagua: false`), muro
 
 ## Música
 
+Sem música (para pôr um som em alta pelo app do YouTube, em Shorts de até 1 min): `--sem-musica` no comando, ou `--duas-versoes` para sair com e sem música. Música famosa/comercial (ex.: lançamentos do DistroKid) **não** vai embutida no vídeo — só pelo app.
 Automática: escolhe uma faixa de `assets/musicas/<clima>/` (suas faixas antes das `original_*`), em rodízio entre vídeos, pulando a introdução e com ducking. `clima:` força o clima; `musica: nenhuma` desliga.
 
 ## Dicas de estilo (o que funciona nesse formato)

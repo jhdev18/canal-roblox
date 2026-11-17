@@ -46,6 +46,8 @@ Todo vídeo é feito em **duas etapas**, para não gastar créditos do ElevenLab
 |---|---|
 | `node gerar.mjs <roteiro> --preview` | abre uma prévia ao vivo no navegador (com voz e legenda), sem renderizar |
 | `node gerar.mjs <roteiro> --final --sim` | versão final sem perguntar (confirma o gasto direto) |
+| `node gerar.mjs <roteiro> --final --sem-musica` | versão final só com narração e efeitos (`_sem_musica.mp4`), para pôr a música pelo app do YouTube |
+| `node gerar.mjs <roteiro> --final --duas-versoes` | gera as duas de uma vez: com música e `_sem_musica.mp4` (renderiza as cenas uma vez só) |
 | `node gerar.mjs <roteiro> --final --forcar` | pula a exigência de rascunho (não recomendado) |
 | `node gerar.mjs <roteiro> --cenas 3-5` | só essas cenas (`saida/<nome>_parcial.mp4`) |
 | `node gerar.mjs --vozes` | lista as vozes da sua conta ElevenLabs |

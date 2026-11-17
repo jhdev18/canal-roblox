@@ -6,6 +6,7 @@
 //   node gerar.mjs --catalogo                        -> lista todos os assets disponíveis
 //   node gerar.mjs --vozes  /  --musicas            -> lista vozes do ElevenLabs / músicas disponíveis
 // Opções: --rapido (540x960, sem AO) · --cenas 2-4 · --voz piper|espeak|nenhum · --gpu nao · --encoder h264_nvenc · --fps 24
+//          --sem-musica (só narração + efeitos) · --duas-versoes (gera com e sem música de uma vez)
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
@@ -136,10 +137,19 @@ async function principal() {
   for (const c of cenas) { for (const w of c.palavras) palavras.push({ ...w, ini: w.ini + t, fim: w.fim + t }); t += c.dur; }
   fs.writeFileSync(path.join(trabalho, 'legendas.ass'), gerarASS(palavras, cfg.render, { ...cfg.legenda, palavras_destaque: rot.destaque }));
   const pasta = garantirDir(p(cfg.saida?.pasta || 'saida'));
-  const saida = path.join(pasta, `${nome}${a.cenas ? '_parcial' : ''}${rascunho ? '_rascunho' : a.rapido ? '_rapido' : ''}.mp4`);
-  const musica = await escolherMusica(rot, nome, cfg);
-  log(musica ? `música: ${path.relative(p(), musica.arquivo)} (clima ${musica.clima}${musica.inicio ? `, começa em ${musica.inicio.toFixed(1)} s` : ''})` : 'música: nenhuma');
-  const total = await montarVideo({ cenas: cenas.map(c => ({ clipe: c.clipe, audio: c.audioArq, dur: c.dur, som: c.som })), trabalho, saida, musica, cfg });
+  const base = `${nome}${a.cenas ? '_parcial' : ''}${rascunho ? '_rascunho' : a.rapido ? '_rapido' : ''}`;
+  // --sem-musica: só narração + efeitos (para pôr a música pelo app do YouTube) · --duas-versoes: gera com e sem música (as cenas são renderizadas uma vez só)
+  const versoes = a['duas-versoes'] ? [true, false] : [!a['sem-musica']];
+  const musicaEscolhida = versoes.includes(true) ? await escolherMusica(rot, nome, cfg) : null;
+  const pecas = cenas.map(c => ({ clipe: c.clipe, audio: c.audioArq, dur: c.dur, som: c.som }));
+  let total = 0, saida = '';
+  for (const comMusica of versoes) {
+    const musica = comMusica ? musicaEscolhida : null;
+    saida = path.join(pasta, `${base}${comMusica ? '' : '_sem_musica'}.mp4`);
+    log(musica ? `música: ${path.relative(p(), musica.arquivo)} (clima ${musica.clima}${musica.inicio ? `, começa em ${musica.inicio.toFixed(1)} s` : ''})` : 'música: nenhuma (só narração e efeitos)');
+    total = await montarVideo({ cenas: pecas, trabalho, saida, musica, cfg });
+    if (versoes.length > 1) log(`pronto: ${path.relative(p(), saida)} (${fmt(total)})`);
+  }
   if (gastoElevenLabs()) log(`ElevenLabs: ${gastoElevenLabs()} caracteres usados nesta execução (falas repetidas vêm do cache)`);
   log(`pronto: ${path.relative(p(), saida)} (${fmt(total)})`);
   if (rascunho && !a.cenas) {

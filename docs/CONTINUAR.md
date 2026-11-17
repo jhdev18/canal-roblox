@@ -39,6 +39,10 @@ Quando o usuário mandar o retorno do rascunho, ajuste **só** as cenas citadas.
 - Multidão `modo: natural` (sozinhos, conversas soltas, quem passa, quem senta).
 - Personagens especiais: `fantasma: true`, `reflexo: true`. Ações novas: `bocejar`, `cochilar`, `nadar`.
 
+## Música
+- Trilha embutida só com faixas livres (originais CC0 em `assets/musicas/`, Biblioteca de áudio do YouTube, Pixabay, NCS). Lançamentos comerciais (ex.: "pickled chicken", DistroKid, ℗ bigfrozenballs) **não** entram no vídeo: o usuário adiciona pelo editor de Shorts do app, e só em Shorts de até 1 min.
+- `--sem-musica` gera `_sem_musica.mp4`; `--duas-versoes` gera os dois.
+
 ## Pendências
 1. **Músicas:** o usuário vai escolher faixas. Colocar em `assets/musicas/<clima>/` e registrar origem/licença em `assets/musicas/LICENCA.md`.
 2. **Escola, hospital e delegacia com vários cômodos** (corredor, salas, cantina, enfermaria…). Atenção: as tentativas anteriores foram cortadas pelo filtro de segurança várias vezes; fazer em passos pequenos, começando pela escola (só paredes internas), e deixar a delegacia por último ou pular.
