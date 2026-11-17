@@ -288,6 +288,11 @@ function casaProtagonista(ctx) {
   } else {
     por(g, 'cama', { cor: '#1e88e5' }, [-11.1, 0.2, -16.3]); por(g, 'mesa', { largura: 3.6, cor: '#f2f3f3' }, [-5.0, 0.2, -14], -90); por(g, 'computador', {}, [-4.8, 0.2, -14], -90);
     por(g, 'cadeira_gamer', {}, [-7.0, 0.2, -14], 90); por(g, 'guarda_roupa', { largura: 3.6 }, [-12.2, 0.2, -11.6], 90);
+    // detalhes: criado-mudo com abajur, estante, prateleira de troféus, tapete, bola, skate, mochila, console na mesa
+    por(g, 'criado_mudo', { cor: '#5a7fb0' }, [-8.9, 0.2, -19.1]); por(g, 'abajur', {}, [-8.9, 2.0, -19.1]);
+    por(g, 'estante', {}, [-5.2, 0.2, -19.3], 0, 0.55); por(g, 'prateleira_parede', {}, [-4.25, 6.0, -15.6], -90);
+    por(g, 'tapete', { cor: '#2e5fa8', cor2: '#4f7fd1', largura: 4, prof: 3 }, [-8.3, 0.2, -13.6]); por(g, 'bola', {}, [-9.6, 0.2, -12.0]);
+    por(g, 'skate', {}, [-5.4, 0.2, -11.2], 70); por(g, 'mochila', {}, [-12.2, 0.2, -14.3], 90); por(g, 'console_game', {}, [-4.9, 2.95, -12.9], -90);
   }
   for (const [t, c, x] of menina ? [['estrela', '#7e57c2', -10], ['coracao', '#fce4ec', -6.8]] : [['controle', '#6b32a8', -10], ['bola', '#1f9d48', -6.8]]) {
     const p = PROPS.poster({ icone: t, cor: c }); p.userData.movel = true; p.userData.tipo = 'poster'; p.position.set(x, 5.6, -19.55); p.scale.setScalar(0.9); g.add(p); }

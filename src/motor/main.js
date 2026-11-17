@@ -332,7 +332,7 @@ async function preview() {
 /** Posição na tela (pixels) de pontos do mundo [[x,y,z],...] — usado para escrever nomes no mapa. */
 function projetar(pts) { posar(0); cam.updateMatrixWorld(); return pts.map(p => { const v = new THREE.Vector3(...p).project(cam); return [(v.x + 1) / 2 * cfg.largura, (1 - v.y) / 2 * cfg.altura]; }); }
 /** Conferência do cenário montado: construções que se sobrepõem, objetos dentro de construções e construções baixas demais para o personagem (5,2). */
-const PAR_OK = [[/^mesa/, /cadeira|computador|banqueta/], [/carrinho/, /carrinho/], [/altar/, /vaso/], [/balcao|estufa/, /caixa_registradora|cafeteira|cesto|balanca/]];   // encaixes de propósito
+const PAR_OK = [[/^mesa/, /cadeira|computador|banqueta/], [/carrinho/, /carrinho/], [/altar/, /vaso/], [/balcao|estufa/, /caixa_registradora|cafeteira|cesto|balanca/], [/criado_mudo|mesa/, /abajur|console/]];   // encaixes de propósito
 function conferir() {
   const CONSTR = /^(casa_br|sobrado|casa|loja|predio|posto_gasolina|banca_jornal|barraca|ponto_onibus|lote:|casa_prot)/, OBJ = /^(arvore|poste|poste_fios|carro|taxi|onibus|banco|lixeira|bicicletario|placa_rua|orelhao)$/;
   const itens = []; cena.updateMatrixWorld(true);

@@ -72,6 +72,21 @@ export const MOVEIS_CASA = {
   luminaria: () => grupo([cilindro(0.5, 0.5, 0.1, '#333', { pos: [0, 0.05, 0] }), cilindro(0.06, 0.06, 5, '#333', { pos: [0, 2.5, 0] }),
     cilindro(0.5, 0.9, 1.0, mat('#fff3d6', { emissive: '#ffd27a', emissiveIntensity: 0.7 }), { pos: [0, 5.2, 0], sombra: false })]),
   poster: (o = {}) => { if (o.icone) return posterIcone(o); const p = placaTexto(o.texto || 'GAMER', 2.4, 3.2, { fundo: o.cor || '#6b32a8', corTexto: o.cor_texto || '#ffd23f' }); return grupo([p]); },
+  // quarto de menino (detalhes)
+  abajur: (o = {}) => grupo([cilindro(0.35, 0.4, 0.15, '#333', { pos: [0, 0.08, 0], seg: 12 }), cilindro(0.06, 0.06, 0.9, '#333', { pos: [0, 0.6, 0], seg: 6 }),
+    cilindro(0.3, 0.55, 0.6, mat(o.cor || '#fff3d6', { emissive: '#ffe2a0', emissiveIntensity: 0.35 }), { pos: [0, 1.25, 0], seg: 14 })]),
+  mochila: (o = {}) => { const c = o.cor || '#e53935'; return grupo([caixa(1.3, 1.6, 0.7, c, { pos: [0, 0.8, 0], round: 0.25 }), caixa(1.0, 0.7, 0.3, '#ffd23f', { pos: [0, 0.6, 0.45], round: 0.12 }),
+    caixa(0.9, 0.08, 0.05, '#222', { pos: [0, 0.98, 0.62] }), caixa(0.5, 0.2, 0.2, '#222', { pos: [0, 1.65, -0.1], round: 0.08 })]); },
+  skate: (o = {}) => { const g = grupo([caixa(0.85, 0.08, 2.6, o.cor || '#1e88e5', { pos: [0, 0.32, 0], round: 0.04 }), caixa(0.83, 0.02, 2.5, '#1b1b1b', { pos: [0, 0.37, 0] })]);
+    for (const z of [-0.9, 0.9]) for (const x of [-0.3, 0.3]) g.add(cilindro(0.13, 0.13, 0.12, '#f2f3f3', { pos: [x, 0.13, z], rot: [0, 0, 90], seg: 10 })); return g; },
+  trofeu: (o = {}) => { const ouro = mat(o.cor || '#e8c25a', { metal: 0.7, rough: 0.3 }); return grupo([caixa(0.6, 0.25, 0.6, '#3a2a1a', { pos: [0, 0.12, 0] }), cilindro(0.06, 0.1, 0.35, ouro, { pos: [0, 0.42, 0], seg: 8 }),
+    cilindro(0.3, 0.12, 0.45, ouro, { pos: [0, 0.82, 0], seg: 12 })]); },
+  prateleira_parede: (o = {}) => { const w = o.largura || 3.6, g = grupo([caixa(w, 0.15, 0.8, '#f2f3f3', { pos: [0, 0, 0] })]);   // pendurada (pos = tábua): troféus, bola e carrinho
+    const t = MOVEIS_CASA.trofeu(); t.position.set(-w / 2 + 0.6, 0.08, 0); g.add(t); const t2 = MOVEIS_CASA.trofeu({ cor: '#c0c4cc' }); t2.position.set(-w / 2 + 1.4, 0.08, 0); t2.scale.setScalar(0.8); g.add(t2);
+    g.add(esfera(0.32, '#ffffff', { pos: [0.3, 0.4, 0] })); g.add(caixa(0.9, 0.35, 0.5, '#e53935', { pos: [w / 2 - 0.7, 0.26, 0], round: 0.1 }));
+    for (const x of [w / 2 - 1.0, w / 2 - 0.4]) g.add(cilindro(0.12, 0.12, 0.55, '#1b1b1b', { pos: [x, 0.12, 0], rot: [90, 0, 0], seg: 10 })); return g; },
+  console_game: () => grupo([caixa(1.3, 0.3, 1.0, '#1b1b1b', { pos: [0, 0.15, 0], round: 0.06 }), caixa(0.2, 0.04, 0.02, '#1e88e5', { pos: [0.4, 0.2, 0.51] }),
+    caixa(0.7, 0.18, 0.35, '#2b2d33', { pos: [-0.2, 0.39, 0.15], round: 0.08 })]),
   // quarto de menina
   penteadeira: (o = {}) => { const c = o.cor || '#f7f2fa', g = grupo([caixa(3.2, 0.25, 1.6, c, { pos: [0, 2.6, 0] }), caixa(3.2, 1.2, 1.5, c, { pos: [0, 1.9, 0] })]);
     for (const x of [-1.45, 1.45]) g.add(caixa(0.25, 1.4, 1.4, c, { pos: [x, 0.7, 0] }));
