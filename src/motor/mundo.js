@@ -54,7 +54,12 @@ function predioOco(o, ctx) {
   const fu = parede(w, h, o.cor, (o.janelas?.fundo || []).map(x => ({ x, w: 2.4, y0: 2.4, y1: 4.6, vidro: true })), n); fu.position.set(0, 0, -d + 0.2); g.add(unidade(fu, unidades));
   for (const [s, k] of [[-1, 'esq'], [1, 'dir']]) { const la = parede(d, h, o.cor, (o.janelas?.[k] || []).map(z => ({ x: s < 0 ? z + d / 2 : -(z + d / 2), w: 2.4, y0: 2.4, y1: 4.6, vidro: true })), n);
     la.rotation.y = Math.PI / 2; la.position.set(s * (w / 2 - 0.2), 0, -d / 2); g.add(unidade(la, unidades)); }
-  const teto = grupo([caixa(w, 0.3, d, '#d8d8d8', { pos: [0, h + 0.15, -d / 2] }), caixa(w - 0.6, 0.05, d - 0.6, '#8f939c', { pos: [0, h + 0.33, -d / 2] })]);
+  const teto = grupo([caixa(w, 0.3, d, '#d8d8d8', { pos: [0, h + 0.15, -d / 2] })]);
+  if (o.telhado) { const inc = 30 * RAD, lado = (w / 2 + 0.6) / Math.cos(inc);                                                      // duas águas (ex.: igreja)
+    for (const sx of [-1, 1]) teto.add(caixa(lado, 0.4, d + 0.8, o.telhado, { pos: [sx * (w / 4 + 0.15), h + 0.3 + Math.tan(inc) * w / 4, -d / 2], rot: [0, 0, -sx * 30] }));
+    const sh = new THREE.Shape([new THREE.Vector2(-w / 2, 0), new THREE.Vector2(w / 2, 0), new THREE.Vector2(0, Math.tan(inc) * w / 2)]);
+    for (const z of [0, -d + 0.3]) { const fr = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.3, bevelEnabled: false }), mat(o.cor)); fr.position.set(0, h + 0.3, z - 0.3); fr.castShadow = true; teto.add(fr); } }
+  else teto.add(caixa(w - 0.6, 0.05, d - 0.6, '#8f939c', { pos: [0, h + 0.33, -d / 2] }));
   g.add(unidade(teto, unidades));
   const gi = new THREE.Group(); g.add(gi); g.userData.ancoras = o.interior?.(gi, { w, d, h, n }) || {};
   if (foco) luzInterna(gi, 0, -d / 2, h, n, o.luz || 1);
@@ -97,7 +102,7 @@ const PREDIOS_MUNDO = {
       por(gi, 'mesa_escritorio', {}, [6, 0.2, -10.2], 180); por(gi, 'poltrona', {}, [6, 0.2, -12.6], 0, 0.9); por(gi, 'bandeira', {}, [2.5, 0.2, -12.8], 0, 0.6); por(gi, 'bandeira', { cores: ['#fff', '#c4281c', '#fff'] }, [9.5, 0.2, -12.8], 0, 0.6);
       por(gi, 'cadeiras_espera', { n: 3, cor: '#7b1f2b' }, [-8.5, 0.2, -2.5], 90);
       return { atender: [-5, 0.2, -7.7, 0], sentar: [6, 0.2, -12.3, 0], assinar: [6, 0.2, -12.0, 0], discursar: [0, 0.2, 2.5, 0] }; } },
-  igreja: { w: 14, d: 26, h: 11, cor: '#f6f2e6', piso: '#b5895a', porta: { x: 0, w: 3.4, cor: '#6b4426' }, janelas: { esq: [-6, -12, -18], dir: [-6, -12, -18] },
+  igreja: { w: 14, d: 26, h: 11, cor: '#f6f2e6', piso: '#b5895a', telhado: '#b5533a', porta: { x: 0, w: 3.4, cor: '#6b4426' }, janelas: { esq: [-6, -12, -18], dir: [-6, -12, -18] },
     interior(gi, { d }) { gi.add(caixa(3, 0.05, d - 2, '#7b1f2b', { pos: [0, 0.23, -d / 2], sombra: false }));
       for (let z = -18; z <= -4; z += 3) for (const s of [-1, 1]) por(gi, 'banco_igreja', { largura: 4.4 }, [s * 3.6, 0.2, z]);
       por(gi, 'altar', {}, [0, 0.2, -23], 0, 0.8); const cr = PROPS.cruz_parede({ cor: '#c9a24a' }); cr.position.set(0, 7.5, -25.6); gi.add(cr);
@@ -173,7 +178,7 @@ export const LOTES_MUNDO = [
 ];
 const CASA_LOTE = { id: 'casa', f: [78, -12], rot: 0 };
 const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { f: [0, 6.5], rot: 0, recuo: 2.5, chao: 0.45 }, fonte: { f: [0, -10], rot: 180, recuo: -5, chao: 0.45 },
-  parquinho: { f: [13, 13], rot: 0, recuo: 0, chao: 0.45 }, estatua: { f: [-12, 0], rot: -90, recuo: -4, chao: 0.45 }, rua_bairro: { f: [92, 0], rot: 0, recuo: 0, chao: 0.1 },
+  parquinho: { f: [13, 13], rot: 0, recuo: 0, chao: 0.45 }, estatua: { f: [-12, 0], rot: -90, recuo: -4, chao: 0.45 }, rua_bairro: { f: [92, 0], rot: 90, recuo: 0, chao: 0.1 },
   posto_gasolina: { f: [52, 9], rot: 180, recuo: 3, chao: 0.2 } };
 /** Centro de cada lugar no mapa (para desenhar a planta com nomes). */
 export function centrosMundo() {
@@ -224,13 +229,15 @@ export function construirMundo(o, g, r) {
   const casa = casaProtagonista({ ...ctx, foco: focoId === 'casa', comodo: o.comodo }); casa.position.set(CASA_LOTE.f[0], 0.2, CASA_LOTE.f[1]); casa.userData.lote = CASA_LOTE; g.add(casa);
   por(g, 'muro', { largura: 30, cor: '#e9e6dc', portao_x: -6, portao_cor: '#1d3b72' }, [CASA_LOTE.f[0], 0.2, -5.6]); por(g, 'carro', { cor: '#c4281c' }, [CASA_LOTE.f[0] + 7, 0.2, -8.6], 90, 0.9);
   const cores = ['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a'];
+  const LOJAS_BAIRRO = [[108, 1], [134, -1], [160, 1]];   // [x, lado] ocupados por mercadinho, oficina e borracharia
   for (let x = 48; x <= 210; x += 13) for (const lado of [-1, 1]) { if (lado < 0 && Math.abs(x - CASA_LOTE.f[0]) < 18) continue; if (lado > 0 && x < 60) continue;
+    if (LOJAS_BAIRRO.some(([lx, ll]) => ll === lado && Math.abs(lx - x) < 11)) continue;
     por(g, r() < 0.3 ? 'sobrado' : 'casa_br', { cor: r.item(cores), noite: n, largura: 9 }, [x, 0, lado * 13], lado > 0 ? 180 : 0);
     por(g, 'muro', { largura: 12, cor: '#e9e6dc', portao_x: r.entre(-2, 2) }, [x, 0, lado * 8.1], lado > 0 ? 180 : 0); }
   for (let x = 46; x <= 200; x += 16) por(g, 'poste_fios', { noite: n }, [x, 0, -5.6]);
   por(g, 'posto_gasolina', { noite: n }, [52, 0.2, 9], 180);
   for (const [x, z, v, c] of [[-31, 16, 0, '#1d3b72'], [31, 12, 180, '#f2f3f3'], [10, 31, 90, '#f5c400']]) por(g, c === '#f5c400' ? 'taxi' : 'carro', { cor: c }, [x, 0.2, z], v);
-  for (const z of [-1, 1]) for (let x = -70; x <= 70; x += 12) por(g, r() < 0.3 ? 'sobrado' : 'casa_br', { cor: r.item(cores), noite: n, largura: 8 }, [x, 0, z * 68], z > 0 ? 180 : 0);
+  for (const z of [-1, 1]) for (let x = -70; x <= 70; x += 12) if (!(z < 0 && x > -12 && x < 20)) por(g, r() < 0.3 ? 'sobrado' : 'casa_br', { cor: r.item(cores), noite: n, largura: 8 }, [x, 0, z * 68], z > 0 ? 180 : 0);
   povoar(g, n, r);
   g.add(caixa(500, 16, 80, '#3fae3a', { pos: [0, 0, -170] }));
   g.userData.unidades = unidades; g.userData.portas = portas;
@@ -289,7 +296,7 @@ function povoar(g, n, r) {
   loja(g, 108, 8.1, 180, 'MERCADINHO', '#43a047', 9, n); marca('Mercadinho', 108, 12);
   loja(g, 134, -8.1, 0, 'OFICINA', '#3a3d44', 11, n, '#cfd3da'); por(g, 'carro', { cor: '#1d3b72' }, [134, 0.2, -8.6], 90, 0.9); marca('Oficina', 134, -12);
   loja(g, 160, 8.1, 180, 'BORRACHARIA', '#f5b800', 8, n); for (let i = 0; i < 3; i++) g.add(cilindro(0.9, 0.9, 0.6, '#1b1b1b', { pos: [163.5, 0.5 + i * 0.62, 7.4], seg: 14 })); marca('Borracharia', 160, 12);
-  for (let x = 52; x <= 206; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x + 6, 0, lado * 32], lado > 0 ? 0 : 180);
+  for (let x = 52; x <= 206; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x + 6, 0, lado * 32], lado > 0 ? 180 : 0);
   for (const lado of [-1, 1]) g.add(caixa(170, 0.2, 7, '#4f5361', { pos: [130, 0.11, lado * 22] }));   // ruas paralelas do bairro
   quadra(g, 120, 48); marca('Quadra', 120, 48);
   for (let i = 0; i < 10; i++) por(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(55, 200), 0, r.item([-1, 1]) * r.entre(40, 60)]);

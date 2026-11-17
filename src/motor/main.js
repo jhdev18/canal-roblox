@@ -198,7 +198,7 @@ function portasECortes() {
  * Testa alguns instantes da cena e vários pontos de cada ator. Chão, ruas e paredes de salas (objetos enormes) nunca são escondidos.
  */
 function liberarVisao() {
-  const alvos = atual.atores.filter(a => !a.figurante); if (!alvos.length || atual.cen.cameraFixa || atual.c.liberar_visao === false) return;
+  const alvos = atual.atores.filter(a => !a.figurante); if (atual.cen.cameraFixa || atual.c.liberar_visao === false) return;
   const raizCen = atual.cen.grupo, rc = new THREE.Raycaster(), caixa = new THREE.Box3(), tam = new THREE.Vector3(), escondidos = new Set();
   const topo = (o) => { while (o.parent && o.parent !== raizCen) o = o.parent; return o.parent === raizCen ? o : null; };
   for (const t of [0, atual.dur * 0.5, atual.dur]) {

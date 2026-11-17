@@ -27,7 +27,9 @@ export const PROPS = {
     for (const x of [w / 5, w / 2.6]) g.add(caixa(1.8, 1.8, 0.15, janelaMat(n), { pos: [x, h * 0.55, d / 2 + 0.05] }));
     g.add(caixa(1.8, 1.8, 0.15, janelaMat(n), { pos: [-w / 4, h * 0.78, d / 2 + 0.05] })); return g; },
   predio: (o = {}) => { const w = o.largura || 10, h = o.altura || 22, n = o.noite; const g = grupo([caixa(w, h, 8, o.cor || '#9fb3c8', { pos: [0, h / 2, 0] })]);
-    for (let y = 3; y < h - 1; y += 3.2) for (let x = -w / 2 + 1.6; x < w / 2 - 1; x += 2.4) g.add(caixa(1.4, 1.8, 0.1, janelaMat(n && ((x * 7 + y) % 3 > 1)), { pos: [x, y, 4.05], sombra: false }));
+    for (let y = 3; y < h - 1; y += 3.2) for (let x = -w / 2 + 1.6; x < w / 2 - 1; x += 2.4) for (const zz of [4.05, -4.05]) g.add(caixa(1.4, 1.8, 0.1, janelaMat(n && ((x * 7 + y + zz) % 3 > 1)), { pos: [x, y, zz], sombra: false }));
+    for (let y = 3; y < h - 1; y += 3.2) for (const zz of [-1.6, 1.6]) for (const sx of [-1, 1]) g.add(caixa(0.1, 1.8, 1.4, janelaMat(n && ((zz * 5 + y) % 3 > 1)), { pos: [sx * (w / 2 + 0.05), y, zz], sombra: false }));
+    g.add(caixa(w - 0.4, 0.2, 7.6, '#8f939c', { pos: [0, h + 0.1, 0] }));
     return g; },
   poste: (o = {}) => { const g = grupo([cilindro(0.15, 0.2, 9, '#5a5d66', { pos: [0, 4.5, 0] }), caixa(2.2, 0.2, 0.2, '#5a5d66', { pos: [0.9, 8.9, 0] }),
     caixa(0.7, 0.25, 0.5, '#eee', { pos: [1.8, 8.75, 0], mat: o.noite ? { emissive: '#ffe2a0', emissiveIntensity: 2 } : {} })]);
@@ -83,7 +85,12 @@ export const PROPS = {
     caixa(w - 2, 3.4, 0.2, mat(n ? '#ffe3a3' : '#bfe6ff', { emissive: n ? '#ffd27a' : '#bfe6ff', emissiveIntensity: n ? 1.1 : 0.35, rough: 0.1 }), { pos: [0, 2.2, 3.02] }),
     caixa(w, 0.4, 2.2, c, { pos: [0, 4.4, 4.0], rot: [-18, 0, 0] })]);
     for (let i = 0; i < Math.floor(w / 1.5); i++) g.add(caixa(0.75, 0.42, 2.25, '#ffffff', { pos: [-w / 2 + 0.375 + i * 1.5, 4.41, 4.01], rot: [-18, 0, 0], sombra: false }));
-    const p = placaTexto(o.texto || 'LOJA', w - 1, 1.2, { fundo: c, corTexto: '#ffffff', emissivo: n }); p.position.set(0, 5.9, 3.02); g.add(p); return g; },
+    const p = placaTexto(o.texto || 'LOJA', w - 1, 1.2, { fundo: c, corTexto: '#ffffff', emissivo: n }); p.position.set(0, 5.9, 3.02); g.add(p);
+    g.add(caixa(w - 0.4, 0.15, 5.6, '#8f939c', { pos: [0, 7.05, 0] })); g.add(caixa(w + 0.2, 0.8, 0.25, o.parede || '#f1e7c9', { pos: [0, 7.3, 2.9] }));   // laje + platibanda
+    const cx = PROPS.caixa_dagua(); cx.position.set(w / 2 - 1.6, 7.1, -1.4); g.add(cx);
+    g.add(caixa(1.6, 3.4, 0.12, '#7a4b2a', { pos: [-w / 4, 1.7, -3.02] })); g.add(caixa(1.8, 1.4, 0.12, janelaMat(n), { pos: [w / 4, 4.2, -3.02] }));        // porta e janela dos fundos
+    for (const sx of [-1, 1]) g.add(caixa(0.12, 1.4, 1.8, janelaMat(n), { pos: [sx * (w / 2 + 0.02), 4.2, -0.5] }));
+    return g; },
   arranha_ceu: (o = {}) => PROPS.predio({ altura: o.altura || 45, largura: o.largura || 12, cor: o.cor || '#6f8fb3', noite: o.noite }),
   fonte: () => grupo([cilindro(4, 4.2, 1.0, '#c9ccd5', { pos: [0, 0.5, 0], seg: 28 }), cilindro(3.6, 3.6, 0.1, mat('#4fa8e8', { rough: 0.05, metal: 0.1 }), { pos: [0, 0.95, 0], seg: 28 }),
     cilindro(0.5, 0.7, 2.6, '#c9ccd5', { pos: [0, 2, 0] }), cilindro(1.4, 1.2, 0.4, '#c9ccd5', { pos: [0, 3.3, 0], seg: 20 }),
