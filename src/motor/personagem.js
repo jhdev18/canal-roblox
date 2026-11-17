@@ -185,7 +185,7 @@ export function criarPersonagem(spec = {}) {
     alvo(altura = 'cabeca') { raiz.updateMatrixWorld(true); const v = new THREE.Vector3();
       (altura === 'cabeca' ? cab : altura === 'peito' ? torsoAnc : raiz).getWorldPosition(v); return v; },
   };
-  ator.rostoPadrao = (acao) => s.rosto !== 'neutro' ? s.rosto : (ROSTO_DA_ACAO[acao] || s.rosto);
+  ator.rostoPadrao = (acao) => ROSTO_DA_ACAO[acao] || s.rosto; // a emoção da ação vence o rosto padrão do personagem
   ator.propPadrao = (acao) => PROP_DA_ACAO[acao] || null;
   return ator;
 }
