@@ -112,6 +112,7 @@ async function montar(c) {
   const xs = prin; const espalha = xs.length > 1 ? Math.max(...xs) - Math.min(...xs) : 0;
   cam.fov = cen.limites ? 58 : 40; cam.updateProjectionMatrix();   // dentro de cômodo: lente mais aberta (a câmera não pode recuar além da parede)
   atual = { c, raiz, atores, cen, dur: c.dur, espalha, nquadros: Math.max(1, Math.round(c.dur * cfg.fps)) };
+  atual.caem = []; raiz.traverse(o => { if (o.userData.cai) atual.caem.push([o, o.position.y]); });   // chuva/brasas/gotas da nuvem
   // mundo integrado: paredes que somem (corte) e portas automáticas
   cena.updateMatrixWorld(true);
   atual.unidades = cen.unidades || []; atual.corteMeshes = []; for (const u of atual.unidades) { u.traverse(m => { if (m.isMesh) atual.corteMeshes.push(m); }); if (u.userData.movel) u.userData.caixa = new THREE.Box3().setFromObject(u); }
@@ -238,6 +239,7 @@ function posar(t) {
       a.pet.rotation.y = ang;
     }
   }
+  for (const [o, y] of atual.caem || []) { const [y0, y1, v] = o.userData.cai, h = y1 - y0; o.position.y = y0 + ((((y - y0 - t * v) % h) + h) % h); }
   const camC = atual.cen.cameraFixa ? { camera: 'detalhe', mov: c.mov || 'zoom_in', angulo: 0, dist: c.dist || 3.1 } : c;
   const mira = posicionarCamera(cam, camC, t, dur, alvo, atores.length && !c.foco ? atual.espalha : 0);
   const L = atual.cen.limites; // interiores: a câmera não atravessa paredes

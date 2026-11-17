@@ -19,7 +19,9 @@ cenas:
     hora: tarde
     cam: aberto
     dist: 1.5
-    atores: [{ id: f1, acao: acenar, rosto: feliz, x: 1.5, z: 5.2 }]
+    altura: 3
+    mov: zoom_in
+    atores: [{ id: f1, acao: acenar, rosto: feliz, x: 1.5, z: 1.5, y: 2.5 }]
   - fala: E quem mora nela tem que deixar ele assustar todo dia,
     onde: mundo
     local: casa
@@ -41,9 +43,10 @@ cenas:
   - fala: O primeiro fantasma arrasta correntes no sótão.
     comodo: quarto_pais
     hora: noite
-    cam: medio
-    props: [{ tipo: corrente, x: -0.5, z: 1.2, n: 14 }]
-    atores: [{ id: f1, acao: maos_pra_cima, rosto: bravo, x: 0.5 }]
+    cam: aberto
+    angulo: 20
+    props: [{ tipo: corrente, x: -0.6, z: 1.6, n: 18 }, { tipo: corrente, x: 1.6, z: 0.6, n: 12 }]
+    atores: [{ id: f1, acao: maos_pra_cima, rosto: bravo, x: 0.5, z: -0.6 }]
   - fala: O Seu Nonô reclama do barulho e manda ele passar óleo na corrente.
     cam: medio
     props: [{ tipo: corrente, x: -0.5, z: 1.2, n: 14 }]
@@ -54,13 +57,13 @@ cenas:
     comodo: banheiro
     hora: dia
     cam: medio
-    props: [{ tipo: espelho, x: 0, y: 4.6, z: -4.6 }]
-    atores: [{ id: f2, acao: maos_pra_cima, rosto: bravo, x: 0, z: -3.4 }]
+    props: [{ tipo: espelho_grande, x: 0, z: -1 }]
+    atores: [{ id: f2, acao: maos_pra_cima, rosto: bravo, x: 0, z: -2.4 }]
   - fala: O Seu Nonô, sem óculos, acha que é o próprio reflexo e penteia o cabelo dele.
     cam: medio
-    angulo: 25
-    props: [{ tipo: espelho, x: 0, y: 4.6, z: -4.6 }]
-    atores: [{ id: f2, acao: parado, rosto: surpreso, x: 0.6, z: -3.4 }, { id: nono, acao: cocar_cabeca, rosto: feliz, x: -1.2, z: -1.4, vira: 160 }]
+    angulo: 35
+    props: [{ tipo: espelho_grande, x: 0, z: -1 }]
+    atores: [{ id: f2, acao: cocar_cabeca, rosto: surpreso, x: 0, z: -2.4, vira: 0 }, { id: nono, acao: cocar_cabeca, rosto: feliz, x: 0, z: 0.8, vira: 180 }]
 
   # --- 3º fantasma ---
   - fala: O terceiro fantasma apaga todas as luzes à meia-noite.
@@ -73,20 +76,22 @@ cenas:
     comodo: quarto_pais
     hora: noite
     cam: alto
-    angulo: 20
-    atores: [{ id: nono, acao: dormir, sobre: zzz }, { id: f3, acao: cocar_cabeca, rosto: desconfiado, x: 2.6, z: 2.0, vira: -50 }]
+    angulo: 0
+    foco: nono
+    atores: [{ id: nono, acao: dormir, sobre: zzz }, { id: f3, acao: cocar_cabeca, rosto: desconfiado, x: -2.7, z: -3, vira: 40 }]
 
   # --- final ---
   - fala: Hoje os três tomam café com ele toda manhã
     comodo: cozinha
     hora: dia
-    cam: aberto
-    angulo: 40
+    cam: alto
+    angulo: 180
+    dist: 1.25
     atores: [{ id: nono, acao: sentar, rosto: feliz }, { id: f1, acao: sentar, rosto: feliz }, { id: f2, acao: sentar, rosto: rindo }, { id: f3, acao: sentar, rosto: feliz }]
   - fala: e assistem novela juntos.
     comodo: sala
     cam: aberto
-    atores: [{ id: nono, acao: sentar, rosto: feliz }, { id: f1, acao: sentar, rosto: apaixonado }, { id: f2, acao: parado, rosto: rindo, x: 3.2, z: 1.5, vira: -40 }]
+    atores: [{ id: nono, acao: sentar, rosto: feliz }, { id: f1, acao: sentar, rosto: apaixonado }]
   - fala: E agora quem dorme de luz acesa são os fantasmas…
     comodo: quarto
     hora: noite
@@ -96,6 +101,7 @@ cenas:
     som: ronco
     comodo: quarto_pais
     cam: alto
-    angulo: 20
+    angulo: 0
+    foco: nono
     mov: tremor
-    atores: [{ id: nono, acao: dormir, sobre: { texto: "RONC!", cor: "#ffd23f" } }, { id: f1, acao: assustar, x: 2.6, z: 2.0, vira: -50 }]
+    atores: [{ id: nono, acao: dormir, sobre: { texto: "RONC!", cor: "#ffd23f" } }, { id: f1, acao: assustar, x: -2.7, z: -3, vira: 40 }]

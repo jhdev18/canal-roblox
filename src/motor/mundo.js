@@ -289,8 +289,11 @@ function casaProtagonista(ctx) {
     c.position.x *= CSX; c.position.z *= CSZ;
     if (!c.userData.movel) { const r90 = Math.abs(Math.abs(Math.sin(c.rotation.y)) - 1) < 1e-3; c.scale.x *= r90 ? CSZ : CSX; c.scale.z *= r90 ? CSX : CSZ; } }
   if (foco) { const [x, z] = COMODOS_MUNDO[ctx.comodo || 'sala']; luzInterna(g, x, z, h, n, 1.2, 34); }   // só a luz do cômodo da cena (cada luz pesa no render)
-  g.userData.ancoras = Object.fromEntries(Object.entries({ sentar: [-7.4, 0.2, -8.4, 0], cozinhar: [10.4, 0.2, -5, 90], lavar_louca: [10.4, 0.2, -8.2, 90], deitar: [-11.1, 1.65, -13.2, 0], dormir: [-11.1, 1.65, -13.2, 0],
-    jogar_pc: [-6.7, 0.7, -14, 90], deitar_pais: [6.8, 1.65, -13.4, 0] }).map(([k, v]) => [k, [v[0] * CSX, v[1], v[2] * CSZ, v[3]]]));
+  // cada âncora segue o móvel dela: o móvel muda de lugar com a ampliação, o deslocamento até ele não
+  const M = { sofa: [-6.5, -8.8], fogao: [12, -5], pia: [11.8, -8.2], cama: [-11.1, -16.3], pc: [-7.0, -14], casal: [8.2, -16.3] };
+  g.userData.ancoras = Object.fromEntries(Object.entries({ sentar: [-7.4, 0.2, -8.4, 0, 'sofa'], cozinhar: [10.4, 0.2, -5, 90, 'fogao'], lavar_louca: [10.4, 0.2, -8.2, 90, 'pia'],
+    deitar: [-11.1, 1.65, -13.6, 0, 'cama'], dormir: [-11.1, 1.65, -13.6, 0, 'cama'], jogar_pc: [-6.7, 0.7, -14, 90, 'pc'], deitar_pais: [7.0, 1.65, -13.6, 0, 'casal'] })
+    .map(([k, [x, y, z, r, m]]) => [k, [x + M[m][0] * (CSX - 1), y, z + M[m][1] * (CSZ - 1), r]]));
   usarAssentos(g.userData.ancoras, assentosDe(g), -5);
   return g;
 }

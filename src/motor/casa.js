@@ -18,9 +18,9 @@ export const MOVEIS_CASA = {
     return g; },
   cortina: (o = {}) => { const w = o.largura || 6, c = o.cor || '#4f7fd1', g = grupo([cilindro(0.06, 0.06, w + 0.6, '#888', { pos: [0, 0, 0], rot: [0, 0, 90] })]);
     for (const s of [-1, 1]) for (let i = 0; i < 4; i++) g.add(caixa(0.45, 4.6, 0.12, c, { pos: [s * (w / 2 - 0.25 - i * 0.42), -2.3, 0.1 + (i % 2) * 0.12] })); return g; },
-  cama_casal: (o = {}) => grupo([caixa(6, 1.0, 7, '#7c5c46', { pos: [0, 0.5, 0] }), caixa(5.8, 0.6, 6.6, '#f2f3f3', { pos: [0, 1.3, 0] }),
+  cama_casal: (o = {}) => { const g = grupo([caixa(6, 1.0, 7, '#7c5c46', { pos: [0, 0.5, 0] }), caixa(5.8, 0.6, 6.6, '#f2f3f3', { pos: [0, 1.3, 0] }),
     caixa(2.2, 0.45, 1.1, '#ffffff', { pos: [-1.4, 1.8, -2.6], round: 0.15 }), caixa(2.2, 0.45, 1.1, '#ffffff', { pos: [1.4, 1.8, -2.6], round: 0.15 }),
-    caixa(5.9, 0.6, 4.2, o.cor || '#b84a5a', { pos: [0, 1.45, 1.0] }), caixa(6.2, 3.6, 0.35, '#5a3a22', { pos: [0, 1.8, -3.5] })]),
+    caixa(5.9, 0.6, 4.2, o.cor || '#b84a5a', { pos: [0, 1.45, 1.0] }), caixa(6.2, 3.6, 0.35, '#5a3a22', { pos: [0, 1.8, -3.5] })]); g.scale.set(0.8, 1, 0.89); return g; },
   criado_mudo: (o = {}) => grupo([caixa(1.6, 1.8, 1.4, o.cor || '#a8754a', { pos: [0, 0.9, 0] }), caixa(1.2, 0.1, 0.08, '#555', { pos: [0, 1.2, 0.72] }),
     cilindro(0.3, 0.35, 0.3, '#ddd', { pos: [0, 1.95, 0] }), cilindro(0.05, 0.05, 0.8, '#ddd', { pos: [0, 2.4, 0] }),
     cilindro(0.35, 0.55, 0.6, mat('#fff3d6', { emissive: '#ffd27a', emissiveIntensity: 0.6 }), { pos: [0, 3.0, 0], sombra: false })]),

@@ -18,11 +18,13 @@ cenas:
     onde: mundo
     local: praca
     cam: medio
+    mov: orbita
     atores: [{ id: homem, acao: triste, x: -1.6, vira: 25, sobre: { tipo: nuvem_cabeca, altura: 7 } }, { id: mulher, acao: parado, rosto: feliz, x: 1.8, vira: -25 }]
   - fala: As pessoas acreditam que quanto maior a nuvem, maior o azar.
     onde: mundo
     local: rua_bairro
     cam: medio
+    mov: pan
     atores: [{ id: fofoqueira, acao: apontar, x: -6.2, z: 1, vira: 20 }, { id: homem, acao: triste, x: -5.6, z: -3.5, vira: 10, sobre: { tipo: nuvem_cabeca, altura: 7 } }]
   - fala: A Bia tinha a maior nuvem da cidade.
     cam: medio
@@ -39,7 +41,9 @@ cenas:
     onde: mundo
     local: escola
     cam: aberto
-    atores: [{ id: bia, acao: parado, rosto: triste, sobre: { tipo: nuvem_cabeca, escala: 1.4, altura: 8 } }, { id: crianca, acao: correr_medo, x: 5, z: 1, vira: 90 }, { id: mulher, acao: andar, x: -5, z: 1, vira: -90 }]
+    mov: seguir
+    foco: bia
+    atores: [{ id: bia, acao: andar, rosto: triste, vira: 90, sobre: { tipo: nuvem_cabeca, escala: 1.4, altura: 8 } }, { id: crianca, acao: correr_medo, x: 5, z: 1, vira: 90 }, { id: mulher, acao: andar, x: -5, z: 1, vira: -90 }]
   - fala: Até que chegou a Festa do Sol, o dia mais feliz do ano.
     onde: mundo
     local: praca
@@ -49,10 +53,12 @@ cenas:
     atores: [{ id: mulher, acao: dancar, rosto: rindo }]
   - fala: A praça inteira sorria.
     cam: close
+    mov: orbita
     props: [{ tipo: bandeirinhas, x: 0, z: -4, largura: 26 }]
     atores: [{ id: idosa, acao: rir, rosto: rindo }]
   - fala: Nenhuma nuvem no céu. Só a da Bia.
     cam: medio
+    mov: zoom_out
     props: [{ tipo: bandeirinhas, x: 0, z: -4, largura: 26 }]
     multidao: { n: 10, modo: natural, area: [-16, 16, -12, 6], acao: [comemorar, dancar, palmas] }
     atores: [{ id: bia, acao: triste, sobre: { tipo: nuvem_cabeca, escala: 1.4, altura: 8 } }]
@@ -60,12 +66,14 @@ cenas:
     som: trovao
     hora: vermelho
     cam: aberto
+    mov: subir
     props: [{ tipo: bandeirinhas, x: 0, z: -4, largura: 26 }]
     multidao: { n: 12, modo: natural, area: [-16, 16, -12, 6], acao: [olhar_redor, assustar, apontar] }
     atores: [{ id: mulher, acao: assustar }]
   - fala: Começou a cair uma chuva quente, que queimava o que tocava.
     hora: vermelho
     cam: medio
+    mov: tremor
     props: [{ tipo: chuva_brasas, largura: 34, prof: 28 }]
     multidao: { n: 10, modo: natural, area: [-16, 16, -12, 6], acao: [assustar, correr_medo, tremer] }
     atores: [{ id: homem, acao: assustar }]
@@ -74,6 +82,8 @@ cenas:
     local: rua_bairro
     hora: vermelho
     cam: aberto
+    mov: seguir
+    foco: homem
     props: [{ tipo: chuva_brasas, largura: 30, prof: 40 }]
     atores: [{ id: homem, acao: correr_medo, x: -6.3, z: -8, vira: 0 }, { id: mulher, acao: fugir, x: 6.2, z: -10, vira: 0 }, { id: crianca, acao: correr_medo, x: -5.6, z: -14, vira: 0 }]
   - fala: Só debaixo de uma nuvem.
@@ -81,21 +91,25 @@ cenas:
     local: praca
     hora: vermelho
     cam: close
-    props: [{ tipo: chuva_brasas, largura: 34, prof: 28 }]
+    mov: zoom_rapido
+    props: [{ tipo: chuva_brasas, largura: 34, prof: 28, furo: 3.5 }]
     atores: [{ id: bia, acao: olhar_redor, rosto: surpreso, sobre: { tipo: nuvem_cabeca, escala: 1.4, altura: 8 } }]
   - fala: A nuvem da Bia nunca foi azar.
     hora: vermelho
     cam: aberto
-    props: [{ tipo: chuva_brasas, largura: 34, prof: 28 }]
+    mov: orbita
+    props: [{ tipo: chuva_brasas, largura: 34, prof: 28, furo: 6 }]
     atores: [{ id: bia, acao: parado, rosto: confiante, sobre: { tipo: nuvem_cabeca, escala: 2.2, altura: 10 } }, { id: homem, acao: tremer, x: -2.4, z: 0.6, vira: 40 }, { id: mulher, acao: tremer, x: 2.4, z: 0.6, vira: -40 }, { id: crianca, acao: abracar, x: 0.4, z: 2.0, vira: 180 }]
   - fala: Era um guarda-chuva.
     som: boom
     hora: vermelho
     cam: medio
     angulo: 30
-    props: [{ tipo: chuva_brasas, largura: 34, prof: 28 }]
-    atores: [{ id: bia, acao: parado, rosto: feliz, sobre: { tipo: nuvem_cabeca, escala: 2.2, altura: 10 } }, { id: homem, acao: tremer, x: -2.4, z: 0.6, vira: 40 }, { id: mulher, acao: tremer, x: 2.4, z: 0.6, vira: -40 }, { id: idosa, acao: tremer, x: 0, z: -2.2 }]
+    mov: zoom_rapido
+    props: [{ tipo: chuva_brasas, largura: 34, prof: 28, furo: 6 }]
+    atores: [{ id: bia, acao: rir, rosto: feliz, sobre: { tipo: nuvem_cabeca, escala: 2.2, altura: 10 } }, { id: homem, acao: tremer, x: -2.4, z: 0.6, vira: 40 }, { id: mulher, acao: tremer, x: 2.4, z: 0.6, vira: -40 }, { id: idosa, acao: tremer, x: 0, z: -2.2 }]
   - fala: E naquela noite, pela primeira vez, todo mundo quis ficar do lado dela.
     hora: noite
     cam: medio
+    mov: orbita
     atores: [{ id: bia, acao: parado, rosto: sorriso, sobre: { tipo: nuvem_cabeca, escala: 1.2, altura: 7 } }, { id: mulher, acao: abracar, x: -1.6, vira: 40 }, { id: crianca, acao: comemorar, x: 1.8, vira: -30 }]

@@ -16,6 +16,8 @@ export function placaTexto(texto, w, h, { fundo = '#ffffff', corTexto = '#111111
 
 const janelaMat = (noite) => mat('#a8dcff', noite ? { emissive: '#ffd27a', emissiveIntensity: 1.2 } : { rough: 0.15, metal: 0.1 });
 
+const cai = (m, y0, y1, v) => { m.userData.cai = [y0, y1, v]; return m; };   // gota/brasa que cai em loop (animada em main.js)
+const achatar = (sx, sz, g) => { g.scale.set(sx, 1, sz); return g; };   // ajusta largura/comprimento sem mexer na altura
 export const PROPS = {
   arvore: (o = {}) => { const h = o.altura || 3.6; return grupo([cilindro(0.45, 0.55, h, '#7b5230', { pos: [0, h / 2, 0] }),
     esfera(2.6 * (o.tam || 1), o.cor || '#2f9e3a', { pos: [0, h + 1.4, 0] }), esfera(1.8 * (o.tam || 1), o.cor || '#38ad42', { pos: [1.2, h + 0.6, 0.6] })]); },
@@ -47,8 +49,8 @@ export const PROPS = {
   carteira: (o = {}) => grupo([caixa(3.0, 0.2, 2.0, '#c9a26b', { pos: [0, 2.3, 0] }), caixa(2.8, 2.2, 0.15, '#6b6f78', { pos: [0, 1.1, -0.8] })]),
   cadeira: (o = {}) => grupo([caixa(2.4, 0.2, 2.2, o.cor || '#8a5a33', { pos: [0, 0.9, 0] }), caixa(2.4, 2.6, 0.2, o.cor || '#8a5a33', { pos: [0, 2.2, -1.0] }),
     ...[[-1, 0.9], [1, 0.9], [-1, -0.9], [1, -0.9]].map(([x, z]) => caixa(0.2, 0.9, 0.2, '#333', { pos: [x, 0.45, z] }))]),
-  cama: (o = {}) => grupo([caixa(3.4, 1.0, 7, '#7c5c46', { pos: [0, 0.5, 0] }), caixa(3.2, 0.5, 6.6, o.lencol || '#f2f3f3', { pos: [0, 1.2, 0] }),
-    caixa(2.4, 0.4, 1.2, '#ffffff', { pos: [0, 1.6, -2.7], round: 0.15 }), caixa(3.3, 0.55, 4, o.cor || '#3b6fd8', { pos: [0, 1.3, 1.2] }), caixa(3.4, 2.6, 0.3, '#7c5c46', { pos: [0, 1.3, -3.5] })]),
+  cama: (o = {}) => achatar(0.85, 0.89, grupo([caixa(3.4, 1.0, 7, '#7c5c46', { pos: [0, 0.5, 0] }), caixa(3.2, 0.5, 6.6, o.lencol || '#f2f3f3', { pos: [0, 1.2, 0] }),
+    caixa(2.4, 0.4, 1.2, '#ffffff', { pos: [0, 1.6, -2.7], round: 0.15 }), caixa(3.3, 0.55, 4, o.cor || '#3b6fd8', { pos: [0, 1.3, 1.2] }), caixa(3.4, 2.6, 0.3, '#7c5c46', { pos: [0, 1.3, -3.5] })])),
   sofa: (o = {}) => { const c = o.cor || '#6b4fa0'; return grupo([caixa(6, 1.0, 2.4, c, { pos: [0, 0.5, 0], round: 0.15 }), caixa(6, 2.0, 0.7, c, { pos: [0, 1.5, -0.9], round: 0.15 }),
     caixa(0.7, 1.6, 2.4, c, { pos: [-2.9, 1.0, 0], round: 0.15 }), caixa(0.7, 1.6, 2.4, c, { pos: [2.9, 1.0, 0], round: 0.15 })]); },
   tv: (o = {}) => grupo([caixa(4, 0.8, 1.4, '#3a3a40', { pos: [0, 0.4, 0] }), caixa(4.6, 2.7, 0.2, '#111', { pos: [0, 2.3, 0] }),
@@ -231,15 +233,22 @@ export const PROPS = {
   corrente: (o = {}) => { const g = grupo([]), n = o.n || 10; for (let i = 0; i < n; i++) g.add(caixa(0.45, i % 2 ? 0.12 : 0.3, i % 2 ? 0.3 : 0.12, mat('#8c8f99', { metal: 0.7, rough: 0.35 }), { pos: [i * 0.36, 0, 0] })); return g; },
   vidro: (o = {}) => { const w = o.largura || 4.6, h = o.altura || 6.4; return grupo([caixa(w, h, 0.06, new THREE.MeshStandardMaterial({ color: 0xcfe8ff, roughness: 0.05, metalness: 0.3, transparent: true, opacity: 0.2, depthWrite: false }), { pos: [0, h / 2 + 0.3, 0], sombra: false }),
     caixa(w + 0.3, 0.25, 0.25, '#5a5d66', { pos: [0, h + 0.4, 0] }), caixa(w + 0.3, 0.3, 0.3, '#5a5d66', { pos: [0, 0.15, 0] }), caixa(0.25, h + 0.4, 0.25, '#5a5d66', { pos: [-w / 2, h / 2 + 0.3, 0] }), caixa(0.25, h + 0.4, 0.25, '#5a5d66', { pos: [w / 2, h / 2 + 0.3, 0] })]); },   // vitrine/vidro solto (reflexo fica logo atrás)
+  espelho_grande: (o = {}) => { const w = o.largura || 3.6, h = o.altura || 6, ouro = o.cor || '#c9a24a';   // espelho de pé: o "reflexo" (ou o fantasma) fica logo atrás do vidro
+    return grupo([caixa(w, h, 0.05, new THREE.MeshStandardMaterial({ color: 0xbfe3f2, roughness: 0.04, metalness: 0.4, transparent: true, opacity: 0.32, depthWrite: false }), { pos: [0, h / 2 + 0.6, 0], sombra: false }),
+      caixa(w + 0.5, 0.35, 0.3, ouro, { pos: [0, h + 0.75, 0] }), caixa(w + 0.5, 0.35, 0.3, ouro, { pos: [0, 0.45, 0] }), caixa(0.3, h + 0.6, 0.3, ouro, { pos: [-w / 2 - 0.1, h / 2 + 0.6, 0] }),
+      caixa(0.3, h + 0.6, 0.3, ouro, { pos: [w / 2 + 0.1, h / 2 + 0.6, 0] }), caixa(0.6, 0.6, 0.6, ouro, { pos: [0, h + 1.1, 0], round: 0.2 }),
+      caixa(0.25, 0.3, 1.8, '#7c5c46', { pos: [-w / 2, 0.15, 0] }), caixa(0.25, 0.3, 1.8, '#7c5c46', { pos: [w / 2, 0.15, 0] })]); },
   espelho: () => grupo([caixa(2.6, 3.6, 0.15, '#c9a24a'), caixa(2.2, 3.2, 0.05, mat('#cfe8f5', { metal: 0.85, rough: 0.05 }), { pos: [0, 0, 0.1], sombra: false })]),   // pendurado na parede (pos = centro)
   // --- histórias: regra visível, festa, enchente ---
   nuvem_cabeca: (o = {}) => { const g = grupo([]), c = o.cor || '#8c95a6';
     for (const [x, y, r] of [[-0.9, 0, 0.75], [0, 0.25, 0.95], [0.9, 0, 0.75], [0.35, -0.15, 0.7], [-0.4, -0.1, 0.7]]) g.add(esfera(r, c, { pos: [x, y, 0], sombra: false }));
     const gota = new THREE.MeshStandardMaterial({ color: 0x7fb8ff, transparent: true, opacity: 0.7, depthWrite: false });
-    for (let i = 0; i < 9; i++) g.add(caixa(0.06, 0.45, 0.06, gota, { pos: [-1 + (i % 5) * 0.5, -0.9 - (i % 3) * 0.6, ((i * 7) % 5 - 2) * 0.18], sombra: false }));   // gotas caindo
+    for (let i = 0; i < 9; i++) g.add(cai(caixa(0.06, 0.45, 0.06, gota, { pos: [-1 + (i % 5) * 0.5, -0.9 - (i % 3) * 0.6, ((i * 7) % 5 - 2) * 0.18], sombra: false }), -2.4, -0.6, 4));   // gotas caindo
     return g; },   // use como `sobre: { tipo: nuvem_cabeca }`
   chuva_brasas: (o = {}) => { const g = grupo([]), w = o.largura || 30, d = o.prof || 24, m = mat('#ffb347', { emissive: '#ff5a1a', emissiveIntensity: 2.2 });
-    for (let i = 0; i < (o.n || 140); i++) { const k = i * 2.399; g.add(caixa(0.12, 0.7, 0.12, m, { pos: [Math.sin(k) * w / 2 * ((i % 7) / 7), 1 + (i * 37 % 120) / 10, Math.cos(k) * d / 2 * ((i % 5) / 5)], rot: [8, 0, 12], sombra: false })); }
+    for (let i = 0; i < (o.n || 140); i++) { const k = i * 2.399, x = Math.sin(k) * w / 2 * ((i % 7) / 7), z = Math.cos(k) * d / 2 * ((i % 5) / 5);
+      if (o.furo && Math.hypot(x - (o.furo_x || 0), z - (o.furo_z || 0)) < o.furo) continue;   // ninguém se queima debaixo da nuvem
+      g.add(cai(caixa(0.12, 0.7, 0.12, m, { pos: [x, 1 + (i * 37 % 120) / 10, z], rot: [8, 0, 12], sombra: false }), 0.4, 13, 7)); }
     return g; },
   bandeirinhas: (o = {}) => { const w = o.largura || 20, g = grupo([cilindro(0.03, 0.03, w, '#eeeeee', { pos: [0, o.altura || 7, 0], rot: [0, 0, 90], seg: 6, sombra: false })]), cs = ['#e53935', '#fdd835', '#1e88e5', '#43a047', '#fb8c00', '#8e24aa'];
     for (let i = 0; i < Math.floor(w / 0.9); i++) { const f = caixa(0.6, 0.7, 0.02, cs[i % 6], { pos: [-w / 2 + 0.45 + i * 0.9, (o.altura || 7) - 0.4 - Math.sin(i / Math.floor(w / 0.9) * Math.PI) * 0.6, 0], rot: [0, 0, 45], sombra: false }); g.add(f); }
@@ -252,7 +261,7 @@ export const PROPS = {
   agua: (o = {}) => grupo([caixa(o.largura || 60, o.nivel || 3.2, o.prof || 60, new THREE.MeshStandardMaterial({ color: 0x5a7f9a, roughness: 0.15, metalness: 0.1, transparent: true, opacity: 0.82 }), { pos: [0, (o.nivel || 3.2) / 2, 0], sombra: false })]),   // enchente: nível em studs
   barco: (o = {}) => grupo([caixa(3.0, 1.0, 7, o.cor || '#a8754a', { pos: [0, 0.5, 0], round: 0.2 }), caixa(2.4, 0.2, 6.2, '#7c5c46', { pos: [0, 0.95, 0] }), caixa(2.6, 0.25, 0.6, '#7c5c46', { pos: [0, 1.1, 0] })]),
   chuva: (o = {}) => { const g = grupo([]), w = o.largura || 30, d = o.prof || 24, m = new THREE.MeshStandardMaterial({ color: 0xbfd8ff, transparent: true, opacity: 0.5, depthWrite: false });
-    for (let i = 0; i < (o.n || 220); i++) { const k = i * 2.399; g.add(caixa(0.04, 1.4, 0.04, m, { pos: [Math.sin(k) * w / 2 * ((i % 9) / 9), 1 + (i * 53 % 140) / 10, Math.cos(k) * d / 2 * ((i % 7) / 7)], rot: [0, 0, 8], sombra: false })); }
+    for (let i = 0; i < (o.n || 220); i++) { const k = i * 2.399; g.add(cai(caixa(0.04, 1.4, 0.04, m, { pos: [Math.sin(k) * w / 2 * ((i % 9) / 9), 1 + (i * 53 % 140) / 10, Math.cos(k) * d / 2 * ((i % 7) / 7)], rot: [0, 0, 8], sombra: false }), 0.5, 15, 22)); }
     return g; },
   // --- mobiliário urbano ---
   ponto_onibus: (o = {}) => { const g = grupo([caixa(6.4, 0.15, 2.6, '#c3c7cf', { pos: [0, 0.08, 0] }), caixa(6.8, 0.25, 3.0, o.cor || '#1d3b72', { pos: [0, 6.5, 0.1] }),
