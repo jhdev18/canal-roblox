@@ -19,7 +19,7 @@ cenas:
     hora: tarde
     cam: aberto
     dist: 1.5
-    atores: [{ id: f1, acao: acenar, rosto: feliz, x: 1.5, z: 2 }]
+    atores: [{ id: f1, acao: acenar, rosto: feliz, x: 1.5, z: 5.2 }]
   - fala: E quem mora nela tem que deixar ele assustar todo dia,
     onde: mundo
     local: casa
@@ -91,7 +91,7 @@ cenas:
     comodo: quarto
     hora: noite
     cam: medio
-    atores: [{ id: f1, acao: tremer, rosto: assustado, x: -1.6 }, { id: f2, acao: tremer, rosto: assustado }, { id: f3, acao: tremer, rosto: assustado, x: 1.6 }]
+    atores: [{ id: f1, acao: tremer, rosto: assustado, x: -2.6, vira: 15 }, { id: f2, acao: tremer, rosto: assustado, z: -0.8 }, { id: f3, acao: tremer, rosto: assustado, x: 2.6, vira: -15 }]
   - fala: com medo do ronco do Seu Nonô.
     som: ronco
     comodo: quarto_pais

@@ -15,9 +15,9 @@ export { INTERIOR_DO_LOCAL } from './interiores.js';
 const CEU = { dia: '#8ec9ff', tarde: '#ffb27a', noite: '#0e1a3a' };
 function ambiente(hora, interno = false) {
   if (hora === 'vermelho') return { ceu: '#8a1e12', nevoa: [30, 150], sol: { dir: [-0.4, 0.8, 0.9], forca: 2.4, cor: '#ff6a3a' }, hemi: ['#ff9a70', '#3a0e08', interno ? 1.2 : 1.0] };   // céu em chamas (virada de terror)
-  if (hora === 'noite') return { ceu: CEU.noite, nevoa: [40, 160], sol: { dir: [0.4, 1, 0.8], forca: interno ? 1.0 : 1.3, cor: '#aabfff' }, hemi: [interno ? '#d6deff' : '#7d90d0', '#2a3560', interno ? 1.4 : 1.2] };
+  if (hora === 'noite') return { ceu: CEU.noite, nevoa: [40, 160], sol: { dir: [0.4, 1, 0.8], forca: interno ? 1.0 : 1.3, cor: '#aabfff' }, hemi: [interno ? '#d6deff' : '#7d90d0', '#2a3560', interno ? 1.1 : 1.2] };
   if (hora === 'tarde') return { ceu: CEU.tarde, nevoa: [60, 220], sol: { dir: [-0.9, 0.6, 0.7], forca: 3.0, cor: '#ffc08a' }, hemi: ['#ffd9b8', '#6b5a4a', 1.1] };
-  return { ceu: CEU.dia, nevoa: [70, 260], sol: { dir: [-0.5, 1.1, 0.9], forca: 3.4, cor: '#fff4e0' }, hemi: ['#cfe8ff', '#6b8a5a', interno ? 1.6 : 1.3] };
+  return { ceu: CEU.dia, nevoa: [70, 260], sol: { dir: [-0.5, 1.1, 0.9], forca: interno ? 2.3 : 3.4, cor: '#fff4e0' }, hemi: ['#cfe8ff', '#6b8a5a', interno ? 1.15 : 1.3] };   // dentro: menos sol e ambiente (paredes claras estouravam)
 }
 function nuvens(g, r) {
   for (let i = 0; i < 9; i++) { const cx = r.entre(-120, 120), cy = r.entre(45, 75), cz = r.entre(-190, -130);

@@ -157,9 +157,9 @@ export function criarPersonagem(spec = {}) {
   if (s.reflexo) raiz.traverse(o => { if (o.isMesh) { o.material = o.material.clone(); Object.assign(o.material, { transparent: true, opacity: 0.55, depthWrite: false }); o.material.color?.lerp(new THREE.Color('#a8c8ff'), 0.25); o.castShadow = false; } });   // reflexo no vidro
   if (s.fantasma) {   // fantasma clássico: sem pernas, com "cauda" de lençol, levemente translúcido e brilhando
     pd.visible = false; pe.visible = false;
-    corpo.add(cilindro(1.25, 0.35, 2.0, mat('#eef5ff'), { pos: [0, -0.95, 0], seg: 14 }));
+    corpo.add(cilindro(1.15, 0.55, 1.5, mat('#eef5ff'), { pos: [0, -0.7, 0], seg: 16 }));   // cauda curta de lençol
     raiz.traverse(o => { if (o.isMesh && o.visible) { o.material = o.material.clone(); if (o !== rosto) o.material.color?.set('#eef5ff');
-      Object.assign(o.material, { transparent: true, opacity: o === rosto ? 0.95 : 0.8 }); if (o.material.emissive) { o.material.emissive.set('#bcd8ff'); o.material.emissiveIntensity = 0.45; } o.castShadow = false; } });
+      Object.assign(o.material, { transparent: o === rosto, opacity: 1 }); if (o.material.emissive) { o.material.emissive.set('#cfe0ff'); o.material.emissiveIntensity = 0.12; } o.castShadow = false; } });   // quase sólido, brilho leve: tem forma e volume
   }
   raiz.scale.setScalar(s.escala || 1);
 
