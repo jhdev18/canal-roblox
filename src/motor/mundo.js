@@ -238,7 +238,7 @@ const PREDIOS_MUNDO = {
       por('mural', { texto: 'NOSSOS CAMPEÕES', largura: 3.6, altura: 1.6, cor: '#1e6fd9', cor_texto: '#ffffff' }, [1.8, 5.4, -8], -90);
       por('armario_escolar', { n: 5 }, [-11, 0.2, -22.2]); por('armario_escolar', { n: 4, cor: ['#2e9d4a', '#f5b800'] }, [0.5, 0.2, -22.2]); por('armario_escolar', { n: 3, cor: '#c4281c' }, [12.8, 0.2, -22.2]);
       por('bebedouro', {}, [5.4, 0.2, -22.3]); por('mural', { texto: 'FEIRA DE CIÊNCIAS SEXTA!', largura: 5, altura: 1.5, cor: '#ffffff', cor_texto: '#c4281c' }, [0.5, 7.6, -22.8]);
-      por('lixeira', { cor: '#1e6fd9' }, [-14.2, 0.2, -17.0], 0, 0.7); por('relogio_parede', {}, [-14.75, 7.0, -19.5], 90);
+      por('lixeira', { cor: '#1e6fd9' }, [-14.2, 0.2, -17.0], 0, 0.7); por('relogio_parede', {}, [-14.55, 7.0, -19.5], 90);
       // diretoria
       por('mesa_escritorio', {}, [-9.5, 0.2, -11.5], 180); por('poltrona', { cor: '#1d3b72' }, [-9.5, 0.2, -13.8]); por('computador', {}, [-11.3, 0.35, -12.1], 180);
       for (const x of [-10.8, -8.2]) por('cadeira', { cor: '#7c5c46' }, [x, 0.2, -8.8], 180);
@@ -251,14 +251,14 @@ const PREDIOS_MUNDO = {
       por('mural', { texto: 'HOJE: PÃO DE QUEIJO · SUCO · FRUTA', largura: 6, altura: 1.6, cor: '#3a2a1a', cor_texto: '#ffe9b0' }, [7.5, 6.0, -15.75]);
       por('geladeira_vitrine', { largura: 3 }, [3.05, 0.2, -11.0], 90);
       por('mesa_refeitorio', { largura: 6, seed: 3 }, [5.5, 0.2, -4.8], 90); por('mesa_refeitorio', { largura: 6, seed: 8 }, [11.8, 0.2, -4.8], 90);
-      por('poster', { texto: 'COMA FRUTAS!', cor: '#43a047', cor_texto: '#ffffff' }, [14.75, 5.2, -10.5], -90, 0.6); por('lixeira', { cor: '#e8862f' }, [14.0, 0.2, -14.6], 0, 0.7);
+      por('poster', { texto: 'COMA FRUTAS!', cor: '#43a047', cor_texto: '#ffffff' }, [14.55, 5.2, -10.5], -90, 0.6); por('lixeira', { cor: '#e8862f' }, [14.0, 0.2, -14.6], 0, 0.7);
       por('ventilador_teto', {}, [8.6, 10.2, -4]); por('ventilador_teto', {}, [8.6, 10.2, -11]);
       // sala de aula
-      por('quadro_negro', { largura: 9, texto: '2 + 2 = 4' }, [-6, 5.0, -39.7]); por('relogio_parede', {}, [-6, 8.2, -39.75]);
+      por('quadro_negro', { largura: 9, texto: '2 + 2 = 4' }, [-6, 5.0, -39.45]); por('relogio_parede', {}, [-6, 8.2, -39.5]);
       por('mesa', { largura: 4, cor: '#7c5c46' }, [-11.5, 0.2, -36.0]); por('cadeira', { cor: '#7c5c46' }, [-11.5, 0.2, -37.7]); por('globo', {}, [-12.8, 2.45, -36.0]);
       solto(grupo([caixa(1.2, 0.3, 0.9, '#c4281c', { pos: [-10.6, 2.6, -35.8] }), caixa(1.1, 0.3, 0.85, '#1e6fd9', { pos: [-10.6, 2.9, -35.8] })]));   // livros na mesa
       for (const z of [-30.5, -26.0]) for (const x of [-12, -8, -4, 0]) { por('carteira', {}, [x, 0.2, z]); por('cadeira', { cor: '#2a5bd7' }, [x, 0.2, z + 1.5], 180); }
-      por('mural', { texto: 'A B C D E', largura: 3, altura: 1.6, cor: '#ffffff', cor_texto: '#e53935' }, [-14.75, 5.6, -27.5], 90);
+      por('mural', { texto: 'A B C D E', largura: 3, altura: 1.6, cor: '#ffffff', cor_texto: '#e53935' }, [-14.55, 5.6, -27.5], 90);
       por('mural', { texto: 'MAPA DO BRASIL', largura: 4, altura: 2.6, cor: '#43a047', cor_texto: '#ffd23f' }, [2.75, 5.2, -31], -90);
       por('estante_livros', { largura: 3, altura: 5, seed: 2 }, [1.2, 0.2, -39.1]); por('lixeira', { cor: '#1e6fd9' }, [-14.0, 0.2, -38.8], 0, 0.7);
       por('ventilador_teto', {}, [-10, 10.2, -31]); por('ventilador_teto', {}, [-2, 10.2, -31]);
@@ -268,7 +268,7 @@ const PREDIOS_MUNDO = {
       por('mesa', { largura: 5, cor: '#8a5a33' }, [9.5, 0.2, -33.5]); for (const x of [8.2, 10.8]) por('cadeira', { cor: '#6b32a8' }, [x, 0.2, -35.2]); por('cadeira', { cor: '#6b32a8' }, [6.0, 0.2, -33.5], 90); por('cadeira', { cor: '#6b32a8' }, [13.0, 0.2, -33.5], -90);
       solto(grupo([caixa(1.0, 0.25, 0.8, '#43a047', { pos: [8.4, 2.55, -33.4], rot: [0, 15, 0] }), caixa(1.0, 0.25, 0.8, '#e8862f', { pos: [8.5, 2.8, -33.4], rot: [0, -8, 0] })]));
       por('poltrona', { cor: '#c4281c' }, [13.3, 0.2, -26.3], -120); por('luminaria', {}, [14.0, 0.2, -24.2]); por('tapete', { cor: '#6b32a8', cor2: '#8e5bd0', largura: 5, prof: 3.5 }, [9, 0.2, -28.5]);
-      por('poster', { texto: 'LEIA!', cor: '#e8862f', cor_texto: '#ffffff' }, [14.75, 5.5, -36], -90, 0.7); por('planta', {}, [4.0, 0.2, -24.0]);
+      por('poster', { texto: 'LEIA!', cor: '#e8862f', cor_texto: '#ffffff' }, [14.55, 5.5, -36], -90, 0.7); por('planta', {}, [4.0, 0.2, -24.0]);
       return {
         diretoria: { sentar: [-9.5, 0.2, -13.5, 0], assinar: [-9.5, 0.2, -13.5, 0] },
         cantina: { atender: [7.5, 0.2, -15.0, 0], fila: { inicio: [7.5, -11.8], vira: 180, cresce: [0.2, 1] }, sentar: [7.4, 0.2, -4.8, 0] },
@@ -298,8 +298,8 @@ const PREDIOS_MUNDO = {
       por('balcao', { largura: 6, cor: '#1e88e5', tampo: '#f2f3f3' }, [-6.5, 0.2, -8.2]); por('computador', {}, [-7.6, 1.2, -8.4], 180); por('placa_suspensa', { texto: 'RECEPÇÃO', cor: '#1e88e5', largura: 3 }, [-6.5, 7.8, -8.2]);
       cruz([-10, 6.4, -11.7]); por('mural', { texto: 'SENHA 042', largura: 3, altura: 1.2, cor: '#111111', cor_texto: '#ff3b3b' }, [7.5, 6.6, -11.75]);
       por('cadeiras_espera', { n: 3 }, [7.5, 0.2, -10.8]); por('cadeiras_espera', { n: 3 }, [10.8, 0.2, -5.0], -90);
-      por('bebedouro', {}, [-11.0, 0.2, -2.2], 90); por('mural', { texto: 'VACINE-SE!', largura: 3.4, altura: 2, cor: '#ffffff', cor_texto: '#e53935' }, [-11.75, 5.0, -5.0], 90);
-      por('relogio_parede', {}, [-11.75, 6.5, -9.0], 90); por('poster', { texto: 'DENGUE NÃO!', cor: '#e53935', cor_texto: '#ffffff' }, [11.75, 5.5, -9.6], -90, 0.7);
+      por('bebedouro', {}, [-11.0, 0.2, -2.2], 90); por('mural', { texto: 'VACINE-SE!', largura: 3.4, altura: 2, cor: '#ffffff', cor_texto: '#e53935' }, [-11.55, 5.0, -5.0], 90);
+      por('relogio_parede', {}, [-11.55, 6.5, -9.0], 90); por('poster', { texto: 'DENGUE NÃO!', cor: '#e53935', cor_texto: '#ffffff' }, [11.55, 5.5, -9.6], -90, 0.7);
       por('planta', {}, [-11.0, 0.2, -11.0]); por('lixeira', { cor: '#9aa0aa' }, [11.0, 0.2, -1.0], 0, 0.7); por('extintor', {}, [3.8, 0.2, -11.6]); por('cadeira_rodas', {}, [-3.8, 0.2, -2.0], 30);
       por('ventilador_teto', {}, [-6, 10.2, -5]); por('ventilador_teto', {}, [6, 10.2, -5]);
       // corredor
@@ -309,18 +309,18 @@ const PREDIOS_MUNDO = {
       por('mesa_trabalho', { largura: 4, cor: '#f2f3f3' }, [-9.0, 0.2, -15.6], 90); por('cadeira', { cor: '#1e88e5' }, [-11.0, 0.2, -15.6], 90); por('cadeira', { cor: '#9aa0aa' }, [-6.6, 0.2, -15.6], -90);
       por('maca', {}, [-7.5, 0.2, -26.2], 90); por('suporte_soro', {}, [-11.2, 0.2, -24.0]); por('pia_banheiro', {}, [-3.9, 0.2, -19.0], -90);
       por('prateleira', { largura: 3, altura: 5, cores: ['#ffffff', '#1e88e5', '#e53935', '#f2f3f3'], seed: 6 }, [-11.4, 0.2, -21.6], 90);
-      por('quadro_parede', { texto: 'CRM', cor: '#1d3b72' }, [-7.5, 6.4, -27.75], 0, 0.6); por('relogio_parede', {}, [-11.75, 7.0, -15.6], 90); por('lixeira', { cor: '#9aa0aa' }, [-4.0, 0.2, -13.0], 0, 0.7);
+      por('quadro_parede', { texto: 'CRM', cor: '#1d3b72' }, [-7.5, 6.4, -27.75], 0, 0.6); por('relogio_parede', {}, [-11.55, 7.0, -15.6], 90); por('lixeira', { cor: '#9aa0aa' }, [-4.0, 0.2, -13.0], 0, 0.7);
       por('poster', { texto: 'SAÚDE EM DIA', cor: '#1e88e5', cor_texto: '#ffffff' }, [-5.0, 5.2, -27.75], 0, 0.6);
       // sala de exames: maca no fundo com monitor e soro, raio-x e balança na parede da direita
       por('maca', {}, [8.0, 0.2, -26.0], 90); por('monitor_cardiaco', {}, [4.4, 0.2, -27.0]); por('suporte_soro', {}, [4.2, 0.2, -23.8]);
-      por('negatoscopio', {}, [11.75, 5.5, -14.5], -90); por('balanca', {}, [10.8, 0.2, -13.4], -90);
+      por('negatoscopio', {}, [11.55, 5.5, -14.5], -90); por('balanca', {}, [10.8, 0.2, -13.4], -90);
       por('cadeira', { cor: '#1e88e5' }, [4.6, 0.2, -15.0], 90); cruz([8.0, 7.4, -27.75]); por('lixeira', { cor: '#9aa0aa' }, [4.0, 0.2, -12.8], 0, 0.7);
       // enfermaria com leitos
       for (const [x, cor] of [[-8, '#7fb8d8'], [0, '#8fd0a8'], [8, '#f2b8c6']]) por('leito', { cor }, [x, 0.2, -36.2]);
       por('criado_mudo', {}, [-5.4, 0.2, -38.9]); por('criado_mudo', {}, [2.6, 0.2, -38.9]); por('criado_mudo', {}, [10.6, 0.2, -38.9]);
       por('suporte_soro', {}, [-10.6, 0.2, -38.4]); por('monitor_cardiaco', {}, [-2.6, 0.2, -38.8]); por('suporte_soro', {}, [5.4, 0.2, -38.4]);
       por('biombo', {}, [-4, 0.2, -34.0], 90); por('biombo', {}, [4, 0.2, -34.0], 90); por('cadeira', { cor: '#9aa0aa' }, [-10.5, 0.2, -30.6], 135);
-      por('relogio_parede', {}, [0, 7.6, -39.75]); por('ventilador_teto', {}, [-6, 10.2, -34]); por('ventilador_teto', {}, [6, 10.2, -34]);
+      por('relogio_parede', {}, [0, 7.6, -39.5]); por('ventilador_teto', {}, [-6, 10.2, -34]); por('ventilador_teto', {}, [6, 10.2, -34]);
       return {
         recepcao: { atender: [-6.5, 0.2, -10.0, 0], fila: { inicio: [-6.5, -6.2], vira: 180, cresce: [0.3, 1] }, sentar: [7.5, 0.2, -10.7, 0] },
         corredor: {},
@@ -328,56 +328,72 @@ const PREDIOS_MUNDO = {
         sala_exames: { atender: [8.4, 0.2, -23.2, 0], deitar: [10.6, 3.05, -26.0, 90] },
         enfermaria: { sentar: [0, 1.5, -37.2, 0], deitar: [0, 3.0, -33.3, 0] },
       }; } },
-  // DELEGACIA (vários cômodos): plantão na frente, corredor no meio (sala do delegado à esquerda, interrogatório à direita), carceragem com 3 celas no fundo
-  delegacia: { tam: [24, 34, 10], w: 24, d: 34, h: 10, cor: '#e9ebef', faixa: '#1d3b72', piso: '#9aa0aa', letreiro: { texto: 'DELEGACIA DE POLÍCIA', fundo: '#1d3b72', largura: 14 },
-    porta: { x: 0, w: 3.0, vidro: true }, vitrines: [{ x: -7, w: 3.5 }, { x: 7, w: 3.5 }], janelas: { esq: [-15, -28], dir: [-15] },
+  // DELEGACIA (vários cômodos): plantão na frente; sala do delegado | corredor | interrogatório no meio; corredor de trás;
+  // no fundo a sala de investigação do detetive e a carceragem com 2 celas
+  delegacia: { tam: [24, 44, 10], w: 24, d: 44, h: 10, cor: '#e9ebef', faixa: '#1d3b72', piso: '#9aa0aa', letreiro: { texto: 'DELEGACIA DE POLÍCIA', fundo: '#1d3b72', largura: 14 },
+    porta: { x: 0, w: 3.0, vidro: true }, vitrines: [{ x: -7, w: 3.5 }, { x: 7, w: 3.5 }], janelas: { esq: [-15, -32], dir: [-15, -33] },
     parede_interna: '#dfe3ea', cor_porta: '#5a6b85', cor_placa: '#1d3b72', comodo_padrao: 'recepcao',
     comodos: {
       recepcao: { r: [[-12, 12, 0, -11]], ponto: [0, -4.5], piso: '#b8bcc6' },
-      corredor: { r: [[-3, 3, -11, -23]], ponto: [0, -16.5], piso: '#c3c7cf' },
+      corredor: { r: [[-3, 3, -11, -23], [-12, 12, -23, -27]], ponto: [0, -18.5], piso: '#c3c7cf' },
       sala_delegado: { r: [[-12, -3, -11, -23]], ponto: [-7.5, -13.8], piso: '#8a6a4a' },
       interrogatorio: { r: [[3, 12, -11, -23]], ponto: [7.5, -14.2], piso: '#a3a6ad' },
-      carceragem: { r: [[-12, 12, -23, -34]], ponto: [0, -26.0], piso: '#9aa0aa', luzes: [[-8, -26.5, 0.6], [8, -26.5, 0.6]] },
+      sala_investigacao: { r: [[-12, 0, -27, -44]], ponto: [-6, -40.3], piso: '#6f5a48', luzes: [[-6, -31, 0.5]] },
+      carceragem: { r: [[0, 12, -27, -44]], ponto: [6, -34.5], piso: '#9aa0aa', luzes: [[6, -41, 0.5]] },
     },
     paredes: [
       { z: -11, de: -12, ate: 12, vaos: [{ em: 0, w: 6, aberto: true }] },
-      { x: -3, de: -11, ate: -23, vaos: [{ em: -21.5, w: 2.4, porta: true, placa: ['DELEGADO', 1] }] },
-      { x: 3, de: -11, ate: -23, vaos: [{ em: -21.5, w: 2.4, porta: true, placa: ['INTERROGATÓRIO', -1] }] },
-      { z: -23, de: -12, ate: 12, vaos: [{ em: 0, w: 4, y1: 8.4, placa: ['CARCERAGEM', 1] }] },
-      { x: -4, de: -28.5, ate: -34 }, { x: 4, de: -28.5, ate: -34 },   // divisórias entre as celas
+      { x: -3, de: -11, ate: -23, vaos: [{ em: -20.5, w: 2.4, porta: true, placa: ['DELEGADO', 1] }] },
+      { x: 3, de: -11, ate: -23, vaos: [{ em: -20.5, w: 2.4, porta: true, placa: ['INTERROGATÓRIO', -1] }] },
+      { z: -23, de: -12, ate: 12, vaos: [{ em: 0, w: 6, aberto: true }] },
+      { z: -27, de: -12, ate: 12, vaos: [{ em: -6, w: 2.4, porta: true, placa: ['INVESTIGAÇÃO', 1] }, { em: 6, w: 3.2, y1: 8.4, placa: ['CARCERAGEM', 1] }] },
+      { x: 0, de: -27, ate: -44 },
+      { x: 6, de: -38.5, ate: -44 },   // divisória entre as celas
     ],
     mobilia({ por, solto }) {
       // recepção / plantão
       por('balcao', { largura: 7, cor: '#5a5d66', tampo: '#d8dde3' }, [-5.5, 0.2, -7.5]); por('computador', {}, [-7.0, 1.2, -7.7], 180); por('placa_suspensa', { texto: 'PLANTÃO 24H', cor: '#1d3b72', largura: 3.6 }, [-5.5, 7.8, -7.5]);
       por('quadro_parede', { texto: 'POLÍCIA', cor: '#1d3b72' }, [-9.5, 6.4, -10.8]); por('bandeira', {}, [-11.0, 0.2, -10.3], 0, 0.6);
       por('cadeiras_espera', { n: 3, cor: '#5a5d66' }, [7.5, 0.2, -9.9]); por('cadeiras_espera', { n: 2, cor: '#5a5d66' }, [10.8, 0.2, -4.0], -90);
-      por('mural', { texto: 'PROCURADOS', largura: 3.4, altura: 2.2, cor: '#f5e6b8', cor_texto: '#c4281c' }, [11.75, 5.2, -8.0], -90);
+      por('mural', { texto: 'PROCURADOS', largura: 3.4, altura: 2.2, cor: '#f5e6b8', cor_texto: '#c4281c' }, [11.55, 5.2, -8.0], -90);
       por('mural', { texto: 'DISQUE 190', largura: 3, altura: 1.4, cor: '#1d3b72', cor_texto: '#ffffff' }, [7.5, 6.2, -10.8]);
-      por('bebedouro', {}, [-11.0, 0.2, -2.0], 90); por('relogio_parede', {}, [-11.75, 6.5, -6.0], 90); por('extintor', {}, [3.8, 0.2, -10.6]);
-      por('planta', {}, [11.0, 0.2, -1.0]); por('lixeira', { cor: '#5a5d66' }, [-3.6, 0.2, -1.0], 0, 0.7); por('camera_seguranca', {}, [-11.7, 8.6, -10.5], 135);
+      por('bebedouro', {}, [-11.0, 0.2, -2.0], 90); por('relogio_parede', {}, [-11.55, 6.5, -6.0], 90); por('extintor', {}, [3.8, 0.2, -10.6]);
+      por('planta', {}, [11.0, 0.2, -1.0]); por('lixeira', { cor: '#5a5d66' }, [-3.6, 0.2, -1.0], 0, 0.7); por('camera_seguranca', {}, [-11.5, 8.6, -10.5], 135);
       por('ventilador_teto', {}, [-6, 10.2, -5]); por('ventilador_teto', {}, [6, 10.2, -5]);
-      // corredor
-      por('banco', { cor: '#5a5d66' }, [-2.2, 0.2, -15.5], 90); por('extintor', {}, [2.7, 0.2, -12.0], -90); por('arquivo', {}, [2.0, 0.2, -18.0], -90);
-      por('mural', { texto: 'SILÊNCIO', largura: 2.6, altura: 1.2, cor: '#ffffff', cor_texto: '#1d3b72' }, [-2.75, 5.4, -18.5], 90); por('camera_seguranca', {}, [2.8, 8.6, -12.0], -90);
+      // corredores
+      por('banco', { cor: '#5a5d66' }, [-2.2, 0.2, -15.5], 90); por('extintor', {}, [2.7, 0.2, -12.0], -90); por('arquivo', {}, [2.0, 0.2, -17.5], -90);
+      por('mural', { texto: 'SILÊNCIO', largura: 2.6, altura: 1.2, cor: '#ffffff', cor_texto: '#1d3b72' }, [-2.75, 5.4, -17.5], 90); por('camera_seguranca', {}, [2.8, 8.6, -12.0], -90);
+      por('bebedouro', {}, [-11.2, 0.2, -25.0], 90); por('extintor', {}, [11.6, 0.2, -25.0], -90); por('mural', { texto: 'CASOS RESOLVIDOS: 128', largura: 4, altura: 1.2, cor: '#1d3b72', cor_texto: '#ffd23f' }, [0, 7.2, -26.8]);
       // sala do delegado
       por('mesa_escritorio', {}, [-7.5, 0.2, -17.8], 180); por('poltrona', { cor: '#2a1a12' }, [-7.5, 0.2, -20.4]); por('computador', {}, [-9.3, 0.35, -18.4], 180);
       por('cadeira', { cor: '#5a3a22' }, [-10.4, 0.2, -14.4], 150); por('quadro_parede', { texto: 'DELEGADO', cor: '#1d3b72' }, [-7.5, 6.4, -22.75]); por('bandeira', {}, [-11.0, 0.2, -22.2], 0, 0.55);
-      por('arquivo', {}, [-11.0, 0.2, -18.6], 90); por('estante', {}, [-11.15, 0.2, -13.8], 90, 0.7); por('relogio_parede', {}, [-11.75, 7.4, -18.6], 90); por('planta', {}, [-11.0, 0.2, -16.8]);
+      por('arquivo', {}, [-11.0, 0.2, -18.6], 90); por('estante', {}, [-11.15, 0.2, -13.8], 90, 0.7); por('relogio_parede', {}, [-11.55, 7.4, -18.6], 90); por('planta', {}, [-11.0, 0.2, -16.8]);
       // interrogatório: mesa no meio, suspeito e policial frente a frente (de perfil para a câmera), luz pendente, vidro espelhado
       por('mesa', { largura: 3.2, cor: '#7a7d85' }, [7.5, 0.2, -18.0], 90); por('cadeira', { cor: '#5a5d66' }, [5.4, 0.2, -18.0], 90); por('cadeira', { cor: '#1d3b72' }, [9.6, 0.2, -18.0], -90);
-      por('luminaria_pendente', {}, [7.5, 10.2, -18.0]); por('espelho_falso', { largura: 5 }, [7.5, 5.0, -22.75]); por('camera_seguranca', {}, [11.7, 8.6, -12.0], -135);
+      por('luminaria_pendente', {}, [7.5, 10.2, -18.0]); por('espelho_falso', { largura: 5 }, [7.5, 5.0, -22.75]); por('camera_seguranca', {}, [11.5, 8.6, -12.0], -135);
       solto(grupo([caixa(1.0, 0.05, 1.3, '#ffffff', { pos: [7.2, 2.47, -18.3], rot: [0, 12, 0], sombra: false }), caixa(0.9, 0.05, 1.2, '#f5e6b8', { pos: [7.9, 2.48, -17.6], rot: [0, -8, 0], sombra: false })]));   // papéis do depoimento
-      // carceragem: 3 celas com grades de frente para a câmera
-      for (const x of [-8, 0, 8]) { por('cela', { largura: 7.8 }, [x, 0.2, -28.5]); por('banco_cela', {}, [x - 0.6, 0.2, -33.1]); por('vaso_sanitario', {}, [x + 2.6, 0.2, -33.0]); }
-      solto(grupo([caixa(0.35, 1.8, 0.2, '#f5e6b8', { pos: [-8, 5.5, -28.3] }), caixa(0.35, 1.8, 0.2, '#f5e6b8', { pos: [0, 5.5, -28.3] }), caixa(0.35, 1.8, 0.2, '#f5e6b8', { pos: [8, 5.5, -28.3] })]));   // número das celas (faixa)
-      por('mesa', { largura: 3, cor: '#5a5d66' }, [10.4, 0.2, -24.6], -90); por('cadeira', { cor: '#1d3b72' }, [8.6, 0.2, -24.6], 90); por('extintor', {}, [-11.6, 0.2, -24.0], 90);
-      por('camera_seguranca', {}, [-11.7, 8.6, -23.6], 135);
+      // sala de investigação do detetive: quadro com fotos e fios vermelhos, mapa com alfinetes, mesas com computador, mesa central com pastas e café
+      por('quadro_investigacao', { largura: 8, altura: 4.5, texto: 'CASO 07 · QUEM FOI?' }, [-6, 5.2, -43.5]);
+      por('mapa_parede', {}, [-11.55, 5.4, -37.0], 90); por('mural', { texto: 'LINHA DO TEMPO: 20h · 21h · 23h ?', largura: 4.6, altura: 2.2, cor: '#ffffff', cor_texto: '#1d3b72' }, [-0.25, 5.2, -37.5], -90);
+      por('mesa_trabalho', { largura: 4, cor: '#5a3a22' }, [-10.5, 0.2, -29.4], 90); por('cadeira', { cor: '#2a1a12' }, [-8.4, 0.2, -29.4], -90);
+      por('mesa_trabalho', { largura: 4, cor: '#5a3a22' }, [-1.5, 0.2, -29.4], -90); por('cadeira', { cor: '#2a1a12' }, [-3.6, 0.2, -29.4], 90);
+      por('mesa', { largura: 4, cor: '#7c5c46' }, [-6, 0.2, -34.0]); por('cadeira', { cor: '#2a1a12' }, [-6, 0.2, -35.7]);
+      por('pastas_caso', { n: 4 }, [-7.0, 2.55, -33.9]); por('pastas_caso', { n: 2, seed: 9 }, [-4.9, 2.55, -34.2]); por('cafe', {}, [-5.6, 2.55, -33.3]); por('cafe', {}, [-10.2, 2.55, -28.4]);
+      por('luminaria_pendente', {}, [-6, 10.2, -34.0]); por('arquivo', {}, [-11.0, 0.2, -42.6], 90); por('arquivo', {}, [-1.0, 0.2, -42.6], -90);
+      por('pilha_caixas', { n: 3, cor: '#c8a06a', seed: 6 }, [-10.9, 0.2, -39.8]);
+      por('relogio_parede', {}, [-6, 8.6, -43.5]); por('lixeira', { cor: '#5a5d66' }, [-4.6, 0.2, -27.9], 0, 0.7);
+      // carceragem: 2 celas com grades de frente para a câmera e a mesa do carcereiro
+      for (const x of [3, 9]) { por('cela', { largura: 5.8 }, [x, 0.2, -38.5]); por('banco_cela', { largura: 3.4 }, [x - 0.6, 0.2, -43.1]); por('vaso_sanitario', {}, [x + 1.8, 0.2, -43.0]); }
+      solto(grupo([caixa(0.35, 1.8, 0.2, '#f5e6b8', { pos: [3, 5.5, -38.3] }), caixa(0.35, 1.8, 0.2, '#f5e6b8', { pos: [9, 5.5, -38.3] })]));   // faixa com o número das celas
+      por('mesa', { largura: 3, cor: '#5a5d66' }, [10.4, 0.2, -30.0], -90); por('cadeira', { cor: '#1d3b72' }, [8.6, 0.2, -30.0], 90); por('extintor', {}, [0.5, 0.2, -28.0], 90);
+      por('camera_seguranca', {}, [11.5, 8.6, -27.6], -135);
       return {
         recepcao: { atender: [-5.5, 0.2, -9.3, 0], fila: { inicio: [-5.5, -5.6], vira: 180, cresce: [0.3, 1] }, sentar: [7.5, 0.2, -9.8, 0] },
         corredor: {},
         sala_delegado: { sentar: [-7.5, 0.2, -20.1, 0], assinar: [-7.5, 0.2, -20.1, 0], atender: [-7.5, 0.2, -20.1, 0] },
         interrogatorio: { sentar: [5.4, 0.2, -18.0, 90] },
-        carceragem: { segurar_grade: [0, 0.2, -29.5, 0], atender: [6.0, 0.2, -25.6, 0], sentar: [0, 0.2, -33.0, 0] },
+        sala_investigacao: { atender: [-6, 0.2, -42.0, 0], sentar: [-6, 0.2, -35.5, 0] },
+        carceragem: { segurar_grade: [3, 0.2, -39.5, 0], atender: [7.5, 0.2, -34.0, 0], sentar: [2.4, 0.2, -43.0, 0] },
       }; } },
   bar: { tam: [16, 15, 9], w: 10, d: 10, h: 5.5, cor: '#f5cd30', faixa: '#c4281c', piso: '#8a6a4a', letreiro: { texto: 'BAR DO ZÉ', fundo: '#c4281c' }, porta: { x: -2, w: 3.4, cor: '#3a3d44' }, vitrines: [{ x: 2.8, w: 3 }],
     interior(gi) { por(gi, 'prateleira_garrafas', { largura: 8 }, [0, -1.2, -9.4]); por(gi, 'balcao', { largura: 7, cor: '#7a4a2a', tampo: '#5a3a22' }, [0, 0.2, -6.8]);
@@ -437,7 +453,7 @@ export const LOTES_MUNDO = [
   { id: 'prefeitura', f: [-28, -FR], rot: 0 }, { id: 'igreja', f: [0, -FR], rot: 0 }, { id: 'banco', f: [26, -FR], rot: 0 },
   { id: 'escola', f: [-31, FR], rot: 180 }, { id: 'posto_saude', f: [15, FR], rot: 180 },
   { id: 'padaria', f: [-FR, -29.5], rot: 90 }, { id: 'farmacia', f: [-FR, -9.5], rot: 90 }, { id: 'loterica', f: [-FR, 10], rot: 90 }, { id: 'bar', f: [-FR, 29.5], rot: 90 },
-  { id: 'mercado', f: [FR, -24], rot: -90 }, { id: 'delegacia', f: [FR, 38], rot: -90 },   // mais ao sul: o fundo (x até 86) passa ao lado do posto de gasolina
+  { id: 'mercado', f: [FR, -24], rot: -90 }, { id: 'delegacia', f: [FR, 38], rot: -90 },   // mais ao sul: o fundo (x até 96) passa ao lado do posto de gasolina
 ];
 const CASA_LOTE = { id: 'casa', f: [78 + BX, -12], rot: 0 };
 const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { f: [0, 6.5], rot: 0, recuo: 2.5, chao: 0.45 }, fonte: { f: [13.9, -13.9], rot: -45, recuo: 6.6, chao: 0.45 },
@@ -609,7 +625,7 @@ function povoar(g, n, r) {
   loja(g, 139 + BX, -9, 0, 'OFICINA', '#3a3d44', 11, n, '#cfd3da'); por(g, 'carro', { cor: '#1d3b72' }, [139 + BX, 0.2, -7.4], 90, 0.9);
   loja(g, 178 + BX, 9, 180, 'BORRACHARIA', '#f5b800', 8, n); for (let i = 0; i < 3; i++) g.add(cilindro(0.9, 0.9, 0.6, '#1b1b1b', { pos: [181.5 + BX, 0.5 + i * 0.62, 7.6], seg: 14 }));
   for (let x = 74 + BX; x <= 204 + BX; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x, 0, lado * 52], lado > 0 ? 180 : 0);
-  for (const lado of [-1, 1]) g.add(caixa(162, 0.2, 7, '#4f5361', { pos: [139 + BX, 0.11, lado * 40] }));   // ruas paralelas (longe o bastante da casa do protagonista, que é funda, e começando depois do fundo da delegacia)
+  for (const lado of [-1, 1]) g.add(caixa(150, 0.2, 7, '#4f5361', { pos: [145 + BX, 0.11, lado * 40] }));   // ruas paralelas (longe o bastante da casa do protagonista, que é funda, e começando depois do fundo da delegacia)
   campinho(g, n, r);
   for (let i = 0; i < 10; i++) por(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(55 + BX, 200 + BX), 0, r.item([-1, 1]) * r.entre(60, 66)]);
 }

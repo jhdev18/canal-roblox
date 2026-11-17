@@ -55,7 +55,7 @@ com vários cômodos**, padaria, farmácia, lotérica, bar, mercado), uma rua de
   atores: [valentao deitar]
 - onde: mundo
   local: delegacia
-  comodo: carceragem              # recepcao | corredor | sala_delegado | interrogatorio | carceragem
+  comodo: carceragem              # recepcao | corredor | sala_delegado | interrogatorio | sala_investigacao | carceragem
   atores: [ladrao segurar_grade, policial]
 - onde: mundo
   local: vista                    # cidade inteira de cima (cam: alto + dist: 7)
@@ -65,7 +65,7 @@ com vários cômodos**, padaria, farmácia, lotérica, bar, mercado), uma rua de
 praca, coreto, fonte, parquinho, estatua, rua_bairro, campinho (campo de futebol do bairro, entre o mercadinho e a borracharia, com gramado dos lados), posto_gasolina, vista.
 
 - **Escala:** tudo é medido pelo personagem (5,2 de altura, 2 de largura; ~3 studs por metro). Portas com 6,2 de altura, assentos com 2,2–2,4 de largura na altura da pose `sentar`, bancadas de cozinha na cintura. Ao criar móvel novo, siga essas medidas e não use escala menor que 1 em móveis de uso.
-- **Tamanho dos prédios:** ambientes grandes, no estilo Roblox (farmácia 18×18 com teto de 10; prefeitura 32×22; igreja 20×32 com teto de 15; escola 30×40, posto de saúde 24×40 e delegacia 24×34, com cômodos). A praça tem um calçadão arborizado em volta, depois o anel de ruas.
+- **Tamanho dos prédios:** ambientes grandes, no estilo Roblox (farmácia 18×18 com teto de 10; prefeitura 32×22; igreja 20×32 com teto de 15; escola 30×40, posto de saúde 24×40 e delegacia 24×44, com cômodos). A praça tem um calçadão arborizado em volta, depois o anel de ruas.
 - **Mapa com os nomes:** `docs/preview/mapa_mundo.jpg`. Interiores de todos os prédios: `docs/preview/interiores_mundo.jpg`. Câmera de cima para cenas: `cam: mapa` (e `alvo_xz: [x, z]` para escolher o centro).
 - **Só o local gravado existe na cena:** o resto do mundo é removido ao montar cada cena (mais leve para a GPU).
   Alcance padrão: 80 na calçada, 45 dentro de prédio, só a casa num cômodo, mapa inteiro na `vista`. Mude com `alcance: 120` na cena.
@@ -80,10 +80,13 @@ praca, coreto, fonte, parquinho, estatua, rua_bairro, campinho (campo de futebol
   - **Posto de saúde** (24×40, teto 10): **recepcao** (balcão com `atender`, `fila`, cadeiras de espera), **corredor** com o **consultorio** à esquerda
     (médico e paciente frente a frente na mesa: `sentar`; maca no fundo: `deitar`) e a **sala_exames** à direita (maca: `deitar`, monitor cardíaco, raio-x, balança), e a **enfermaria** no fundo
     (3 leitos com biombos, soro e monitor; `sentar` = sentado no leito do meio, `deitar` = deitado nele).
-  - **Delegacia** (24×34, teto 10): **recepcao** (plantão 24h: balcão com `atender`, `fila`, cadeiras de espera, mural PROCURADOS), **corredor** com a
+  - **Delegacia** (24×44, teto 10): **recepcao** (plantão 24h: balcão com `atender`, `fila`, cadeiras de espera, mural PROCURADOS), **corredor** com a
     **sala_delegado** à esquerda (mesa, poltrona, bandeira; `sentar`/`assinar`/`atender` = poltrona do delegado) e o **interrogatorio** à direita
-    (mesa no meio com luz pendente e vidro espelhado; `sentar` = cadeira do suspeito, de perfil — o policial fica do outro lado), e a **carceragem** no fundo
-    (3 celas com grades de frente para a câmera; `segurar_grade` = preso na cela do meio, `sentar` = banco da cela, `atender` = carcereiro do lado de fora).
+    (mesa no meio com luz pendente e vidro espelhado; `sentar` = cadeira do suspeito, de perfil — o policial fica do outro lado). O corredor segue até o fundo, onde ficam
+    a **sala_investigacao** do detetive (quadro de cortiça "CASO 07 · QUEM FOI?" com fotos, post-its e fios vermelhos, mapa da cidade com alfinetes, linha do tempo,
+    duas mesas com computador, mesa central com pastas e café sob a luz pendente, arquivos e caixas de evidência; `atender` = em pé na frente do quadro,
+    `sentar` = mesa central, de frente para a câmera) e a **carceragem** (2 celas com grades de frente para a câmera; `segurar_grade` = preso na cela 1,
+    `sentar` = banco da cela, `atender` = carcereiro do lado de fora).
     As grades nunca somem no corte (dá para ver o preso através delas).
 - Todas as âncoras continuam funcionando (`atender`, `fila: N`, `rezar`, `segurar_grade`, `sentar`, `deitar`, `jogar_pc`, `cozinhar`…).
 - **Assentos de verdade:** no mundo, `sentar` e `rezar` usam os assentos reais (cadeiras, carteiras, cadeiras de espera, bancos da igreja, da praça e do refeitório, sofá, poltrona, banquetas, leitos). Cada personagem pega o assento livre mais perto do ponto principal; vários sentados não se sobrepõem.
@@ -255,7 +258,7 @@ Campos: `pele, camisa, calca, rosto, extras, acessorios, roupa, cabelo_cor, esca
 arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, cadeira, cama, sofa, tv, computador, planta, presente, caixa_correio, cerca, porta, caixao, bolo,
 semaforo (`luz: verde`), onibus (`texto`), taxi, viatura, hidrante, lixeira, faixa_pedestre, loja (`texto`, `cor`), arranha_ceu, fonte, estatua (`texto`), bandeira (`cores`), palanque (`texto`), barraca, outdoor (`texto`), mesa_escritorio, poltrona, estante, quadro_parede (`texto`),
 **móveis de casa:** cadeira_gamer, guarda_roupa, cortina, cama_casal, criado_mudo, comoda, tapete, mesa_centro, escada, vaso_sanitario, pia_banheiro, box_chuveiro, porta_retrato, painel_ferramentas, luminaria, poster (`texto`),
-**móveis de interior:** balcao, prateleira, gondola, geladeira_vitrine, caixa_registradora, carrinho_compras, guiche (`numero`), banco_igreja, altar, cruz_parede, vitral, cela, sinuca, banqueta, prateleira_garrafas, tv_parede, estufa_paes, cadeiras_espera, maca, mesa_trabalho, arquivo, bebedouro, fila_cordao, mural (`texto`), relogio_parede, ventilador_teto, extintor, pilha_caixas (`n`, `cor`), banca_frutas, placa_suspensa (`texto`, `cor`), cofre, castical, suporte_soro, quadro_negro (`texto`, `largura`), armario_escolar (`n`, `cor`), estante_livros (`largura`, `altura`), mesa_refeitorio (`largura`, com bancos e assentos), globo, leito (`cor` do cobertor; assento sentado na cama), biombo, monitor_cardiaco, negatoscopio, balanca, cadeira_rodas, banco_cela (com assentos), luminaria_pendente, espelho_falso, camera_seguranca,
+**móveis de interior:** balcao, prateleira, gondola, geladeira_vitrine, caixa_registradora, carrinho_compras, guiche (`numero`), banco_igreja, altar, cruz_parede, vitral, cela, sinuca, banqueta, prateleira_garrafas, tv_parede, estufa_paes, cadeiras_espera, maca, mesa_trabalho, arquivo, bebedouro, fila_cordao, mural (`texto`), relogio_parede, ventilador_teto, extintor, pilha_caixas (`n`, `cor`), banca_frutas, placa_suspensa (`texto`, `cor`), cofre, castical, suporte_soro, quadro_negro (`texto`, `largura`), armario_escolar (`n`, `cor`), estante_livros (`largura`, `altura`), mesa_refeitorio (`largura`, com bancos e assentos), globo, leito (`cor` do cobertor; assento sentado na cama), biombo, monitor_cardiaco, negatoscopio, balanca, cadeira_rodas, banco_cela (com assentos), luminaria_pendente, espelho_falso, camera_seguranca, quadro_investigacao (`texto`, `largura`, `seed`), mapa_parede (`texto`), pastas_caso (`n`), cafe,
 **prédios da cidade pequena (fachada em z=0):** farmacia, loterica, padaria, mercado, agencia_bancaria, prefeitura, igreja, escola, posto_saude, delegacia, bar, posto_gasolina, coreto (todos aceitam `texto` para trocar o letreiro),
 casa_br / sobrado (`cor`, `telhado`, `grade: false`, `caixa_dagua: false`), muro (`largura`, `cor`, `portao_x`, `portao: false`), portao, cerca_viva, caixa_dagua, poste_fios, churrasqueira, piscina, varal, casinha_cachorro, cachorro / gato (`cor`), bicicleta, moto (`bau: true`), balanco, escorregador, trave, bola, geladeira, fogao, pia, armario, mesa_jantar, cadeira_plastico, saco_lixo, vaso_flor, lombada
 

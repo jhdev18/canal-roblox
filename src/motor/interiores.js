@@ -135,6 +135,31 @@ export const MOVEIS = {
   espelho_falso: (o = {}) => { const w = o.largura || 5; return grupo([caixa(w + 0.4, 3.4, 0.15, '#5a5d66'), caixa(w, 3.0, 0.18, mat('#1c2430', { rough: 0.05, metal: 0.8 }), { sombra: false })]); },   // vidro da sala de interrogatório (na parede)
   camera_seguranca: () => grupo([caixa(0.3, 0.3, 0.6, '#d8dde3', { pos: [0, 0, 0.3] }), caixa(0.5, 0.5, 1.0, '#e9ebef', { pos: [0, -0.3, 0.8], rot: [20, 0, 0] }),
     cilindro(0.15, 0.15, 0.1, mat('#111', { emissive: '#ff2020', emissiveIntensity: 0.5 }), { pos: [0, -0.48, 1.3], rot: [110, 0, 0], seg: 10, sombra: false })]),   // presa na parede (frente em +Z)
+  quadro_investigacao: (o = {}) => { const w = o.largura || 8, h = o.altura || 4.5, r = rng(o.seed ?? 7), g = grupo([caixa(w + 0.3, h + 0.3, 0.15, '#5a3a22'), caixa(w, h, 0.18, '#b98a55', { sombra: false })]);
+    const pins = [], cols = 4, lins = 2, topo = o.texto ? 0.7 : 0;
+    for (let j = 0; j < lins; j++) for (let i = 0; i < cols; i++) { const x = -w / 2 + w / cols * (i + 0.5) + r.entre(-0.3, 0.3), y = (h - topo) / 2 * (j ? -0.5 : 0.5) - topo / 2 + r.entre(-0.2, 0.2);
+      g.add(caixa(1.05, 1.25, 0.04, '#ffffff', { pos: [x, y, 0.11], rot: [0, 0, r.entre(-8, 8)], sombra: false }));                              // foto
+      g.add(caixa(0.85, 0.8, 0.05, r.item(['#8fc1e3', '#c9b2e8', '#f2a7c3', '#b7e1a1', '#d8d4cc']), { pos: [x, y + 0.12, 0.12], sombra: false }));
+      g.add(caixa(0.36, 0.36, 0.06, r.item(['#f5cd30', '#cc8e69', '#f1c9a5', '#7c5040']), { pos: [x, y + 0.16, 0.13], sombra: false }));        // cabeça de quem está na foto
+      g.add(caixa(0.6, 0.22, 0.06, r.item(['#1d3b72', '#c4281c', '#1f1f24', '#2e7d32']), { pos: [x, y - 0.15, 0.13], sombra: false }));
+      if ((i + j) % 3 === 1) g.add(caixa(1.2, 0.08, 0.07, '#c4281c', { pos: [x, y + 0.12, 0.15], rot: [0, 0, 40], sombra: false }));           // riscado (descartado)
+      pins.push([x, y + 0.55]); g.add(esfera(0.09, '#e53935', { pos: [x, y + 0.55, 0.17], sombra: false })); }
+    for (const [a, b] of [[0, 5], [5, 2], [2, 7], [1, 5], [6, 3], [4, 1], [6, 2]]) { const [x0, y0] = pins[a], [x1, y1] = pins[b], L = Math.hypot(x1 - x0, y1 - y0);   // fios vermelhos
+      g.add(caixa(L, 0.035, 0.02, '#e01b1b', { pos: [(x0 + x1) / 2, (y0 + y1) / 2, 0.18], rot: [0, 0, Math.atan2(y1 - y0, x1 - x0) / RAD], sombra: false })); }
+    for (let k = 0; k < 6; k++) g.add(caixa(0.45, 0.45, 0.04, r.item(['#fff176', '#ffcc80', '#a5d6a7']), { pos: [r.entre(-w / 2 + 0.4, w / 2 - 0.4), r.entre(-h / 2 + 0.3, h / 2 - 0.4 - topo), 0.14], rot: [0, 0, r.entre(-15, 15)], sombra: false }));   // post-its
+    if (o.texto) placa(g, o.texto, w * 0.7, 0.6, [0, h / 2 - 0.42, 0.12], { fundo: '#1f1f24', corTexto: '#ffffff' });
+    return g; },   // pendurado na parede (centro = pos)
+  mapa_parede: (o = {}) => { const w = o.largura || 4.5, h = o.altura || 3.2, r = rng(o.seed ?? 3), g = grupo([caixa(w + 0.25, h + 0.25, 0.12, '#3a3d44'), caixa(w, h, 0.15, '#8fd07a', { sombra: false })]);
+    for (const [x, ww, hh] of [[0, w, 0.18], [-w * 0.25, 0.18, h], [w * 0.22, 0.18, h]]) g.add(caixa(ww, hh, 0.04, '#9aa0aa', { pos: [x, x === 0 ? h * 0.1 : 0, 0.09], sombra: false }));   // ruas
+    for (let k = 0; k < 10; k++) g.add(caixa(r.entre(0.3, 0.6), r.entre(0.3, 0.5), 0.05, r.item(['#e9e6dc', '#f2a7c3', '#8fc1e3', '#ffe08a']), { pos: [r.entre(-w / 2 + 0.4, w / 2 - 0.4), r.entre(-h / 2 + 0.4, h / 2 - 0.4), 0.1], sombra: false }));
+    g.add(caixa(0.9, 0.9, 0.05, '#e6dcc6', { pos: [0, 0, 0.1], sombra: false }));                                                         // praça
+    for (let k = 0; k < 5; k++) g.add(esfera(0.11, '#e53935', { pos: [r.entre(-w / 2 + 0.4, w / 2 - 0.4), r.entre(-h / 2 + 0.4, h / 2 - 0.4), 0.18], sombra: false }));
+    placa(g, o.texto || 'MAPA DA CIDADE', w * 0.6, 0.45, [0, h / 2 + 0.4, 0.05], { fundo: '#3a3d44', corTexto: '#ffffff' });
+    return g; },   // pendurado na parede
+  pastas_caso: (o = {}) => { const r = rng(o.seed ?? 4), g = grupo([]);
+    for (let i = 0; i < (o.n || 3); i++) g.add(caixa(1.1, 0.08, 0.85, r.item(['#e8c68a', '#c9a26b', '#8fc1e3']), { pos: [r.entre(-0.3, 0.3), 0.04 + i * 0.09, r.entre(-0.2, 0.2)], rot: [0, r.entre(-25, 25), 0] }));
+    g.add(caixa(0.9, 0.02, 0.7, '#ffffff', { pos: [0.1, 0.04 + (o.n || 3) * 0.09, 0], rot: [0, 10, 0], sombra: false })); return g; },   // em cima da mesa
+  cafe: () => grupo([cilindro(0.17, 0.14, 0.35, '#ffffff', { pos: [0, 0.17, 0], seg: 12 }), cilindro(0.15, 0.15, 0.02, '#4a2c1a', { pos: [0, 0.34, 0], seg: 12, sombra: false })]),   // xícara (em cima da mesa)
   // --- posto de saúde ---
   leito: (o = {}) => { const c = '#d8dde3', g = grupo([caixa(3.2, 0.35, 7, c, { pos: [0, 1.6, 0] }), caixa(3.0, 0.55, 6.8, '#f2f3f3', { pos: [0, 2.05, 0] }),
       caixa(2.2, 0.4, 1.2, '#ffffff', { pos: [0, 2.5, -2.8], round: 0.15 }), caixa(3.05, 0.6, 3.6, o.cor || '#7fb8d8', { pos: [0, 2.1, 1.5] }),
