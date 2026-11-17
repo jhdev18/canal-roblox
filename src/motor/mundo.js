@@ -220,7 +220,7 @@ function praca(g, n, r) {
   // bancos: 4 em volta do coreto (nas diagonais, virados para ele) + 8 na calçada interna (virados para o centro)
   for (let k = 0; k < 4; k++) { const ang = (45 + k * 90) * RAD; por(g, 'banco', {}, [Math.sin(ang) * 7.0, 0.45, Math.cos(ang) * 7.0], ang / RAD + 180); }
   for (const s2 of [-1, 1]) for (const t of [-12, 12]) { por(g, 'banco', {}, [t, 0.45, s2 * 24.6], s2 > 0 ? 180 : 0); por(g, 'banco', {}, [s2 * 24.6, 0.45, t], s2 > 0 ? -90 : 90); }
-  for (const [x, z] of [[-4.6, 25], [4.6, 25], [-4.6, -25], [4.6, -25], [25, 4.6], [25, -4.6], [-25, 4.6], [-25, -4.6], [-6.2, 6.2], [6.2, 6.2], [-6.2, -6.2], [6.2, -6.2]])
+  for (const [x, z] of [[-4.6, 25], [4.6, 25], [-4.6, -25], [4.6, -25], [25, 4.6], [25, -4.6], [-25, 4.6], [-25, -4.6]])
     por(g, 'poste', { noite: n }, [x, 0.45, z], x < 0 ? 0 : 180);
   por(g, 'barraca', { cor: '#c4281c' }, [-15, 0.45, 4.9], 0, 0.75); por(g, 'bandeira', {}, [8, 0.45, -24.8]);
   for (let i = 0; i < 8; i++) g.add(esfera(0.28, '#8d8f99', { pos: [r.entre(-2.5, 2.5), 0.75, r.entre(9, 16)] }));
