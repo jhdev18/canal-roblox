@@ -265,6 +265,10 @@ function decoracao(v) { if (v === undefined || v === null || v === '') return DE
 const QUARTA_PAREDE = 3, CW = CASA.w * CSX, CD = CASA.d * CSZ, TELHADO = 8.5, SOTAO = CASA.h + 0.31;   // casa ampliada (41,6 x 29); cumeeira 8,5 acima do forro: dá para ficar de pé no sótão
 const COMODOS_MUNDO = Object.fromEntries(Object.entries({ sala: [-6, -5], cozinha: [7, -5], quarto: [-8.5, -15], quarto_menina: [-8.5, -15], banheiro: [-0.5, -15], quarto_pais: [8, -15] }).map(([k, [x, z]]) => [k, [x * CSX, z * CSZ]]));
 COMODOS_MUNDO.sotao = [-3, -CD / 2];
+/** Retângulo real do cômodo [x0, x1, z0, z1] (coordenadas da casa ampliada). */
+function retComodo(c) { if (c === 'sotao') return [-CW / 2, CW / 2, -CD, 0];
+  const C = { sala: [-13, 1, -10, 0], cozinha: [1, 13, -10, 0], quarto: [-13, -4, -20, -10], quarto_menina: [-13, -4, -20, -10], banheiro: [-4, 3, -20, -10], quarto_pais: [3, 13, -20, -10] }[c] || [-13, 13, -20, 0];
+  return [C[0] * CSX, C[1] * CSX, C[2] * CSZ, C[3] * CSZ]; }
 function casaProtagonista(ctx) {
   const { n, unidades, portas, foco } = ctx, { w, d, h } = CASA, g = new THREE.Group(), D = decoracao(ctx.decoracao), cor = D.fachada, inte = D.parede;
   const qual = (x, z) => z > -10 ? (x < 1 ? 'sala' : 'cozinha') : (x < -4 ? 'quarto' : x < 3 ? 'banheiro' : 'quarto_pais');
@@ -587,6 +591,8 @@ export function enquadrarMundo(g, { local, dentro, comodo }) {
     else if (dentro) { lp = [0, -(ref?.userData.d || 12) * 0.42]; chao = 0.4; }
     const [dx, dz] = rot(lp[0], lp[1], rb); S = [lote.f[0] + dx, lote.f[1] + dz];
     if (dentro || comodo) ancLocal = ref?.userData.ancoras || {};
+    if (comodo && local === 'casa' && Array.isArray(ancLocal.sentar?.[0])) { const Q = retComodo(comodo); ancLocal = { ...ancLocal, sentar: ancLocal.sentar.filter(p => p[0] > Q[0] && p[0] < Q[1] && p[2] > Q[2] && p[2] < Q[3]) };   // só assentos do próprio cômodo
+      if (!ancLocal.sentar.length) delete ancLocal.sentar; }
     if (comodo && Array.isArray(ancLocal.sentar?.[0])) ancLocal = { ...ancLocal, sentar: ancLocal.sentar.slice().sort((p, q) => Math.hypot(p[0] - lp[0], p[2] - lp[1]) - Math.hypot(q[0] - lp[0], q[2] - lp[1])) };   // no cômodo, senta nos assentos dele
   } else if (pto) { const rb = pto.rot * RAD; r = pto.rot; S = [pto.f[0] + Math.sin(rb) * pto.recuo, pto.f[1] + Math.cos(rb) * pto.recuo]; chao = pto.chao; }
   else { g.position.set(0, -0.45, 0); return { ancoras: {} }; }

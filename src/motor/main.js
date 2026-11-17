@@ -77,6 +77,7 @@ async function montar(c) {
   sol.color = cor(cen.sol.cor); sol.intensity = cen.sol.forca; hemi.color = cor(cen.hemi[0]); hemi.groundColor = cor(cen.hemi[1]); hemi.intensity = cen.hemi[2];
   for (const p of c.props || []) { const o = criarProp(p); if (o) raiz.add(o); }
   await carregarRostosPersonalizados((c.atores || []).flatMap(a => [a.rosto, a.spec?.rosto]).filter(Boolean));
+  for (const a of c.atores || []) if (a.acao === 'sentar' && a.y === undefined && !cen.ancoras.sentar) { console.warn(`[motor] ${a.id}: não há assento neste lugar — fica de pé (use outro cômodo ou y:)`); a.acao = 'parado'; }   // nada de sentar no ar
   const bases = posicoes(c.atores || [], cen.ancoras);
   const atores = (c.atores || []).map((a, i) => {
     const p = criarPersonagem(a.spec); raiz.add(p.raiz);
