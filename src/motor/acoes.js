@@ -52,13 +52,63 @@ export const ACOES = {
   ajoelhar: (t) => { const b = respirar(poseBase(), t, 0.5); b.pd = [90, 0]; b.y = -1.0; b.cab[0] = 18; return b; },
   empurrar: (t) => { const b = poseBase(); const k = ease(t / 0.3); b.bd = [90 * k, -6]; b.be = [90 * k, -6]; b.tor[0] = 12 * k; b.frente = k * 0.6; return b; },
   tremer: (t) => { const b = poseBase(); b.dx = S(t * 50) * 0.06; b.bd = [10, 8]; b.be = [10, 8]; return b; },
+
+  // --- cidade / política / interação ---
+  discursar: (t) => { const b = respirar(poseBase(), t, 0.6); const g = S(t * 2.6); b.bd = [55 + g * 25, 20 + Math.max(0, g) * 25]; b.be = [20 - g * 10, 8];
+    b.cab = [-6 + S(t * 5) * 4, S(t * 1.3) * 18, 0]; b.tor[1] = S(t * 1.3) * 6; return b; },
+  acenar_multidao: (t) => { const b = respirar(poseBase(), t, 0.5); b.bd = [10, 150 + S(t * 9) * 15]; b.be = [10, 150 + S(t * 9 + 2) * 15]; b.cab = [-8, S(t * 1.5) * 25, 0]; return b; },
+  apertar_mao: (t) => { const b = respirar(poseBase(), t, 0.5); b.bd = [62 + S(t * 9) * 8, -12]; b.tor[0] = 5; b.cab[0] = 5; return b; },
+  continencia: (t) => { const b = poseBase(); b.bd = [100, 55]; b.cab[0] = -4; b.tor[0] = -2; return b; },
+  andar_confiante: (t, d, p) => { const b = ciclo(poseBase(), t, 1.4, 26, 1.3); b.tor[0] = -5; b.cab[0] = -8; b.tor[1] = S(t * TAU * 1.4) * 6; b.frente = t * (p.vel ?? 5); return b; },
+  andar_celular: (t, d, p) => { const b = ciclo(poseBase(), t, 1.5, 24); b.bd = [72, -8]; b.cab[0] = 20; b.frente = t * (p.vel ?? 4.5); return b; },
+  correr_medo: (t, d, p) => { const b = ciclo(poseBase(), t, 3.0, 55); b.bd = [60 + S(t * 25) * 40, 60]; b.be = [60 - S(t * 25) * 40, 60]; b.cab[0] = -12; b.frente = t * (p.vel ?? 16); return b; },
+  fugir: (t, d, p) => { const b = ciclo(poseBase(), t, 2.7, 55, 1.1); b.tor[0] = 12; b.cab[1] = 70; b.frente = t * (p.vel ?? 15); return b; },
+  carregar: (t, d, p) => { const b = ciclo(poseBase(), t, 1.4, 20, 0); b.bd = [75, -14]; b.be = [75, -14]; b.tor[0] = -4; b.frente = t * (p.vel ?? 3.5); return b; },
+  entrevistar: (t) => { const b = respirar(poseBase(), t, 0.5); b.bd = [72 + S(t * 3) * 4, -18]; b.cab[1] = -15; b.be = [20 + S(t * 2.5) * 12, 10]; return b; },
+  filmar: (t) => { const b = respirar(poseBase(), t, 0.3); b.bd = [95, -15]; b.be = [95, -15]; b.cab[0] = 4; return b; },
+  assinar: (t) => { const b = respirar(poseBase(), t, 0.4); b.bd = [55 + S(t * 14) * 4, -14 + S(t * 9) * 5]; b.be = [45, -10]; b.cab[0] = 28; b.tor[0] = 10; return b; },
+  cochichar: (t) => { const b = respirar(poseBase(), t, 0.4); b.bd = [130, -25]; b.tor[2] = -12; b.cab = [6, -20, -14]; return b; },
+  maos_pra_cima: (t) => { const b = poseBase(); b.bd = [0, 168]; b.be = [0, 168]; b.dx = S(t * 40) * 0.03; b.cab[0] = -6; return b; },
+  implorar: (t) => { const b = ACOES.ajoelhar(t); b.bd = [110 + S(t * 6) * 10, -15]; b.be = [110 + S(t * 6) * 10, -15]; b.cab[0] = -18; return b; },
+  espiar: (t) => { const b = respirar(poseBase(), t, 0.4); b.tor[2] = 16 + S(t * 1.5) * 4; b.cab = [0, 0, 12]; b.bd = [20, 5]; b.be = [-5, 8]; b.y = -0.15; return b; },
+  agachar: (t) => { const b = respirar(poseBase(), t, 0.4); b.y = -0.9; b.pd = [70, 4]; b.pe = [70, 4]; b.tor[0] = 18; b.bd = [60, -10]; b.be = [60, -10]; b.cab[0] = -12; return b; },
+  comemorar_vitoria: (t) => { const b = respirar(poseBase(), t, 0.5); const k = Math.abs(S(t * 7)); b.bd = [20 + k * 20, 130 + k * 35]; b.be = [40, 10]; b.y = k * 0.25; return b; },
+  rir: (t) => { const b = poseBase(); b.bd = [30, -20]; b.be = [30, -20]; b.tor[0] = 8 + Math.abs(S(t * 14)) * 8; b.cab[0] = -14; b.y = Math.abs(S(t * 14)) * 0.08; return b; },
+  negar: (t) => { const b = respirar(poseBase(), t, 0.4); b.cab[1] = S(t * 11) * 25; b.bd = [15, 15]; b.be = [15, 15]; return b; },
+  concordar: (t) => { const b = respirar(poseBase(), t, 0.4); b.cab[0] = 8 + S(t * 9) * 12; return b; },
+  cocar_cabeca: (t) => { const b = respirar(poseBase(), t, 0.4); b.bd = [150 + S(t * 16) * 6, 28]; b.cab = [6, 0, -10]; return b; },
+  girar: (t) => { const b = poseBase(); b.raiz[1] = (t * 360) % 360; b.bd = [0, 80]; b.be = [0, 80]; return b; },
+  desmaiar: (t) => { const b = poseBase(); const k = ease((t - 0.25) / 0.6); b.raiz = [90 * k, 0, 0]; b.y = 0.5 * k; b.dx = t < 0.25 ? S(t * 40) * 0.05 : 0; b.bd = [0, 10 + 40 * k]; b.be = [0, 10 + 40 * k]; return b; },
 };
+
+/** Ações que andam (usam `vel`, `caminho` e `ate`). */
+export const LOCOMOCAO = new Set(['andar', 'correr', 'andar_confiante', 'andar_celular', 'correr_medo', 'fugir', 'carregar']);
+
+/**
+ * Percorre um trajeto [[x,z],...] a partir de (x0,z0) por `dist` studs.
+ * Retorna { x, z, vira (graus), chegou }. vira 0 = olhando +Z (para a câmera), 90 = direita da tela.
+ */
+export function percorrer(x0, z0, caminho, dist) {
+  let px = x0, pz = z0, resto = Math.max(0, dist), vira = 0;
+  for (const [x, z] of caminho) {
+    const dx = x - px, dz = z - pz, L = Math.hypot(dx, dz);
+    if (L < 1e-6) continue;
+    vira = Math.atan2(dx, dz) * 180 / Math.PI;
+    if (resto <= L) return { x: px + dx * resto / L, z: pz + dz * resto / L, vira, chegou: false };
+    resto -= L; px = x; pz = z;
+  }
+  return { x: px, z: pz, vira, chegou: true };
+}
 
 /** Rosto padrão quando o roteiro não define `rosto` para o ator. */
 export const ROSTO_DA_ACAO = { chorar: 'chorando', assustar: 'assustado', bravo: 'bravo', comemorar: 'rindo', dormir: 'dormindo',
-  cair: 'assustado', triste: 'triste', pensar: 'pensativo', tremer: 'nervoso', dancar: 'feliz', socar: 'bravo' };
+  cair: 'assustado', triste: 'triste', pensar: 'pensativo', tremer: 'nervoso', dancar: 'feliz', socar: 'bravo',
+  discursar: 'confiante', andar_confiante: 'confiante', acenar_multidao: 'sorriso', correr_medo: 'assustado', fugir: 'assustado',
+  maos_pra_cima: 'assustado', implorar: 'triste', espiar: 'desconfiado', cochichar: 'malandro', comemorar_vitoria: 'rindo',
+  rir: 'rindo', negar: 'desconfiado', cocar_cabeca: 'pensativo', desmaiar: 'morto', apertar_mao: 'sorriso' };
 
 /** Objetos que aparecem na mão automaticamente com a ação. */
-export const PROP_DA_ACAO = { celular: 'celular', digitar: 'celular' };
+export const PROP_DA_ACAO = { celular: 'celular', digitar: 'celular', andar_celular: 'celular', entrevistar: 'microfone', filmar: 'filmadora',
+  carregar: 'caixa', assinar: 'caneta' };
 
 export const NOMES_ACOES = Object.keys(ACOES);

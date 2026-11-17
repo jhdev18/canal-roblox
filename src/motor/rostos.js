@@ -81,6 +81,10 @@ export const EXTRAS_ROSTO = {
     g.fillRect(118, OY - 18, 20, 8); g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(66, OY - 16, 14, 8); g.fillRect(146, OY - 16, 14, 8); },
   sardas: g => { for (const [x, y] of [[70, 140], [82, 150], [62, 152], [186, 140], [174, 150], [194, 152]]) oval(g, x, y, 3, 3, '#a0603a'); },
   blush: g => { oval(g, 66, 148, 16, 9, 'rgba(255,90,120,.45)'); oval(g, 190, 148, 16, 9, 'rgba(255,90,120,.45)'); },
+  mascara: g => { g.fillStyle = '#111'; g.beginPath(); g.roundRect(30, OY - 30, 196, 58, 24); g.fill();
+    g.globalCompositeOperation = 'destination-out'; for (const x of [OE, OD]) { g.beginPath(); g.ellipse(x, OY, 20, 16, 0, 0, 7); g.fill(); } g.globalCompositeOperation = 'source-over';
+    for (const x of [OE, OD]) oval(g, x, OY, 9, 12); },
+  cicatriz: g => { traco(g, [[168, 80], [196, 140]], 6, '#7a3020'); for (const k of [0.25, 0.5, 0.75]) traco(g, [[176 + 28 * k - 8, 80 + 60 * k], [176 + 28 * k + 8, 80 + 60 * k - 4]], 4, '#7a3020'); },
   cilios: g => { for (const x of [OE, OD]) for (const k of [-1, 0, 1]) traco(g, [[x + k * 9, OY - 18], [x + k * 14, OY - 32]], 5); },
 };
 

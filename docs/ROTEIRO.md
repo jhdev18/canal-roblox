@@ -31,7 +31,7 @@ cenas:                     # 1 cena = 1 corte (~1–2 s, 3–7 palavras)
 | campo | valores | padrão |
 |---|---|---|
 | `fala` | texto narrado e legendado | — (sem fala = só imagem, use `dur`) |
-| `onde` | rua, parque, fachada, sala, quarto, escola, hospital, casamento, celular, vazio | cena anterior / rua |
+| `onde` | rua, parque, fachada, sala, quarto, escola, hospital, casamento, **cidade, praca, prefeitura, gabinete**, celular, vazio | cena anterior / rua |
 | `hora` | dia, tarde, noite | cena anterior / dia |
 | `cam` | detalhe, close, medio, aberto, geral, baixo, alto, lado, costas | alterna |
 | `mov` | fixo, zoom_in, zoom_out, zoom_rapido, pan, orbita, tremor, seguir, subir, descer | zoom_in |
@@ -46,11 +46,36 @@ cenas:                     # 1 cena = 1 corte (~1–2 s, 3–7 palavras)
 | `dur` | duração fixa em segundos | duração da fala + 0,12 s |
 | `audio` | caminho de um áudio gravado por você (substitui a voz gerada) | — |
 | `cor`, `chao`, `parede`, `seed` | personalizam o cenário | — |
+| `texto` | texto do outdoor (cidade), da estátua (praça) ou da fachada (prefeitura) | — |
+| `texto_palanque` / `palanque: false` | placa do palanque da prefeitura / remove o palanque | PREFEITURA |
+| `multidao` | figurantes gerados automaticamente (abaixo) | — |
 
 ## Atores
 
 Forma curta: `"id ação rosto"`, ex.: `garoto chorar` ou `pai bravo bravo`.
 Forma longa: `{ id: pai, acao: andar, rosto: feliz, x: 3, z: 0, vira: 90, vel: 8, prop: espada, atraso: 0.3 }`
+
+### Movimentação (trajetos)
+
+Ações que andam: andar, correr, andar_confiante, andar_celular, correr_medo, fugir, carregar.
+
+```yaml
+atores:
+  - { id: prefeito, acao: andar_confiante, x: -8, z: 2, ate: [2, 1], ao_chegar: acenar_multidao }   # vai até o ponto e acena
+  - { id: ladrao, acao: fugir, x: 4, caminho: [[-6, 0], [-14, 3]], vel: 14 }                        # vários pontos, vira sozinho nas curvas
+```
+
+- `ate: [x, z]` = um destino; `caminho: [[x, z], ...]` = vários pontos. O ator começa em `x`/`z` e vira na direção de cada trecho.
+- `ao_chegar:` ação ao terminar o trajeto (padrão `parado`). Combine com `mov: seguir` + `foco:` para a câmera acompanhar.
+
+### Multidão (figurantes)
+
+```yaml
+multidao: { n: 14, area: [-12, 12, 4, 12], olhar_z: -3, acao: [palmas, comemorar, acenar], prop: bandeirinha }
+multidao: { n: 10, acao: [bravo, parado], prop: cartaz, prop_texto: ["FORA!", "QUEREMOS ÁGUA"] }   # protesto
+```
+
+`n` (até 40), `area: [x_min, x_max, z_min, z_max]`, `olhar_z` (todos olham para esse ponto em z), `acao` (sorteada entre as da lista), `prop`/`prop_texto`, `rosto`. Figurantes não precisam de elenco, e a câmera não os usa para enquadrar. Para mostrar a multidão inteira, use `cam: geral`.
 
 - `x` esquerda(−)/direita(+) da tela, `z` fundo(−)/frente(+). Sem `x` = distribui automaticamente.
 - `vira`: 0 = olha para a câmera, 90 = vira para a direita da tela, −90 = esquerda, 180 = de costas.
@@ -58,11 +83,14 @@ Forma longa: `{ id: pai, acao: andar, rosto: feliz, x: 3, z: 0, vira: 90, vel: 8
 - `deitar`/`dormir` vão sozinhos para a cama (quarto, hospital) e `sentar` para o sofá/banco/cadeira do cenário; informe `y` para posicionar manualmente.
 - Algumas ações já trocam o rosto (chorar→chorando, assustar→assustado…) e põem objeto na mão (celular).
 
-**Ações:** parado, falar, andar, correr, acenar, celular, digitar, sentar, deitar, dormir, assustar, chorar, triste, bravo, comemorar, pular, apontar, abracar, olhar_redor, cair, dancar, pensar, socar, palmas, ajoelhar, empurrar, tremer
+**Ações:** parado, falar, andar, correr, acenar, celular, digitar, sentar, deitar, dormir, assustar, chorar, triste, bravo, comemorar, pular, apontar, abracar, olhar_redor, cair, dancar, pensar, socar, palmas, ajoelhar, empurrar, tremer,
+discursar, acenar_multidao, apertar_mao, continencia, andar_confiante, andar_celular, correr_medo, fugir, carregar, entrevistar, filmar, assinar, cochichar, maos_pra_cima, implorar, espiar, agachar, comemorar_vitoria, rir, negar, concordar, cocar_cabeca, girar, desmaiar
 
 **Rostos:** neutro, feliz, sorriso, rindo, malandro, desconfiado, triste, chorando, assustado, surpreso, bravo, dormindo, apaixonado, nervoso, morto, pensativo, confiante (+ qualquer `assets/rostos/<nome>.png`)
 
-**Objetos de mão (`prop`):** celular, espada, presente, flor, livro, dinheiro
+**Objetos de mão (`prop`):** celular, espada, presente, flor, livro, dinheiro, microfone, filmadora, caixa, caneta, maleta, prancheta, bandeirinha (`prop_cor`), cartaz (`prop_texto: "FORA!"`)
+
+Âncoras automáticas: `discursar` vai para o palanque (prefeitura), `sentar`/`assinar` para a mesa do gabinete.
 
 ## Tela de celular (`onde: celular`)
 
@@ -75,18 +103,20 @@ tela: { tipo: ligacao, nome: Desconhecido }
 
 ## Personagens (`assets/personagens.yaml`)
 
-Prontos: noob, garoto, amigo, pai, pai_terno, mae, menina, noiva, nerd, valentao, medico, professora, padre, vovo, rei, policial, anjo, demonio, bebe, gamer
+Prontos: noob, garoto, amigo, pai, pai_terno, mae, menina, noiva, nerd, valentao, medico, professora, padre, vovo, rei, policial, anjo, demonio, bebe, gamer,
+prefeito, primeira_dama, vice_prefeito, candidato_rival, assessor, seguranca, reporter, cinegrafista, empresario, gari, bombeiro, taxista, vendedor, ladrao, cidadao, cidada, idosa, crianca
 
 Campos: `pele, camisa, calca, rosto, extras, acessorios, roupa, cabelo_cor, escala, mangas, bone_cor, laco_cor, capa_cor, gravata_cor, mochila_cor, chifre_cor, vestido_cor`
 
-- **extras (rosto):** barba, bigode, oculos, oculos_escuros, sardas, blush, cilios
-- **acessorios:** cabelo_curto, cabelo_espetado, cabelo_baguncado, cabelo_longo, rabo_de_cavalo, coque, careca_lados, bone, cartola, coroa, laco, chifres, veu, capacete, fone, gravata, mochila, capa, asas, aureola
+- **extras (rosto):** barba, bigode, oculos, oculos_escuros, sardas, blush, mascara, cicatriz, cilios
+- **acessorios:** cabelo_curto, cabelo_espetado, cabelo_baguncado, cabelo_longo, cabelo_grisalho, rabo_de_cavalo, coque, careca_lados, bone, boina, touca, cartola, coroa, laco, chifres, veu, capacete, capacete_bombeiro, fone, gravata, faixa_prefeito (`faixa_cor`, `faixa_cor2`), broche, colete (`colete_cor`), mochila, capa, asas, aureola
 - **roupa:** terno, jaleco, listrada, uniforme, regata, vestido
 - **cores:** amarelo, azul, azul_claro, verde, verde_noob, verde_claro, vermelho, vinho, preto, branco, cinza, cinza_escuro, rosa, rosa_claro, roxo, laranja, marrom, bege, ciano, dourado, pele_clara, pele_media, pele_escura — ou `"#rrggbb"`
 
 ## Props de cenário
 
-arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, cadeira, cama, sofa, tv, computador, planta, presente, caixa_correio, cerca, porta, caixao, bolo
+arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, cadeira, cama, sofa, tv, computador, planta, presente, caixa_correio, cerca, porta, caixao, bolo,
+semaforo (`luz: verde`), onibus (`texto`), taxi, viatura, hidrante, lixeira, faixa_pedestre, loja (`texto`, `cor`), arranha_ceu, fonte, estatua (`texto`), bandeira (`cores`), palanque (`texto`), barraca, outdoor (`texto`), mesa_escritorio, poltrona, estante, quadro_parede (`texto`)
 
 ## Música
 

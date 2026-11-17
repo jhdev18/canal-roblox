@@ -25,7 +25,9 @@ export async function montarVideo({ cenas, trabalho, saida, musica, cfg }) {
     return `[s${i}]`;
   });
   const mus = musica?.arquivo; // { arquivo, inicio } decidido por musica.mjs
-  filtros.push(`${segs.join('')}concat=n=${segs.length}:v=0:a=1,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100${mus ? ',asplit=2[narr][chave]' : '[narr]'}`);
+  // loudnorm em puro silêncio gera NaN: só normaliza quando existe voz de verdade
+  const temVoz = cenas.some(c => c.audio) && cfg.voz?.motor !== 'nenhum';
+  filtros.push(`${segs.join('')}concat=n=${segs.length}:v=0:a=1${temVoz ? ',loudnorm=I=-14:TP=-1.5:LRA=11' : ''},aresample=44100${mus ? ',asplit=2[narr][chave]' : '[narr]'}`);
   const mix = ['[narr]'];
   if (mus) { // música em loop que abaixa sozinha enquanto a voz fala (ducking)
     args.push('-stream_loop', '-1', ...(musica.inicio ? ['-ss', musica.inicio.toFixed(2)] : []), '-i', mus);

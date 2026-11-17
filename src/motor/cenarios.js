@@ -3,7 +3,7 @@
 // opcoes: { hora: 'dia'|'tarde'|'noite', seed, cor, chao, parede, tela:{...} }
 import * as THREE from 'three';
 import { caixa, cilindro, esfera, plano, grupo, mat, cor, rng, canvas, texturaCanvas } from './util.js';
-import { PROPS } from './props.js';
+import { PROPS, placaTexto } from './props.js';
 
 const CEU = { dia: '#8ec9ff', tarde: '#ffb27a', noite: '#0e1a3a' };
 function ambiente(hora, interno = false) {
@@ -146,6 +146,75 @@ export const CENARIOS = {
     for (let i = 0; i < 12; i++) add(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(-40, 40), 0, r.entre(-40, -14)]);
     nuvens(g, r);
   },
+  cidade(o, g, r) { // centro da cidade: calçada na frente, avenida, lojas e arranha-céus ao fundo
+    const n = o.hora === 'noite';
+    g.add(caixa(500, 0.2, 500, '#8f949e', { pos: [0, -0.1, 0] }));
+    g.add(caixa(500, 0.25, 12, o.chao || '#c3c7cf', { pos: [0, 0.12, 0] }));
+    for (let x = -80; x <= 80; x += 4) g.add(caixa(0.06, 0.02, 12, '#a9aeb8', { pos: [x, 0.26, 0], sombra: false }));   // juntas da calçada
+    g.add(caixa(500, 0.1, 11, '#474b57', { pos: [0, 0.02, -11.5] }));
+    for (let x = -100; x <= 100; x += 7) g.add(caixa(3, 0.02, 0.3, '#f2f3f3', { pos: [x, 0.08, -11.5], sombra: false }));
+    g.add(caixa(500, 0.04, 0.25, '#f5cd30', { pos: [0, 0.09, -10.9], sombra: false })); g.add(caixa(500, 0.04, 0.25, '#f5cd30', { pos: [0, 0.09, -12.1], sombra: false }));
+    add(g, 'faixa_pedestre', { comprimento: 10 }, [-16, 0, -11.5]);
+    g.add(caixa(500, 0.25, 4, '#c3c7cf', { pos: [0, 0.12, -19] }));
+    const nomes = ['PADARIA', 'FARMÁCIA', 'MERCADO', 'LANCHES', 'BANCO', 'CAFÉ', 'CELULARES', 'PIZZARIA', 'SORVETES', 'LIVRARIA'];
+    const cores = ['#e85d5d', '#2e9e5b', '#e8862f', '#c4281c', '#1d3b72', '#7c5c46', '#6b32a8', '#d84315', '#ff66cc', '#00897b'];
+    let k = r.entre(0, 10) | 0;
+    for (let x = -54; x <= 54; x += 10) { const i = k++ % nomes.length; add(g, 'loja', { texto: nomes[i], cor: cores[i], noite: n, parede: r.item(['#f1e7c9', '#e9e6dc', '#d9d4c7', '#f0d9c0']) }, [x, 0, -24]); }
+    for (let x = -70; x <= 70; x += 16) add(g, 'arranha_ceu', { altura: r.entre(30, 60), largura: r.entre(10, 14), cor: r.item(['#6f8fb3', '#8aa5c4', '#5f7896', '#9fb3c8']), noite: n }, [x + r.entre(-3, 3), 0, -48]);
+    add(g, 'semaforo', { luz: 'vermelho' }, [-11, 0, -5.6]); add(g, 'semaforo', { luz: 'verde' }, [-21, 0, -17.6], 180);
+    for (let x = -40; x <= 40; x += 14) add(g, 'poste', { noite: n }, [x + 6, 0, -5.8], 180);
+    add(g, 'hidrante', {}, [7, 0, -4.8]); add(g, 'lixeira', {}, [-6, 0, -4.8]); add(g, 'lixeira', { cor: '#1565c0' }, [-4.8, 0, -4.8]);
+    add(g, 'taxi', {}, [-30, 0, -9.5], 90); add(g, 'carro', { cor: '#1d3b72' }, [14, 0, -13.5], -90); add(g, 'carro', { cor: '#f2f3f3' }, [-50, 0, -13.5], -90);
+    add(g, 'onibus', { texto: 'CENTRO' }, [36, 0, -9.5], 90);
+    add(g, 'outdoor', { texto: o.texto || 'VOTE 10', noite: n }, [-30, 0, -32]);
+    if (!n) nuvens(g, r); else lua(g);
+  },
+  praca(o, g, r) { // praça central com fonte, estátua e bancos
+    const n = o.hora === 'noite';
+    g.add(caixa(500, 0.2, 500, '#4ccd3d', { pos: [0, -0.1, 0] }));
+    g.add(cilindro(24, 24, 0.1, '#d6cdb8', { pos: [0, 0.05, -8], seg: 48, sombra: false }));
+    for (let a = 0; a < 16; a++) { const ang = a / 16 * Math.PI * 2; g.add(caixa(0.15, 0.02, 24, '#c2b89f', { pos: [Math.sin(ang) * 12, 0.11, -8 + Math.cos(ang) * 12], rot: [0, ang * 180 / Math.PI, 0], sombra: false })); }
+    add(g, 'fonte', {}, [0, 0, -12]);
+    add(g, 'estatua', { texto: o.texto || 'FUNDADOR' }, [-14, 0, -16], 20);
+    for (const [x, z, v] of [[9, -5, -30], [-9, -5, 30], [12, -16, -70], [-6, -22, 10]]) add(g, 'banco', {}, [x, 0, z], v);
+    for (const [x, z] of [[-20, -4], [20, -6], [-24, -20], [24, -22], [8, -28], [-12, -30]]) add(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [x, 0, z]);
+    for (const x of [-16, 16]) add(g, 'poste', { noite: n }, [x, 0, -2]);
+    add(g, 'bandeira', {}, [16, 0, -18]); add(g, 'barraca', { cor: '#c4281c' }, [22, 0, -12], -40);
+    for (let i = 0; i < 7; i++) g.add(esfera(0.28, '#8d8f99', { pos: [r.entre(-6, 6), 0.3, r.entre(-4, 2)] }));   // pombos
+    for (let x = -60; x <= 60; x += 15) add(g, r() < 0.5 ? 'predio' : 'casa', { altura: r.entre(10, 26), cor: r.item(['#e9e6dc', '#f0b446', '#8fc1e3', '#d9534f']), noite: n }, [x, 0, -46]);
+    n ? lua(g) : nuvens(g, r);
+  },
+  prefeitura(o, g, r) { // fachada da prefeitura com escadaria, colunas e palanque na frente
+    const n = o.hora === 'noite';
+    g.add(caixa(500, 0.2, 500, '#4ccd3d', { pos: [0, -0.1, 0] }));
+    g.add(caixa(40, 0.2, 30, '#d6cdb8', { pos: [0, 0.05, 2] }));
+    const B = '#f4f1ea';
+    g.add(caixa(40, 15, 10, B, { pos: [0, 7.5, -20] })); g.add(caixa(41, 1.2, 11, '#e3ddd0', { pos: [0, 15.6, -20] }));
+    g.add(caixa(14, 18.5, 10.5, B, { pos: [0, 9.25, -19.8] }));
+    const fr = cilindro(8.5, 8.5, 1.4, '#e3ddd0', { pos: [0, 19.3, -13.8], rot: [90, 0, 90], seg: 3 }); fr.scale.set(1, 1, 0.55); g.add(fr);
+    for (let i = 0; i < 6; i++) g.add(cilindro(0.55, 0.6, 12.5, '#ffffff', { pos: [-6.25 + i * 2.5, 7.6, -13.6], seg: 16 }));
+    g.add(caixa(15, 0.8, 2.4, '#e3ddd0', { pos: [0, 14.2, -13.6] }));
+    for (let i = 0; i < 4; i++) g.add(caixa(16 - i * 0.6, 0.4, 2.2, '#dcd5c6', { pos: [0, 0.2 + i * 0.4, -10.2 - i * 1.0] }));
+    const pl = placaTexto(o.texto || 'PREFEITURA MUNICIPAL', 12, 1.2, { fundo: '#e3ddd0', corTexto: '#1d3b72' }); pl.position.set(0, 14.2, -12.38); g.add(pl);
+    add(g, 'porta', { cor: '#5a3a22' }, [0, 1.6, -14.6]);
+    for (const x of [-15, -10, 10, 15]) for (const y of [4, 10]) g.add(caixa(3, 3.6, 0.2, mat(n ? '#ffe3a3' : '#bfe6ff', { emissive: n ? '#ffd27a' : '#bfe6ff', emissiveIntensity: n ? 1.1 : 0.3, rough: 0.1 }), { pos: [x, y, -14.9] }));
+    add(g, 'bandeira', {}, [-11, 0, -9]); add(g, 'bandeira', { cores: ['#ffffff', '#c4281c', '#ffffff'] }, [11, 0, -9]);
+    if (o.palanque !== false) add(g, 'palanque', { texto: o.texto_palanque || 'PREFEITURA' }, [0, 0, -3]);
+    for (const x of [-18, 18]) add(g, 'arvore', {}, [x, 0, -6]); for (const x of [-26, 26]) add(g, 'arvore', { tam: 1.2 }, [x, 0, -14]);
+    for (const x of [-8, 8]) add(g, 'poste', { noite: n }, [x, 0, 3], x < 0 ? 0 : 180);
+    g.userData.ancoras = { discursar: [0, 1.52, -2.6] };
+    n ? lua(g) : nuvens(g, r);
+  },
+  gabinete(o, g, r) { // escritório do prefeito
+    const n = o.hora === 'noite'; sala(g, { parede: o.parede || '#e9dcc4', chao: o.chao || '#7a5236' });
+    g.add(caixa(10, 0.05, 7, '#7b1f2b', { pos: [0, 0.03, -3], sombra: false }));
+    add(g, 'mesa_escritorio', {}, [0, 0, -3.6], 180); add(g, 'poltrona', {}, [0, 0, -6.4]);
+    add(g, 'estante', {}, [9, 0, -7.1]); add(g, 'bandeira', { cores: ['#1f9d48', '#f5cd30', '#1d3b72'] }, [-6, 0, -6.6]).scale.setScalar(0.75);
+    const q = PROPS.quadro_parede({ texto: '★' }); q.position.set(0, 7.4, -7.65); g.add(q);
+    janela(g, -10, 6, -7.6, 4, 5, n); add(g, 'planta', {}, [-10.5, 0, -5]);
+    g.userData.ancoras = { sentar: [0, 0, -6.1], assinar: [0, 0, -5.8] };
+    luzTeto(g, 0, -1, n);
+  },
   celular(o, g, r) { // close na tela do celular (use `tela: {tipo, ...}`)
     g.add(caixa(60, 60, 1, o.cor || '#6b7a99', { pos: [0, 4, -6] }));
     const tel = grupo([caixa(3.3, 6.6, 0.35, '#111', { round: 0.3 })]);
@@ -154,7 +223,7 @@ export const CENARIOS = {
   },
   vazio(o, g, r) { g.add(caixa(500, 0.2, 500, o.chao || '#d5d9e2', { pos: [0, -0.1, 0] })); },
 };
-const INTERNOS = new Set(['sala', 'quarto', 'escola', 'hospital']);
+const INTERNOS = new Set(['sala', 'quarto', 'escola', 'hospital', 'gabinete']);
 export const NOMES_CENARIOS = Object.keys(CENARIOS);
 
 export function construirCenario(nome, o = {}) {

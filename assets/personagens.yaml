@@ -21,3 +21,27 @@ anjo:        { pele: amarelo, camisa: branco, calca: branco, acessorios: [aureol
 demonio:     { pele: vermelho, camisa: preto, calca: preto, acessorios: [chifres], chifre_cor: preto, rosto: malandro }
 bebe:        { base: noob, escala: 0.6 }
 gamer:       { base: noob, camisa: verde, acessorios: [fone, cabelo_espetado], cabelo_cor: laranja }
+
+# --- cidade / política ---
+prefeito:      { pele: pele_clara, camisa: "#1d2b4f", calca: "#1d2b4f", roupa: terno, acessorios: [cabelo_grisalho, faixa_prefeito], extras: [bigode], rosto: confiante }
+primeira_dama: { pele: pele_clara, camisa: vermelho, calca: vermelho, roupa: vestido, acessorios: [coque, broche], cabelo_cor: "#3a2416", extras: [cilios, blush], rosto: sorriso }
+vice_prefeito: { pele: pele_media, camisa: "#3d3f46", calca: "#3d3f46", roupa: terno, gravata_cor: "#1d3b72", acessorios: [careca_lados, faixa_prefeito], faixa_cor: "#c4281c", extras: [oculos] }
+candidato_rival: { pele: pele_clara, camisa: vinho, calca: preto, roupa: terno, acessorios: [cabelo_curto], cabelo_cor: "#e0b040", rosto: malandro }
+assessor:      { pele: pele_clara, camisa: cinza, calca: cinza_escuro, roupa: terno, acessorios: [cabelo_curto], cabelo_cor: "#2b1d14", extras: [oculos] }
+seguranca:     { pele: pele_escura, camisa: preto, calca: preto, roupa: terno, acessorios: [careca_lados], cabelo_cor: preto, extras: [oculos_escuros], rosto: desconfiado }
+reporter:      { pele: pele_media, camisa: vermelho, calca: preto, acessorios: [cabelo_longo], cabelo_cor: "#3a2416", extras: [cilios] }
+cinegrafista:  { pele: pele_clara, camisa: cinza_escuro, calca: azul, acessorios: [bone], bone_cor: preto, extras: [barba] }
+empresario:    { pele: pele_clara, camisa: preto, calca: preto, roupa: terno, acessorios: [cabelo_curto, broche], cabelo_cor: "#111", extras: [oculos_escuros], rosto: malandro }
+
+# --- trabalhadores ---
+gari:          { pele: pele_media, camisa: laranja, calca: laranja, acessorios: [bone, colete], bone_cor: laranja, colete_cor: "#ff7a00" }
+bombeiro:      { pele: pele_clara, camisa: "#8a1f1f", calca: "#2b2b2b", acessorios: [capacete_bombeiro, colete], colete_cor: "#8a1f1f", extras: [bigode] }
+taxista:       { pele: pele_media, camisa: amarelo, calca: azul, acessorios: [bone], bone_cor: amarelo, extras: [bigode] }
+vendedor:      { pele: pele_media, camisa: verde, calca: bege, acessorios: [boina], boina_cor: vermelho, rosto: sorriso }
+ladrao:        { pele: pele_clara, camisa: preto, calca: preto, roupa: listrada, acessorios: [touca], touca_cor: "#111", extras: [mascara], rosto: malandro }
+
+# --- cidadãos ---
+cidadao:       { pele: pele_media, camisa: "#3b6fd8", calca: bege, acessorios: [cabelo_curto], cabelo_cor: "#2b1d14" }
+cidada:        { pele: pele_clara, camisa: rosa_claro, calca: azul, acessorios: [rabo_de_cavalo], cabelo_cor: "#7c5c46", extras: [cilios] }
+idosa:         { pele: pele_clara, camisa: roxo, calca: cinza, acessorios: [coque], cabelo_cor: "#e8e8e8", extras: [oculos, cilios], rosto: feliz }
+crianca:       { base: noob, camisa: laranja, acessorios: [cabelo_espetado], cabelo_cor: "#2b1d14", escala: 0.75 }

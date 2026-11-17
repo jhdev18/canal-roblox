@@ -71,6 +71,7 @@ async function principal() {
   }
   const visual = (c) => ({ cenario: c.cenario, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, camera: c.camera, mov: c.mov,
     angulo: c.angulo, dist: c.dist, altura: c.altura, inclinar: c.inclinar, foco: c.foco, props: c.props, dur: c.dur,
+    multidao: c.multidao, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque,
     atores: c.atores.map(x => ({ ...x, spec: { ...x.spec } })) });
 
   // ---- prévia ao vivo ----

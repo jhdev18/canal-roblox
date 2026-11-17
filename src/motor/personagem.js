@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { caixa, cilindro, esfera, plano, grupo, mat, cor, canvas, texturaCanvas, rad } from './util.js';
 import { texturaRosto } from './rostos.js';
-import { ACOES, ROSTO_DA_ACAO, PROP_DA_ACAO } from './acoes.js';
+import { ACOES, ROSTO_DA_ACAO, PROP_DA_ACAO, LOCOMOCAO, percorrer } from './acoes.js';
 
 // ---------- Roupas (estampa na frente do torso / peças extras) ----------
 function estampaTorso(tipo, base) {
@@ -66,6 +66,19 @@ export const ACESSORIOS = {
   capa: s => ({ onde: 'torso', obj: caixa(2.0, 3.4, 0.1, s.capa_cor || '#c4281c', { pos: [0, -0.6, -0.58], rot: [-6, 0, 0] }) }),
   asas: s => ({ onde: 'torso', obj: grupo([caixa(1.8, 1.2, 0.1, '#ffffff', { pos: [-1.1, 0.4, -0.7], rot: [0, 20, 20], round: 0.05 }),
     caixa(1.8, 1.2, 0.1, '#ffffff', { pos: [1.1, 0.4, -0.7], rot: [0, -20, -20], round: 0.05 })]) }),
+  faixa_prefeito: s => { const g = grupo([caixa(0.5, 2.9, 0.08, s.faixa_cor || '#1f9d48', { pos: [0, 0, 0.53], rot: [0, 0, 38] }),
+    caixa(0.18, 2.9, 0.09, s.faixa_cor2 || '#f5cd30', { pos: [0, 0, 0.54], rot: [0, 0, 38] }), esfera(0.2, '#e0b040', { pos: [0.55, -0.6, 0.6], mat: { metal: 0.6, rough: 0.3 } })]);
+    return { onde: 'torso', obj: g }; },
+  capacete_bombeiro: s => ({ onde: 'cabeca', obj: grupo([caixa(1.45, 0.7, 1.4, '#c4281c', { pos: [0, 0.42, 0], round: 0.3 }),
+    caixa(1.8, 0.08, 1.9, '#c4281c', { pos: [0, 0.12, -0.15] }), caixa(0.5, 0.45, 0.06, '#e0b040', { pos: [0, 0.55, 0.72] })]) }),
+  colete: s => ({ onde: 'torso', obj: grupo([caixa(2.06, 2.0, 1.06, s.colete_cor || '#ff7a00', { pos: [0, 0, 0] }),
+    caixa(2.08, 0.18, 1.08, '#e8e8e8', { pos: [0, -0.35, 0], mat: { emissive: '#ffffff', emissiveIntensity: 0.3 } }),
+    caixa(2.08, 0.18, 1.08, '#e8e8e8', { pos: [0, 0.25, 0], mat: { emissive: '#ffffff', emissiveIntensity: 0.3 } })]) }),
+  boina: s => ({ onde: 'cabeca', obj: caixa(1.45, 0.3, 1.4, s.boina_cor || '#c4281c', { pos: [0.1, 0.65, 0], rot: [0, 0, -8], round: 0.14 }) }),
+  touca: s => ({ onde: 'cabeca', obj: grupo([caixa(1.4, 0.65, 1.35, s.touca_cor || '#222', { pos: [0, 0.38, 0], round: 0.28 }), esfera(0.2, s.touca_cor || '#222', { pos: [0, 0.8, 0] })]) }),
+  cabelo_grisalho: s => ({ onde: 'cabeca', obj: grupo([caixa(1.36, 0.3, 1.3, '#c9c9c9', { pos: [0, 0.5, -0.05], round: 0.12 }),
+    caixa(1.36, 0.8, 0.28, '#c9c9c9', { pos: [0, 0.1, -0.55], round: 0.1 })]) }),
+  broche: s => ({ onde: 'torso', obj: esfera(0.14, '#e0b040', { pos: [0.55, 0.55, 0.55], mat: { metal: 0.7, rough: 0.3 } }) }),
   aureola: s => ({ onde: 'cabeca', obj: new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.07, 8, 32), mat('#ffe066', { emissive: '#ffe066', emissiveIntensity: 0.8 })) }),
 };
 const POS_EXTRA = { aureola: o => { o.position.set(0, 1.15, 0); o.rotation.x = Math.PI / 2; } };
@@ -79,6 +92,21 @@ export const PROPS_MAO = {
   flor: () => grupo([cilindro(0.04, 0.04, 1.0, '#2e8b3a', { pos: [0, 0.5, 0] }), esfera(0.22, '#ff4f8b', { pos: [0, 1.05, 0] })]),
   livro: () => caixa(0.8, 1.0, 0.22, '#2a5bd7'),
   dinheiro: () => caixa(0.9, 0.5, 0.08, '#4caf50'),
+  microfone: () => grupo([cilindro(0.07, 0.05, 0.8, '#222', { pos: [0, 0.2, 0] }), esfera(0.17, '#555', { pos: [0, 0.65, 0], mat: { metal: 0.6, rough: 0.4 } }),
+    caixa(0.32, 0.24, 0.32, '#c4281c', { pos: [0, 0.3, 0] })]),
+  filmadora: () => grupo([caixa(0.6, 0.7, 1.4, '#222', { pos: [0, 0.4, 0.3], round: 0.08 }), cilindro(0.22, 0.22, 0.5, '#111', { pos: [0, 0.4, 1.2], rot: [90, 0, 0] }),
+    esfera(0.08, '#e53935', { pos: [0.2, 0.8, 0.2], mat: { emissive: '#e53935' } })]),
+  caixa: () => caixa(1.6, 1.2, 1.2, '#b8875a', { pos: [0.75, 0.3, 0.2] }),
+  caneta: () => cilindro(0.04, 0.04, 0.6, '#1d3b72', { pos: [0, 0.2, 0] }),
+  maleta: () => grupo([caixa(1.0, 0.75, 0.3, '#3b2a1e', { pos: [0, -0.5, 0], round: 0.06 }), caixa(0.4, 0.12, 0.1, '#222', { pos: [0, -0.05, 0] })]),
+  prancheta: () => grupo([caixa(0.8, 1.05, 0.05, '#a8754a'), caixa(0.7, 0.85, 0.06, '#ffffff', { pos: [0, -0.05, 0.01] })]),
+  bandeirinha: (o) => grupo([cilindro(0.03, 0.03, 1.6, '#ddd', { pos: [0, 0.8, 0] }), caixa(0.9, 0.6, 0.03, o.cor || '#1f9d48', { pos: [0.47, 1.3, 0] })]),
+  cartaz: (o) => { const [c, g] = canvas(256, 160); g.fillStyle = '#fff'; g.fillRect(0, 0, 256, 160); g.strokeStyle = '#c4281c'; g.lineWidth = 10; g.strokeRect(5, 5, 246, 150);
+    g.fillStyle = '#111'; g.font = '900 40px Arial Black, Arial'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    const t = String(o.texto || 'FORA!').toUpperCase(); const ps = t.split(' '); const meio = Math.ceil(ps.length / 2);
+    const ls = t.length > 11 ? [ps.slice(0, meio).join(' '), ps.slice(meio).join(' ')] : [t]; ls.forEach((l, i) => g.fillText(l, 128, 80 + (i - (ls.length - 1) / 2) * 46, 236));
+    const placa = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.0), new THREE.MeshStandardMaterial({ map: texturaCanvas(c), roughness: 0.9, side: THREE.DoubleSide }));
+    placa.position.set(0, 1.9, 0.05); return grupo([cilindro(0.05, 0.05, 2.0, '#8a5a33', { pos: [0, 0.9, 0] }), placa]); },
 };
 
 /** Cria o personagem. Retorna objeto com .raiz (THREE.Group) e métodos posar()/setRosto(). */
@@ -122,17 +150,22 @@ export function criarPersonagem(spec = {}) {
   const ator = {
     spec: s, raiz, corpo, partes: { torso, cabeca, bd, be, pd, pe },
     setRosto(expr, extras = s.extras) { rostoMat.map = texturaRosto(expr, extras); rostoMat.needsUpdate = true; },
-    setProp(nome) {
+    setProp(nome, opts = {}) {
       if (nome === propNome) return; if (propAtual) bd.remove(propAtual); propAtual = null; propNome = nome;
       if (!nome || !PROPS_MAO[nome]) return;
-      propAtual = PROPS_MAO[nome](); propAtual.position.set(0, -1.55, 0.58); propAtual.rotation.x = -Math.PI / 2 + 0.25; bd.add(propAtual);
+      propAtual = PROPS_MAO[nome](opts); propAtual.position.set(0, -1.55, 0.58); propAtual.rotation.x = -Math.PI / 2 + 0.25; bd.add(propAtual);
       propAtual.traverse(o => { if (o.isMesh) o.castShadow = true; });
     },
     /** Aplica a ação no tempo t. base = {x, z, vira, y}. */
     posar(acao, t, dur, p = {}, base = { x: 0, z: 0, vira: 0, y: 0 }) {
-      const fn = ACOES[acao] || ACOES.parado; const q = fn(t, dur, p);
-      const vira = rad(base.vira || 0);
-      raiz.position.set(base.x + Math.sin(vira) * q.frente + q.dx * Math.cos(vira), (base.y || 0), base.z + Math.cos(vira) * q.frente);
+      const fn = ACOES[acao] || ACOES.parado; let q = fn(t, dur, p);
+      let vira = rad(base.vira || 0), bx = base.x, bz = base.z;
+      if (base.caminho?.length && LOCOMOCAO.has(acao)) { // anda pelo trajeto virando sozinho; ao chegar, fica parado
+        const r = percorrer(base.x, base.z, base.caminho, q.frente);
+        if (r.chegou) q = ACOES[p.ao_chegar || 'parado'](t, dur, p);
+        bx = r.x; bz = r.z; vira = rad(r.vira); q.frente = 0;
+      }
+      raiz.position.set(bx + Math.sin(vira) * q.frente + q.dx * Math.cos(vira), (base.y || 0), bz + Math.cos(vira) * q.frente);
       raiz.rotation.set(rad(q.raiz[0]), vira + rad(q.raiz[1]), rad(q.raiz[2]), 'YXZ');
       corpo.position.y = 2 + q.y;
       corpo.rotation.set(rad(q.tor[0]), rad(q.tor[1]), rad(q.tor[2]));

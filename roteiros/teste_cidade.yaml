@@ -1,0 +1,30 @@
+titulo: Teste dos assets da cidade
+cenas:
+  - fala: O prefeito chegou na cidade.
+    onde: cidade
+    cam: aberto
+    mov: seguir
+    foco: prefeito
+    atores: [{ id: prefeito, acao: andar_confiante, x: -8, z: 2, ate: [2, 1], ao_chegar: acenar_multidao }]
+  - fala: E fez um discurso na prefeitura.
+    onde: prefeitura
+    cam: aberto
+    altura: 1.5
+    atores: [prefeito discursar, { id: seguranca, acao: parado, x: -4, z: -2.6, y: 1.52, vira: 15 }]
+    multidao: { n: 14, area: [-12, 12, 4, 12], olhar_z: -3, acao: [palmas, comemorar, acenar, parado] }
+  - fala: Mas o povo protestou na praça.
+    onde: praca
+    cam: medio
+    atores: [{ id: cidada, acao: bravo, prop: cartaz, prop_texto: "FORA PREFEITO" }]
+    multidao: { n: 10, area: [-9, 9, -8, -3], acao: [bravo, parado], prop: cartaz, prop_texto: ["FORA!", "QUEREMOS ÁGUA", "MENTIROSO"] }
+  - fala: No gabinete, ele assinou a renúncia.
+    onde: gabinete
+    cam: medio
+    atores: [prefeito assinar triste, { id: assessor, acao: cochichar, x: 4.5, z: -4.5, vira: -40 }]
+  - fala: E fugiu pela cidade.
+    onde: cidade
+    hora: noite
+    cam: aberto
+    mov: seguir
+    foco: prefeito
+    atores: [{ id: prefeito, acao: fugir, x: 4, caminho: [[-6, 0], [-14, 3]] }, { id: reporter, acao: entrevistar, x: 6, vira: -60 }, { id: cinegrafista, acao: filmar, x: 9, vira: -70 }]
