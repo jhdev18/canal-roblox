@@ -87,6 +87,8 @@ export const MOVEIS = {
   forno_padaria: () => { const g = grupo([caixa(4, 6, 2.6, mat('#b8bcc6', { metal: 0.6, rough: 0.35 }), { pos: [0, 3, 0] })]);
     for (const y of [1.6, 3.4, 5.0]) { g.add(caixa(3.2, 1.3, 0.08, '#222', { pos: [0, y, 1.31] })); g.add(caixa(3.0, 1.0, 0.09, mat('#ff9a3c', { emissive: '#ff7a1a', emissiveIntensity: 0.8 }), { pos: [0, y, 1.32], sombra: false }));
       g.add(caixa(2.6, 0.1, 0.12, '#ddd', { pos: [0, y + 0.8, 1.4] })); } return g; },
+  balanca: () => grupo([caixa(1.4, 0.3, 1.4, '#e9ebef', { pos: [0, 0.15, 0] }), caixa(0.25, 4.2, 0.25, '#e9ebef', { pos: [0, 2.3, -0.55] }), caixa(1.0, 0.8, 0.3, '#1e88e5', { pos: [0, 4.4, -0.45] }),
+    plano(0.7, 0.4, mat('#9fd8ff', { emissive: '#5fb0ff', emissiveIntensity: 0.8 }), { pos: [0, 4.45, -0.29] })]),   // balança de farmácia
   cafeteira: () => grupo([caixa(1.1, 1.3, 0.9, '#2b2b2b', { pos: [0, 0.65, 0] }), cilindro(0.3, 0.3, 0.5, mat('#3b2412', { rough: 0.2 }), { pos: [0, 0.4, 0.2], seg: 12 }), caixa(0.9, 0.12, 0.7, '#555', { pos: [0, 1.35, 0] })]),
   cadeiras_espera: (o = {}) => { const n = o.n || 4, P = 2.2, g = grupo([caixa(n * P, 0.15, 0.4, '#5a5d66', { pos: [0, 0.6, 0] })]);   // um assento a cada 2.2 (mesmo passo do `sentar` em grupo)
     for (let i = 0; i < n; i++) { const x = (i - (n - 1) / 2) * P; g.add(caixa(2.0, 0.2, 1.9, o.cor || '#1e88e5', { pos: [x, 0.95, 0], round: 0.08 })); g.add(caixa(2.0, 1.8, 0.2, o.cor || '#1e88e5', { pos: [x, 1.95, -0.9], round: 0.08 })); }
