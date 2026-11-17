@@ -229,10 +229,10 @@ export function construirMundo(o, g, r) {
   const casa = casaProtagonista({ ...ctx, foco: focoId === 'casa', comodo: o.comodo }); casa.position.set(CASA_LOTE.f[0], 0.2, CASA_LOTE.f[1]); casa.userData.lote = CASA_LOTE; g.add(casa);
   por(g, 'muro', { largura: 30, cor: '#e9e6dc', portao_x: -6, portao_cor: '#1d3b72' }, [CASA_LOTE.f[0], 0.2, -5.6]); por(g, 'carro', { cor: '#c4281c' }, [CASA_LOTE.f[0] + 7, 0.2, -8.6], 90, 0.9);
   const cores = ['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a'];
-  const LOJAS_BAIRRO = [[113, 1], [139, -1], [165, 1]];   // [x, lado] ocupados por mercadinho, oficina e borracharia
+  const LOJAS_BAIRRO = [[100, 1], [139, -1], [178, 1]];   // [x, lado] ocupados por mercadinho, oficina e borracharia
   for (let x = 48; x <= 210; x += 13) for (const lado of [-1, 1]) { if (lado < 0 && Math.abs(x - CASA_LOTE.f[0]) < 18) continue; if (lado > 0 && x < 60) continue;
     if (LOJAS_BAIRRO.some(([lx, ll]) => ll === lado && Math.abs(lx - x) < 6)) continue;
-    if (lado > 0 && x > CAMPINHO.x - CAMPINHO.w / 2 - 2 && x < CAMPINHO.x + CAMPINHO.w / 2 + 2) continue;   // lugar do campinho
+    if (lado > 0 && Math.abs(x - CAMPINHO.x) < CAMPINHO.w / 2 + 10) continue;   // campinho + folga de gramado dos dois lados
     por(g, r() < 0.3 ? 'sobrado' : 'casa_br', { cor: r.item(cores), noite: n, largura: 9 }, [x, 0, lado * 13], lado > 0 ? 180 : 0);
     por(g, 'muro', { largura: 12, cor: '#e9e6dc', portao_x: r.entre(-2, 2) }, [x, 0, lado * 8.1], lado > 0 ? 180 : 0); }
   for (let x = 46; x <= 200; x += 16) por(g, 'poste_fios', { noite: n }, [x, 0, -5.6]);
@@ -270,6 +270,7 @@ function campinho(g, n, r) {
   for (let k = -w / 2 - 2; k <= w / 2 + 2.01; k += 4) g.add(caixa(0.12, 4.6, 0.12, '#888', { pos: [x + k, 2.3, z + d / 2 + 2] }));
   for (let k = -d / 2 - 2; k <= d / 2 + 2.01; k += 4) for (const sx of [-1, 1]) g.add(caixa(0.12, 4.6, 0.12, '#888', { pos: [x + sx * (w / 2 + 2), 2.3, z + k] }));
   for (const dx of [-8, 0, 8]) { const b = PROPS.banco({}); b.position.set(x + dx, 0.18, z - d / 2 - 1.2); g.add(b); }
+  for (const sx of [-1, 1]) for (const k of [0, 1]) { const a = PROPS.arvore({ tam: r.entre(0.9, 1.2) }); a.position.set(x + sx * (w / 2 + 7.5), 0, z - 4 + k * 10); g.add(a); }   // gramado com árvores entre o campinho e as lojas
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const p = PROPS.poste_fios({ noite: n }); p.position.set(x + sx * (w / 2 + 3), 0, z + sz * (d / 2 + 1)); g.add(p); }
 }
 function quadra(g, x, z) { g.add(caixa(26, 0.15, 16, '#2e8b57', { pos: [x, 0.08, z] }));
@@ -289,9 +290,9 @@ export const EXTRAS_MAPA = [
   { nome: 'Pousada', x: -63, z: 8 },
   { nome: "Caixa d'água", x: -82, z: 0 },
   { nome: 'Apartamentos', x: 48, z: -50 },
-  { nome: 'Mercadinho', x: 113, z: 12 },
+  { nome: 'Mercadinho', x: 100, z: 12 },
   { nome: 'Oficina', x: 139, z: -12 },
-  { nome: 'Borracharia', x: 165, z: 12 },
+  { nome: 'Borracharia', x: 178, z: 12 },
   ];
 function povoar(g, n, r) {
   const marca = () => {};   // posições dos nomes no mapa ficam em EXTRAS_MAPA
@@ -311,9 +312,9 @@ function povoar(g, n, r) {
   // norte e sul atrás das fileiras: mais casas e um prédio
   predio(g, -48, -50, 0, 14, '#f0b446', n); predio(g, 48, -50, 0, 12, '#8fc1e3', n); marca('Apartamentos', 48, -50);   // longe da fileira de casas de trás
   // bairro: comércio de rua, segunda fileira de casas e quadra
-  loja(g, 113, 9, 180, 'MERCADINHO', '#43a047', 9, n); marca('Mercadinho', 108, 12);
+  loja(g, 100, 9, 180, 'MERCADINHO', '#43a047', 9, n); marca('Mercadinho', 108, 12);
   loja(g, 139, -9, 0, 'OFICINA', '#3a3d44', 11, n, '#cfd3da'); por(g, 'carro', { cor: '#1d3b72' }, [139, 0.2, -7.4], 90, 0.9); marca('Oficina', 134, -12);
-  loja(g, 165, 9, 180, 'BORRACHARIA', '#f5b800', 8, n); for (let i = 0; i < 3; i++) g.add(cilindro(0.9, 0.9, 0.6, '#1b1b1b', { pos: [168.5, 0.5 + i * 0.62, 7.6], seg: 14 })); marca('Borracharia', 160, 12);
+  loja(g, 178, 9, 180, 'BORRACHARIA', '#f5b800', 8, n); for (let i = 0; i < 3; i++) g.add(cilindro(0.9, 0.9, 0.6, '#1b1b1b', { pos: [181.5, 0.5 + i * 0.62, 7.6], seg: 14 })); marca('Borracharia', 160, 12);
   for (let x = 74; x <= 204; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x, 0, lado * 52], lado > 0 ? 180 : 0);
   for (const lado of [-1, 1]) g.add(caixa(170, 0.2, 7, '#4f5361', { pos: [130, 0.11, lado * 40] }));   // ruas paralelas (longe o bastante da casa do protagonista, que é funda)
   campinho(g, n, r);
