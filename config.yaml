@@ -10,7 +10,8 @@ render:
   encoder: libx264    # libx264 | h264_nvenc (usa a GTX 1050 Ti para codificar)
 
 voz:
-  motor: elevenlabs   # elevenlabs | piper | espeak | nenhum   (rascunho grátis: --voz espeak)
+  motor: elevenlabs   # voz da VERSÃO FINAL (--final): elevenlabs | piper | espeak | windows | nenhum
+                      # o rascunho (sem --final) usa sempre uma voz grátis do sistema
   # --- ElevenLabs (chave no arquivo .env) ---
   voice_id: ""        # rode: node gerar.mjs --vozes  e cole o id aqui
   modelo_eleven: eleven_multilingual_v2   # ou eleven_flash_v2_5 (mais barato/rápido)

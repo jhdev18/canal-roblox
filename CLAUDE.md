@@ -5,7 +5,8 @@ Pipeline: roteiro YAML → voz (ElevenLabs via .env; Piper/espeak como alternati
 ## Para criar um vídeo novo (economize tokens)
 1. Leia **só** `docs/ROTEIRO.md` (formato + catálogo completo). Não leia `src/` para escrever roteiros.
 2. Escreva `roteiros/<nome>.yaml` reaproveitando personagens de `assets/personagens.yaml`.
-3. Valide/renderize: `node gerar.mjs roteiros/<nome>.yaml --rapido` (erros de nome vêm com sugestão).
+3. Valide com o rascunho grátis: `node gerar.mjs roteiros/<nome>.yaml` (erros de nome vêm com sugestão).
+   A versão final (`--final`, ElevenLabs) só roda depois de um rascunho do roteiro atual — e quem renderiza é o usuário, na máquina dele. Não renderize sem ele pedir.
 
 ## Para criar um asset novo
 - Personagem: só YAML em `assets/personagens.yaml` (herança com `base:`).

@@ -30,16 +30,25 @@ Cada vídeo é só um arquivo YAML curto. Personagens, rostos, cenários, açõe
 
 ## Uso
 
-```bash
-node gerar.mjs roteiros/exemplo_inimigo.yaml
-```
+Todo vídeo é feito em **duas etapas**, para não gastar créditos do ElevenLabs à toa:
+
+1. **Rascunho (grátis):** voz do próprio computador (no Windows, a voz do sistema) e 540×960. Gera `saida/<nome>_rascunho.mp4`.
+   ```bash
+   node gerar.mjs roteiros/exemplo_inimigo.yaml
+   ```
+2. **Versão final:** voz do ElevenLabs e 1080×1920. Só funciona se houver um rascunho do roteiro **exatamente como está**;
+   se você alterar o roteiro, faça um rascunho novo. Antes de gastar, o programa mostra quantos caracteres vai usar e pede confirmação.
+   ```bash
+   node gerar.mjs roteiros/exemplo_inimigo.yaml --final
+   ```
 
 | comando | o que faz |
 |---|---|
 | `node gerar.mjs <roteiro> --preview` | abre uma prévia ao vivo no navegador (com voz e legenda), sem renderizar |
-| `node gerar.mjs <roteiro> --rapido` | 540×960 sem AO, para conferir rápido |
+| `node gerar.mjs <roteiro> --final --sim` | versão final sem perguntar (confirma o gasto direto) |
+| `node gerar.mjs <roteiro> --final --forcar` | pula a exigência de rascunho (não recomendado) |
 | `node gerar.mjs <roteiro> --cenas 3-5` | só essas cenas (`saida/<nome>_parcial.mp4`) |
-| `node gerar.mjs <roteiro> --voz espeak` | voz robótica grátis (rascunho, não gasta créditos) |
+| `node gerar.mjs <roteiro> --cenas 3-5` (no rascunho) | refaz só algumas cenas para conferir |
 | `node gerar.mjs --vozes` | lista as vozes da sua conta ElevenLabs |
 | `node gerar.mjs --musicas` | lista as músicas de fundo disponíveis |
 | `node gerar.mjs <roteiro> --encoder h264_nvenc` | codifica o vídeo na GPU (mais rápido) |

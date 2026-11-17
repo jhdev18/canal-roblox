@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Gerador de shorts estilo Roblox — tudo local.
-//   node gerar.mjs roteiros/exemplo.yaml            -> saida/exemplo.mp4
+//   node gerar.mjs roteiros/exemplo.yaml            -> RASCUNHO grátis: saida/exemplo_rascunho.mp4 (voz do sistema, 540x960)
+//   node gerar.mjs roteiros/exemplo.yaml --final    -> versão final (ElevenLabs, 1080x1920); exige rascunho do roteiro atual
 //   node gerar.mjs roteiros/exemplo.yaml --preview  -> prévia ao vivo no navegador
 //   node gerar.mjs --catalogo                        -> lista todos os assets disponíveis
 //   node gerar.mjs --vozes  /  --musicas            -> lista vozes do ElevenLabs / músicas disponíveis
@@ -10,7 +11,8 @@ import path from 'node:path';
 import YAML from 'yaml';
 import { p, hash, hashMotor, garantirDir, log, rodar, duracaoWav } from './src/node/util.mjs';
 import { carregarRoteiro, catalogo } from './src/node/roteiro.mjs';
-import { narrar, listarVozes, gastoElevenLabs } from './src/node/tts.mjs';
+import { narrar, listarVozes, gastoElevenLabs, caracteresPendentes, motorRascunho } from './src/node/tts.mjs';
+import readline from 'node:readline/promises';
 import { temposPalavras, gerarASS } from './src/node/legendas.mjs';
 import { abrirMotor, renderizarCena } from './src/node/render.mjs';
 import { montarVideo } from './src/node/montagem.mjs';
@@ -42,6 +44,18 @@ async function principal() {
   const arq = a._[0];
   if (!arq) { console.log('uso: node gerar.mjs roteiros/<nome>.yaml [--preview] [--rapido] [--cenas 1-3] [--voz espeak]\n      node gerar.mjs --catalogo'); process.exit(1); }
 
+  // ---- rascunho x final ----
+  // Todo vídeo passa por um rascunho grátis antes da versão final (evita gastar créditos do ElevenLabs à toa).
+  const textoRoteiro = fs.readFileSync(path.resolve(arq), 'utf8');
+  const arqReg = p('cache', 'rascunhos.json'); garantirDir(p('cache'));
+  const reg = fs.existsSync(arqReg) ? JSON.parse(fs.readFileSync(arqReg, 'utf8')) : {};
+  const chaveReg = path.resolve(arq), versao = hash(textoRoteiro);
+  const final = !!a.final, rascunho = !final && !a.preview;
+  if (rascunho) { a.rapido = true; if (!a.voz) a.voz = await motorRascunho(); }
+  if (final && reg[chaveReg] !== versao && !a.forcar) {
+    console.error(`\n✖ Faça o rascunho antes da versão final${reg[chaveReg] ? ' (o roteiro mudou depois do último rascunho)' : ''}:\n  node gerar.mjs ${arq}\n` +
+      `Confira saida/<nome>_rascunho.mp4 e depois rode com --final. (Para pular essa trava: --forcar)`); process.exit(1);
+  }
   // ---- configuração efetiva ----
   if (a.rapido) Object.assign(cfg.render, { largura: 540, altura: 960, ao: false, sombra: 1024 });
   for (const k of ['gpu', 'encoder', 'navegador']) if (a[k]) cfg.render[k] = a[k];
@@ -50,11 +64,25 @@ async function principal() {
   cfg.ffmpeg = a.ffmpeg || cfg.ffmpeg || 'ffmpeg'; cfg.render.ffmpeg = cfg.ffmpeg;
   const rot = carregarRoteiro(path.resolve(arq));
   Object.assign(cfg.voz, rot.voz || {}); Object.assign(cfg.legenda, rot.legenda || {});
+  if (a.voz) cfg.voz.motor = a.voz;   // rascunho e --voz sempre vencem o roteiro
   const nome = rot.saida || path.basename(arq).replace(/\.ya?ml$/i, '');
   const fps = cfg.render.fps;
   let cenas = rot.cenas;
   if (a.cenas) { const sel = intervalo(a.cenas, cenas.length); cenas = cenas.filter((_, i) => sel.has(i)); }
-  log(`roteiro "${rot.titulo || nome}" · ${cenas.length} cenas`);
+  log(`roteiro "${rot.titulo || nome}" · ${cenas.length} cenas · ${rascunho ? `RASCUNHO (voz: ${cfg.voz.motor}, sem custo)` : final ? 'VERSÃO FINAL' : 'prévia'}`);
+  if (final && cfg.voz.motor === 'elevenlabs') { // mostra o custo e pede confirmação
+    const n = caracteresPendentes(cenas.filter(c => !c.audio).map(c => c.fala), cfg.voz);
+    if (n === 0) log('ElevenLabs: todas as falas já estão em cache (custo 0)');
+    else {
+      log(`ElevenLabs vai gerar ${n} caracteres (falas que não estão em cache).`);
+      if (!a.sim) {
+        if (!process.stdin.isTTY) { console.error('✖ Confirme o gasto rodando com --sim'); process.exit(1); }
+        const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+        const r = (await rl.question('Continuar? (s/n) ')).trim().toLowerCase(); rl.close();
+        if (!['s', 'sim', 'y'].includes(r)) { log('cancelado, nada foi gasto'); return; }
+      }
+    }
+  }
 
   // ---- 1. narração ----
   for (const c of cenas) {
@@ -108,12 +136,16 @@ async function principal() {
   for (const c of cenas) { for (const w of c.palavras) palavras.push({ ...w, ini: w.ini + t, fim: w.fim + t }); t += c.dur; }
   fs.writeFileSync(path.join(trabalho, 'legendas.ass'), gerarASS(palavras, cfg.render, { ...cfg.legenda, palavras_destaque: rot.destaque }));
   const pasta = garantirDir(p(cfg.saida?.pasta || 'saida'));
-  const saida = path.join(pasta, `${nome}${a.cenas ? '_parcial' : ''}${a.rapido ? '_rapido' : ''}.mp4`);
+  const saida = path.join(pasta, `${nome}${a.cenas ? '_parcial' : ''}${rascunho ? '_rascunho' : a.rapido ? '_rapido' : ''}.mp4`);
   const musica = await escolherMusica(rot, nome, cfg);
   log(musica ? `música: ${path.relative(p(), musica.arquivo)} (clima ${musica.clima}${musica.inicio ? `, começa em ${musica.inicio.toFixed(1)} s` : ''})` : 'música: nenhuma');
   const total = await montarVideo({ cenas: cenas.map(c => ({ clipe: c.clipe, audio: c.audioArq, dur: c.dur, som: c.som })), trabalho, saida, musica, cfg });
   if (gastoElevenLabs()) log(`ElevenLabs: ${gastoElevenLabs()} caracteres usados nesta execução (falas repetidas vêm do cache)`);
   log(`pronto: ${path.relative(p(), saida)} (${fmt(total)})`);
+  if (rascunho && !a.cenas) {
+    reg[chaveReg] = versao; fs.writeFileSync(arqReg, JSON.stringify(reg, null, 1));
+    log(`RASCUNHO aprovado? Gere a versão final com:  node gerar.mjs ${arq} --final`);
+  }
 }
 
 principal().catch(e => { console.error('\n✖ ' + (e.message || e)); process.exit(1); });

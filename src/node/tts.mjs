@@ -65,6 +65,23 @@ async function elevenlabs(texto, v, bruto) {
   return palavrasDoAlinhamento(j.alignment || j.normalized_alignment);
 }
 
+function idAudio(texto, v) {
+  return hash({ texto, motor: v.motor, modelo: v.motor === 'elevenlabs' ? [v.voice_id, v.modelo_eleven, v.estabilidade, v.similaridade, v.estilo, v.idioma] : v.modelo,
+    vel: v.velocidade, esp: v.voz_espeak, f: v.falante });
+}
+
+/** Quantos caracteres ainda NÃO estão em cache (= o que o ElevenLabs vai cobrar). */
+export function caracteresPendentes(textos, cfgVoz) {
+  const v = { motor: 'piper', velocidade: 1.0, ...cfgVoz };
+  return textos.map(t => limpar(t || '')).filter(Boolean).filter(t => !fs.existsSync(p('cache', 'audio', idAudio(t, v) + '.wav'))).reduce((a, t) => a + t.length, 0);
+}
+
+/** Voz grátis para rascunho: voz do Windows (SAPI) no Windows, espeak-ng no Linux/Mac, ou silêncio cronometrado. */
+export async function motorRascunho() {
+  if (process.platform === 'win32') return 'windows';
+  try { await rodar('espeak-ng', ['--version']); return 'espeak'; } catch { return 'nenhum'; }
+}
+
 /**
  * Gera (ou reaproveita do cache) o áudio da fala.
  * Retorna { arquivo, dur, palavras? } — `palavras` (tempos exatos) só no ElevenLabs.
@@ -73,8 +90,7 @@ export async function narrar(texto, cfgVoz, ffmpeg = 'ffmpeg') {
   texto = limpar(texto || ''); if (!texto) return null;
   const v = { motor: 'piper', velocidade: 1.0, ...cfgVoz };
   const dir = garantirDir(p('cache', 'audio'));
-  const id = hash({ texto, motor: v.motor, modelo: v.motor === 'elevenlabs' ? [v.voice_id, v.modelo_eleven, v.estabilidade, v.similaridade, v.estilo, v.idioma] : v.modelo,
-    vel: v.velocidade, esp: v.voz_espeak, f: v.falante });
+  const id = idAudio(texto, v);
   const final = `${dir}/${id}.wav`, meta = `${dir}/${id}.json`;
   if (fs.existsSync(final)) return { arquivo: final, dur: duracaoWav(final), palavras: fs.existsSync(meta) ? JSON.parse(fs.readFileSync(meta, 'utf8')) : null };
   const bruto = `${dir}/${id}.bruto.${v.motor === 'elevenlabs' ? 'mp3' : 'wav'}`;
@@ -88,6 +104,12 @@ export async function narrar(texto, cfgVoz, ffmpeg = 'ffmpeg') {
     await rodar(cmd, [...args, '-m', modelo, '-f', bruto, '--length-scale', String(1 / v.velocidade), ...(v.falante != null ? ['-s', String(v.falante)] : []), ...(v.cuda ? ['--cuda'] : [])], { entrada: texto + '\n' });
   } else if (v.motor === 'espeak') {
     await rodar(v.comando_espeak || 'espeak-ng', ['-v', v.voz_espeak || 'pt-br', '-s', String(Math.round(165 * v.velocidade)), '-w', bruto, texto]);
+  } else if (v.motor === 'windows') { // voz do sistema (grátis, offline); usa a voz pt-BR instalada se houver
+    const caminho = bruto.replace(/'/g, "''");
+    const ps = `Add-Type -AssemblyName System.Speech; $s = New-Object System.Speech.Synthesis.SpeechSynthesizer; ` +
+      `$v = $s.GetInstalledVoices() | Where-Object { $_.VoiceInfo.Culture.Name -like 'pt*' } | Select-Object -First 1; if ($v) { $s.SelectVoice($v.VoiceInfo.Name) }; ` +
+      `$s.Rate = ${Math.round((v.velocidade - 1) * 10)}; $s.SetOutputToWaveFile('${caminho}'); $s.Speak([Console]::In.ReadToEnd()); $s.Dispose()`;
+    await rodar('powershell', ['-NoProfile', '-NonInteractive', '-Command', ps], { entrada: texto });
   } else if (v.motor === 'nenhum') {
     await rodar(ffmpeg, ['-y', '-v', 'error', '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=mono', '-t', String(Math.max(0.6, texto.split(' ').length * 0.32)), bruto]);
   } else throw new Error('Motor de voz desconhecido: ' + v.motor);
