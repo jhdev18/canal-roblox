@@ -37,7 +37,8 @@ async function chamarEleven(caminho, { metodo = 'GET', corpo, base } = {}) {
   if (!r.ok) {
     const txt = await r.text();
     const dica = r.status === 401 ? ' (chave inválida ou sem permissão de text_to_speech)' : r.status === 429 ? ' (limite de uso/créditos atingido — tente mais tarde ou use --voz espeak para rascunhos)'
-      : r.status === 404 ? ' (voice_id não existe na sua conta — rode: node gerar.mjs --vozes)' : '';
+      : r.status === 404 ? ' (voice_id não existe na sua conta — rode: node gerar.mjs --vozes)'
+      : r.status === 402 ? ' (plano grátis: vozes da Voice Library não funcionam pela API — use uma voz padrão (node gerar.mjs --vozes, categoria premade) ou assine o Starter)' : '';
     throw new Error(`ElevenLabs respondeu ${r.status}${dica}\n${txt.slice(0, 400)}`);
   }
   return r.json();
