@@ -52,6 +52,20 @@ const CATEGORIAS = {
     return [{ nome: 'fila: lotérica', cena: fila('interior_loterica', 6, 'cidada') }, { nome: 'fila: banco', cena: fila('interior_banco', 5, 'assessor') },
       { nome: 'fila: mercado', cena: { ...fila('interior_mercado', 5, 'cidada'), angulo: 20 } }, { nome: 'fila: padaria', cena: fila('interior_padaria', 4, 'cidada') },
       { nome: 'gabinete (prefeito)', cena: { cenario: 'gabinete', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 20, dist: 1.2, atores: [ator(spec('prefeito'), 'assinar'), ator(spec('assessor'), 'cochichar', { x: 4, z: -5, vira: -40 })] } }]; },
+  mundo: () => { const todos = Object.keys(tpl).map(k => ({ id: k, ...resolverSpec(k, tpl) }));
+    const M = (nome, o, atores = [], t = 0.5) => ({ nome, t, cena: { cenario: 'mundo', mov: 'fixo', dur: 2, camera: 'aberto', ...o, atores } });
+    return [M('vista (cidade inteira)', { local: 'vista', camera: 'alto', dist: 7.5, angulo: 25 }), M('praca', { local: 'praca', camera: 'geral', dist: 1.1, altura: 4 }, [ator(spec('garoto'), 'acenar')]),
+      M('coreto', { local: 'coreto' }, [ator(spec('prefeito'), 'discursar')]), M('fonte', { local: 'fonte' }, [ator(spec('menina'), 'comemorar')]),
+      M('entrando na farmácia', { local: 'farmacia', angulo: 35 }, [ator(spec('idosa'), 'andar', { x: -3, z: 1.5, vira: 180, caminho: [[-3, -6]] })], 0.75),
+      M('farmácia por dentro', { local: 'farmacia', dentro: true }, [ator(spec('medico'), 'atender')]),
+      M('lotérica: fila', { local: 'loterica', dentro: true, angulo: -50, dist: 1.2, multidao: { modo: 'fila', n: 4, specs: todos } }, [ator(spec('cidada'), 'atender')]),
+      M('igreja por dentro', { local: 'igreja', dentro: true, angulo: 20 }, [ator(spec('idosa'), 'rezar')]),
+      M('prefeitura: gabinete', { local: 'prefeitura', dentro: true, angulo: 15 }, [ator(spec('prefeito'), 'assinar')]),
+      M('bar por dentro', { local: 'bar', dentro: true }, [ator(spec('vizinho'), 'atender')]),
+      M('casa do protagonista', { local: 'casa', camera: 'geral', dist: 0.9, altura: 2 }, [ator(spec('garoto'), 'acenar')]),
+      M('casa: quarto', { local: 'casa', comodo: 'quarto', angulo: 20 }, [ator(spec('garoto'), 'jogar_pc')]),
+      M('casa: sala', { local: 'casa', comodo: 'sala' }, [ator(spec('pai'), 'sentar')]),
+      M('casa: cozinha', { local: 'casa', comodo: 'cozinha', angulo: -20 }, [ator(spec('mae'), 'cozinhar')])]; },
   locais: () => LOCAIS.filter(l => l !== 'vista').map(l => ({ nome: 'onde: ' + l, cena: { cenario: 'cidade_pequena', local: l, mov: 'fixo', dur: 1.2, camera: 'aberto', dist: 1.3, altura: 2, angulo: 15,
     atores: [ator(NOOB(), 'acenar')] } })),
   telas: () => [
@@ -78,7 +92,7 @@ function pagina(titulo, itens, colunas) {
 }
 
 const TITULOS = { personagens: 'Personagens (assets/personagens.yaml)', rostos: 'Rostos (rosto:)', extras: 'Extras de rosto (extras:)', acessorios: 'Acessórios (acessorios:)',
-  roupas: 'Roupas (roupa:)', casa: 'Casa do protagonista (onde: casa_protagonista + comodo:)', ambientes: 'Ambientes completos: filas e gabinete do prefeito', interiores: 'Interiores dos prédios (onde: <local> + dentro: true)', predios: 'Prédios da cidade pequena (props: — e cada um é um local em onde:)', locais: 'Locais da cidade pequena (onde: <local>)', acoes: 'Ações (acao:)', cenarios: 'Cenários (onde: + hora:)', telas: 'Telas de celular (onde: celular + tela:)', props: 'Props de cenário (props:)' };
+  roupas: 'Roupas (roupa:)', mundo: 'Mundo integrado (onde: mundo + local: / dentro: / comodo:)', casa: 'Casa do protagonista (onde: casa_protagonista + comodo:)', ambientes: 'Ambientes completos: filas e gabinete do prefeito', interiores: 'Interiores dos prédios (onde: <local> + dentro: true)', predios: 'Prédios da cidade pequena (props: — e cada um é um local em onde:)', locais: 'Locais da cidade pequena (onde: <local>)', acoes: 'Ações (acao:)', cenarios: 'Cenários (onde: + hora:)', telas: 'Telas de celular (onde: celular + tela:)', props: 'Props de cenário (props:)' };
 
 const todos = [];
 const motor = await abrirMotor({ largura: 360, altura: 640, fps: 30, ao: true, sombra: 2048, gpu });

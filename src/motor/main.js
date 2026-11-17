@@ -65,7 +65,7 @@ function posNoTempo(a, t) { // posição da raiz do ator no tempo t (sem tocar n
 async function montar(c) {
   if (atual) { cena.remove(atual.raiz); }
   const raiz = new THREE.Group(); cena.add(raiz);
-  const cen = construirCenario(c.cenario, { local: c.local, comodo: c.comodo, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque });
+  const cen = construirCenario(c.cenario, { local: c.local, comodo: c.comodo, dentro: c.dentro, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque });
   raiz.add(cen.grupo);
   cena.background = cor(cen.ceu); cena.fog = new THREE.Fog(cor(cen.ceu), cen.nevoa[0], cen.nevoa[1]);
   const sr = cen.sombra || 35; Object.assign(sol.shadow.camera, { left: -sr, right: sr, top: sr, bottom: -sr, far: 120 + sr * 2 }); sol.shadow.camera.updateProjectionMatrix();
@@ -85,6 +85,10 @@ async function montar(c) {
   const prin = atores.filter(a => !a.figurante).map(a => a.base.x);
   const xs = prin; const espalha = xs.length > 1 ? Math.max(...xs) - Math.min(...xs) : 0;
   atual = { c, raiz, atores, cen, dur: c.dur, espalha, nquadros: Math.max(1, Math.round(c.dur * cfg.fps)) };
+  // mundo integrado: paredes que somem (corte) e portas automáticas
+  cena.updateMatrixWorld(true);
+  atual.unidades = cen.unidades || []; atual.corteMeshes = []; for (const u of atual.unidades) { u.traverse(m => { if (m.isMesh) atual.corteMeshes.push(m); }); if (u.userData.movel) u.userData.caixa = new THREE.Box3().setFromObject(u); }
+  atual.portas = (cen.portas || []).map(piv => ({ piv, c: piv.localToWorld(new THREE.Vector3(1.2, 0, 0)) }));
   liberarVisao();
   posar(0); // garante shaders compilados antes do 1º quadro
   R.compile(cena, cam);
@@ -166,8 +170,26 @@ function posar(t) {
   const mira = posicionarCamera(cam, camC, t, dur, alvo, atores.length && !c.foco ? atual.espalha : 0);
   const L = atual.cen.limites; // interiores: a câmera não atravessa paredes
   if (L && mira) { cam.position.x = Math.max(-L.x, Math.min(L.x, cam.position.x)); cam.position.y = Math.max(0.8, Math.min(L.y, cam.position.y)); cam.position.z = Math.max(L.z, cam.position.z); cam.lookAt(mira); }
+  if (atual.portas?.length || atual.unidades?.length) { cena.updateMatrixWorld(true); portasECortes(); }
   const foco = alvo(t); const d = new THREE.Vector3(...atual.cen.sol.dir).normalize();
   sol.target.position.copy(foco); sol.position.copy(foco).addScaledVector(d, 60 + (atual.cen.sombra || 35)); sol.target.updateMatrixWorld();
+}
+
+const _v = new THREE.Vector3(), _rc = new THREE.Raycaster();
+/** A cada quadro: portas abrem quando alguém chega perto; paredes/tetos entre a câmera e os atores somem (vista em corte). */
+function portasECortes() {
+  for (const pt of atual.portas) {
+    let dmin = 1e9; for (const a of atual.atores) { const p = a.ator.raiz.position; dmin = Math.min(dmin, Math.hypot(p.x - pt.c.x, p.z - pt.c.z)); }
+    pt.piv.rotation.y = THREE.MathUtils.degToRad(85) * Math.min(1, Math.max(0, (4.6 - dmin) / 2.0));
+  }
+  if (!atual.unidades.length) return;
+  for (const u of atual.unidades) u.visible = !u.userData.oculto;
+  const foco = atual.c.foco; // com foco, só o ator em foco abre o corte (quem está do outro lado não apaga a fachada)
+  for (const a of atual.atores) { if (a.figurante || (foco && a.id !== foco)) continue; a.ator.raiz.getWorldPosition(_v);
+    for (const dy of [4.4, 2.6, 0.9]) { const p = _v.clone(); p.y += dy; const dir = p.sub(cam.position); const dist = dir.length(); _rc.set(cam.position, dir.normalize()); _rc.far = dist - 0.25;
+      for (const h of _rc.intersectObjects(atual.corteMeshes, false)) { const u = h.object.userData.unidade; if (!u) continue;
+        if (u.userData.movel && u.userData.caixa.distanceToPoint(_v) < 2.6) continue;   // móvel colado no ator (cadeira, cama): fica
+        u.visible = false; } } }
 }
 
 /**

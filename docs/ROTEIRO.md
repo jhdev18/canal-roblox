@@ -26,7 +26,38 @@ cenas:                     # 1 cena = 1 corte (~1–2 s, 3–7 palavras)
 
 > Se a fala tiver `:` ou começar com aspas, coloque a fala entre aspas: `fala: "Ele disse: corre!"`
 
-## Cidade pequena (recomendado: tudo acontece na mesma cidade)
+## Mundo integrado (recomendado)
+
+Um mapa único e contínuo, como um mapa do Roblox: **praça no centro** (coreto, fonte, estátua, jardins, parquinho, bancos, pipoqueiro),
+prédios em volta **ocos por dentro e por fora no mesmo lugar** (prefeitura com gabinete, igreja, banco, escola, posto de saúde, padaria,
+farmácia, lotérica, bar, mercado, delegacia com cela), uma rua de bairro a leste com a **casa do protagonista** (térrea, 5 cômodos
+ligados por portas) e o posto de gasolina.
+
+```yaml
+- onde: mundo
+  local: farmacia                 # em frente à fachada, na calçada
+  foco: idosa
+  mov: seguir
+  atores: [{ id: idosa, acao: andar, x: -3, z: 3, vira: 180, caminho: [[-3, -4], [-1, -5.6]], ao_chegar: pagar }]   # entra pela porta, plano contínuo
+- dentro: true                    # mesma farmácia, agora por dentro (sem `onde:` continua no mesmo lugar)
+  atores: [medico atender]
+- onde: mundo
+  local: casa
+  comodo: quarto                  # sala | cozinha | quarto | banheiro | quarto_pais
+  atores: [garoto jogar_pc]
+- onde: mundo
+  local: vista                    # cidade inteira de cima (cam: alto + dist: 7)
+```
+
+**Locais:** prefeitura, igreja, banco, escola, posto_saude, padaria, farmacia, loterica, bar, mercado, delegacia, casa (todos com `dentro: true`),
+praca, coreto, fonte, parquinho, estatua, rua_bairro, posto_gasolina, vista.
+
+- **Portas abrem sozinhas** quando alguém chega perto e fecham depois. A porta fica em `x` = −3 na farmácia/padaria, 0 na lotérica/banco/posto de saúde/igreja/prefeitura, −5 no mercado, 2,5 na delegacia, −2 no bar e −6 na casa (em relação ao ponto da calçada).
+- **Paredes e tetos somem sozinhos** quando ficam entre a câmera e o ator (vista em corte), e voltam depois. Com `foco:`, só o ator em foco abre o corte.
+- Dentro da casa, os móveis dos outros cômodos ficam escondidos para não atrapalhar a câmera.
+- Todas as âncoras continuam funcionando (`atender`, `fila: N`, `rezar`, `segurar_grade`, `sentar`, `deitar`, `jogar_pc`, `cozinhar`…).
+
+## Cidade pequena (cenários separados, versão anterior)
 
 `cidade_pequena` é um modelo de cidade de interior com praça e coreto no centro, igreja matriz e prefeitura de frente para a praça,
 comércio em volta, ruas de saída, casas e posto de gasolina. Cada cena escolhe **onde** dentro dessa cidade:

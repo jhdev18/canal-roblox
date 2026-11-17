@@ -7,6 +7,8 @@ import { PROPS, placaTexto } from './props.js';
 import { construirCidade, enquadrarLocal } from './cidade.js';
 import { INTERIORES } from './interiores.js';
 import { construirCasa, enquadrarComodo } from './casa.js';
+import { construirMundo, enquadrarMundo } from './mundo.js';
+export { LOCAIS_MUNDO, LOCAIS_COM_INTERIOR, COMODOS_DO_MUNDO } from './mundo.js';
 export { COMODOS_CASA } from './casa.js';
 export { INTERIOR_DO_LOCAL } from './interiores.js';
 
@@ -232,6 +234,10 @@ export const CENARIOS = {
     if (!n) nuvens(g, r); else lua(g);
   },
   cidade_pequena(o, g, r) { construirCidade(o, g, r); },
+  mundo(o, g, r) { // MUNDO INTEGRADO: praça no centro, prédios ocos por fora e por dentro, portas automáticas, casa do protagonista
+    construirMundo(o, g, r); const e = enquadrarMundo(g, o);
+    if (o.comodo === 'quarto_pais' && e.ancoras.deitar_pais) { e.ancoras.deitar = e.ancoras.deitar_pais; e.ancoras.dormir = e.ancoras.deitar_pais; }
+    g.userData.ancoras = e.ancoras; },
   casa_protagonista(o, g, r) { construirCasa(o, g, r); const e = enquadrarComodo(g, o.comodo); g.userData.ancoras = e.ancoras; g.userData.limites = e.limites; },   // casa completa (use `comodo:`)   // modelo da cidade inteira (use `local:` para escolher onde a cena acontece)
   gabinete(o, g, r) { // escritório do prefeito: mesa, poltrona, bandeiras, estante, mesa de reunião, sofá e janelões
     const n = o.hora === 'noite'; sala(g, { largura: 30, parede: o.parede || '#e9dcc4', chao: o.chao || '#6b4426', profundo: 10, altura: 12 });
@@ -267,9 +273,10 @@ export function construirCenario(nome, o = {}) {
   fn(o, g, r);
   if (nome === 'cidade_pequena') enquadrarLocal(g, o.local);
   g.traverse(m => { if (m.isMesh) { m.receiveShadow = true; if (m.castShadow === undefined) m.castShadow = true; } });
-  const amb = ambiente(o.hora || 'dia', INTERNOS.has(nome));
+  const interno = INTERNOS.has(nome) || (nome === 'mundo' && !!(o.dentro || o.comodo));
+  const amb = ambiente(o.hora || 'dia', interno);
   if (nome === 'celular') { amb.ceu = o.cor || '#6b7a99'; amb.nevoa = [200, 400]; }
   if (nome === 'vazio') { amb.ceu = o.cor || '#eef1f6'; amb.nevoa = [60, 140]; }
-  if (nome === 'cidade_pequena') { amb.nevoa = [120, 520]; amb.sombra = (!o.local || o.local === 'vista') ? 120 : 50; }
-  return { grupo: g, ...amb, ancoras: g.userData.ancoras || {}, limites: g.userData.limites, interno: INTERNOS.has(nome), cameraFixa: nome === 'celular' };
+  if (nome === 'cidade_pequena' || nome === 'mundo') { amb.nevoa = [140, 600]; amb.sombra = (!o.local || o.local === 'vista') ? 150 : 50; }
+  return { grupo: g, ...amb, ancoras: g.userData.ancoras || {}, limites: g.userData.limites, unidades: g.userData.unidades, portas: g.userData.portas, interno, cameraFixa: nome === 'celular' };
 }
