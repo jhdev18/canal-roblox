@@ -73,26 +73,46 @@ const PREDIOS_MUNDO = {
     interior(gi) { por(gi, 'prateleira', { largura: 10.5, altura: 6, cores: ['#ffffff', '#e53935', '#1e88e5', '#43a047', '#fdd835'] }, [0, 0.2, -11]);
       por(gi, 'balcao', { largura: 7, cor: '#16a05d', tampo: '#f2f3f3' }, [0, 0.2, -7]); por(gi, 'caixa_registradora', {}, [2, 3.4, -7], 180);
       por(gi, 'prateleira', { largura: 4, altura: 5 }, [-5.3, 0.2, -3.5], 90);
+      por(gi, 'gondola', { largura: 3, seed: 4 }, [2.6, 0.2, -3.6], 0, 0.85); por(gi, 'prateleira', { largura: 3.2, altura: 5, seed: 9 }, [5.4, 0.2, -2.4], -90);
+      por(gi, 'placa_suspensa', { texto: 'CAIXA', cor: '#16a05d', largura: 2 }, [2, 5.6, -7]); por(gi, 'relogio_parede', {}, [-5.75, 6.0, -8.5], 90); por(gi, 'ventilador_teto', {}, [-2.5, 7.2, -3.5]);
+      por(gi, 'extintor', {}, [-5.5, 0.2, -0.8], 90); por(gi, 'lixeira', { cor: '#9aa0aa' }, [4.7, 0.2, -5.6], 0, 0.7); por(gi, 'planta', {}, [5, 0.2, -9.8]); por(gi, 'tapete', { largura: 2.6, prof: 1.4, cor: '#5a5d66' }, [-3, 0.2, -1.1]);
+      por(gi, 'pilha_caixas', { n: 2, seed: 5 }, [-4.6, 0.2, -10.0]);
       return { atender: [0, 0.2, -8.8, 0], fila: { inicio: [0, -5.4], vira: 180, cresce: [-0.5, 1] } }; } },
   loterica: { w: 10, d: 11, h: 6.5, cor: '#1d4fa0', faixa: '#f39c12', piso: '#cfd6e4', letreiro: { texto: 'LOTÉRICA', fundo: '#f5b800', cor: '#1d3b72' }, porta: { x: 0, w: 2.8, vidro: true }, vitrines: [{ x: -3.3, w: 2.2 }, { x: 3.3, w: 2.2 }],
     interior(gi) { for (const [i, x] of [-2.4, 2.4].entries()) por(gi, 'guiche', { largura: 4.4, cor: '#1d4fa0', numero: i + 1 }, [x, 0.2, -7]);
       const m = PROPS.mural({ texto: 'PRÊMIO R$ 50 MI', largura: 5, altura: 1.6, cor: '#1d3b72', cor_texto: '#ffd23f' }); m.position.set(0, 5.3, -10.6); gi.add(m);
+      por(gi, 'balcao', { largura: 3, cor: '#f5b800', tampo: '#f2f3f3' }, [-4.0, 0.2, -2.2], 90, 0.8); por(gi, 'cadeiras_espera', { n: 2, cor: '#f5b800' }, [4.2, 0.2, -3.0], -90);
+      for (const [t, c, z] of [['MEGA', '#16a05d', -2.2], ['QUINA', '#8e24aa', -4.4]]) por(gi, 'poster', { texto: t, cor: c, cor_texto: '#ffffff' }, [4.85, 4.7, z], -90, 0.6);
+      por(gi, 'relogio_parede', {}, [-4.75, 5.0, -9], 90); por(gi, 'ventilador_teto', {}, [0, 6.7, -3]); por(gi, 'lixeira', { cor: '#1d4fa0' }, [4.0, 0.2, -5.6], 0, 0.7);
+      por(gi, 'arquivo', {}, [-3.8, 0.2, -10.0], 0, 0.8); por(gi, 'pilha_caixas', { n: 2, seed: 2 }, [3.6, 0.2, -10.0]); por(gi, 'tapete', { largura: 2.8, prof: 1.4, cor: '#1d3b72' }, [0, 0.2, -1.1]);
       return { atender: [-2.4, 0.2, -8.7, 0], fila: { inicio: [-2.4, -4.9], vira: 180, cresce: [0.35, 1] } }; } },
   padaria: { w: 12, d: 12, h: 7, cor: '#f3d9a4', faixa: '#8a4a1f', piso: '#b98b5e', letreiro: { texto: 'PADARIA', fundo: '#8a4a1f', cor: '#ffe9b0' }, porta: { x: -3, w: 2.6, vidro: true }, vitrines: [{ x: 2.6, w: 5 }],
     interior(gi) { por(gi, 'estufa_paes', { largura: 6 }, [-1.5, 0.2, -7]); por(gi, 'balcao', { largura: 3.5, cor: '#8a4a1f' }, [3.8, 0.2, -7]); por(gi, 'caixa_registradora', {}, [3.8, 3.4, -7], 180);
       por(gi, 'prateleira', { largura: 10, altura: 6, cores: ['#d9a25a', '#b87a35', '#f2d6a0', '#8a4a1f'] }, [0, 0.2, -11]);
       por(gi, 'mesa', { largura: 2.6, cor: '#f2f3f3' }, [3.5, 0.2, -2.6], 0, 0.8); por(gi, 'cadeira_plastico', {}, [1.6, 0.2, -2.6], 90, 0.8);
+      por(gi, 'geladeira_vitrine', { largura: 3 }, [-5.0, 0.2, -2.6], 90, 0.8); por(gi, 'mural', { texto: 'CAFÉ R$ 3 · PÃO R$ 0,80', largura: 3.6, altura: 1.8, cor: '#3a2a1a', cor_texto: '#ffe9b0' }, [-5.75, 4.6, -5.6], 90);
+      por(gi, 'pilha_caixas', { n: 3, cor: '#efe6d0', seed: 7 }, [-4.8, 0.2, -9.8]); por(gi, 'fogao', {}, [-2, 0.2, -9.6], 180, 0.8); por(gi, 'relogio_parede', {}, [5.75, 5.6, -9], -90);
+      por(gi, 'ventilador_teto', {}, [2.5, 7.2, -3.5]); por(gi, 'lixeira', { cor: '#8a4a1f' }, [5.3, 0.2, -1.0], 0, 0.7); por(gi, 'planta', {}, [-5.2, 0.2, -0.9]);
+      por(gi, 'placa_suspensa', { texto: 'PÃES', cor: '#8a4a1f', cor_texto: '#ffe9b0', largura: 2 }, [-1.5, 5.6, -7]);
       return { atender: [3.8, 0.2, -8.7, 0], fila: { inicio: [3.8, -5.2], vira: 180, cresce: [-0.6, 1] }, sentar: [1.7, 0.2, -2.6, 90] }; } },
   mercado: { w: 16, d: 16, h: 7.5, cor: '#f2f3f3', faixa: '#c4281c', piso: '#dfe2e6', letreiro: { texto: 'MERCADO', fundo: '#c4281c' }, porta: { x: -5, w: 3.2, vidro: true }, vitrines: [{ x: 2.5, w: 8 }],
     janelas: { esq: [-8] },
     interior(gi) { for (const x of [-3.5, 3.5]) por(gi, 'gondola', { largura: 8, seed: x }, [x, 0.2, -10], 90);
       por(gi, 'geladeira_vitrine', { largura: 12 }, [0, 0.2, -15]); por(gi, 'balcao', { largura: 3.5, cor: '#c4281c' }, [5, 0.2, -3], 90); por(gi, 'caixa_registradora', {}, [5, 3.4, -3.4], 90);
-      por(gi, 'carrinho_compras', {}, [-5.5, 0.2, -4], 20);
+      por(gi, 'carrinho_compras', {}, [-7, 0.2, -1.6], 20);
+      por(gi, 'prateleira', { largura: 4, altura: 6, seed: 12 }, [-7.3, 0.2, -12], 90); por(gi, 'banca_frutas', { largura: 3 }, [-6.9, 0.2, -5.2], 90); por(gi, 'banca_frutas', { largura: 3, seed: 2 }, [0, 0.2, -4.2], 0, 0.9);
+      por(gi, 'pilha_caixas', { n: 3, seed: 9 }, [6.8, 0.2, -14.3]); por(gi, 'pilha_caixas', { n: 2, seed: 4 }, [-6.8, 0.2, -14.3]);
+      for (const [t, x, z, c] of [['HORTIFRUTI', -4.5, -5.2, '#43a047'], ['BEBIDAS', 0, -14, '#1e88e5'], ['CAIXA', 5, -3, '#c4281c']]) por(gi, 'placa_suspensa', { texto: t, cor: c, largura: 3 }, [x, 6.2, z]);
+      por(gi, 'extintor', {}, [7.4, 0.2, -0.8], -90); por(gi, 'ventilador_teto', {}, [-4, 7.7, -9]); por(gi, 'ventilador_teto', {}, [4, 7.7, -6]); por(gi, 'lixeira', { cor: '#c4281c' }, [3.4, 0.2, -0.9], 0, 0.7);
       return { atender: [6.6, 0.2, -3, -90], fila: { inicio: [3.4, -3.0], vira: 90, cresce: [-1, 0.3] } }; } },
   banco: { w: 12, d: 12, h: 8, cor: '#b8bcc6', piso: '#b8bcc6', letreiro: { texto: 'BANCO', fundo: '#1d3b72', largura: 6 }, porta: { x: 0, w: 3, vidro: true }, vitrines: [{ x: -4, w: 2.4 }, { x: 4, w: 2.4 }],
     interior(gi) { for (const [i, x] of [-2.6, 2.6].entries()) por(gi, 'guiche', { largura: 4.6, cor: '#8c909a', numero: i + 1 }, [x, 0.2, -7.5]);
       const atm = grupo([caixa(1.4, 3.4, 1.2, '#5a5d66', { pos: [0, 1.7, 0] }), plano(0.9, 0.7, mat('#5fb0ff', { emissive: '#3a8fd8', emissiveIntensity: 0.9 }), { pos: [0, 2.7, 0.61] })]);
       atm.position.set(-5.2, 0.2, -3); atm.rotation.y = Math.PI / 2; gi.add(atm); por(gi, 'fila_cordao', { n: 2 }, [-1.5, 0.2, -4]);
+      por(gi, 'cadeiras_espera', { n: 3, cor: '#1d3b72' }, [5.0, 0.2, -3.5], -90); por(gi, 'planta', {}, [5.2, 0.2, -0.9]); por(gi, 'planta', {}, [-5.2, 0.2, -5.2]);
+      por(gi, 'extintor', {}, [-5.6, 0.2, -0.6], 90); por(gi, 'lixeira', { cor: '#5a5d66' }, [-3.6, 0.2, -1.0], 0, 0.7); por(gi, 'relogio_parede', {}, [5.75, 6.4, -6.5], -90);
+      por(gi, 'arquivo', {}, [-4.8, 0.2, -10.6], 0, 0.85); por(gi, 'cofre', {}, [4.4, 0.2, -10.6]); por(gi, 'mesa_trabalho', {}, [0, 0.2, -10.4], 0, 0.7);
+      por(gi, 'mural', { texto: 'ABRA SUA CONTA', largura: 3.4, altura: 1.6, cor: '#1d3b72', cor_texto: '#ffd23f' }, [-5.75, 5.2, -4.2], 90);
       return { atender: [-2.6, 0.2, -9.2, 0], fila: { inicio: [-2.6, -5.4], vira: 180, cresce: [0.4, 1] } }; } },
   prefeitura: { w: 22, d: 14, h: 9, cor: '#f4f1ea', faixa: '#1d3b72', piso: '#9b7b5a', letreiro: { texto: 'PREFEITURA MUNICIPAL', fundo: '#f4f1ea', cor: '#1d3b72', largura: 14 },
     porta: { x: 0, w: 3.2, cor: '#5a3a22' }, vitrines: [{ x: -7, w: 3 }, { x: 7, w: 3 }], janelas: { fundo: [-7] },
@@ -101,29 +121,58 @@ const PREDIOS_MUNDO = {
       const q = PROPS.quadro_parede({ texto: 'PREFEITO', cor: '#1d3b72' }); q.position.set(6, 6, -13.6); gi.add(q);
       por(gi, 'mesa_escritorio', {}, [6, 0.2, -10.2], 180); por(gi, 'poltrona', {}, [6, 0.2, -12.6], 0, 0.9); por(gi, 'bandeira', {}, [2.5, 0.2, -12.8], 0, 0.6); por(gi, 'bandeira', { cores: ['#fff', '#c4281c', '#fff'] }, [9.5, 0.2, -12.8], 0, 0.6);
       por(gi, 'cadeiras_espera', { n: 3, cor: '#7b1f2b' }, [-8.5, 0.2, -2.5], 90);
+      por(gi, 'estante', {}, [-10.4, 0.2, -6.4], 90, 0.9); por(gi, 'arquivo', {}, [-10.0, 0.2, -10.4], 90); por(gi, 'arquivo', {}, [-10.0, 0.2, -12.5], 90);
+      for (const x of [4.8, 7.2]) por(gi, 'cadeira', { cor: '#7b1f2b' }, [x, 0.2, -8.0], 180, 0.85);
+      por(gi, 'planta', {}, [10.2, 0.2, -1.0]); por(gi, 'planta', {}, [10.2, 0.2, -9.0]); por(gi, 'planta', {}, [-2.6, 0.2, -13.0]); por(gi, 'relogio_parede', {}, [0, 7.4, -13.75]);
+      por(gi, 'mural', { texto: 'COMUNICADOS', largura: 4, altura: 2.4 }, [-5, 5.2, -13.75]); por(gi, 'placa_suspensa', { texto: 'GABINETE DO PREFEITO', largura: 5 }, [6, 7.6, -7.0]);
+      por(gi, 'placa_suspensa', { texto: 'PROTOCOLO', largura: 3 }, [-5, 7.6, -6]); por(gi, 'lixeira', { cor: '#5a5d66' }, [3.0, 0.2, -10.6], 0, 0.7);
+      por(gi, 'ventilador_teto', {}, [-5, 9.2, -9]); por(gi, 'ventilador_teto', {}, [6, 9.2, -4]); por(gi, 'computador', {}, [-6.3, 1.2, -6.2], 180, 0.9);
       return { atender: [-5, 0.2, -7.7, 0], sentar: [6, 0.2, -12.3, 0], assinar: [6, 0.2, -12.0, 0], discursar: [0, 0.2, 2.5, 0] }; } },
   igreja: { w: 14, d: 26, h: 11, cor: '#f6f2e6', piso: '#b5895a', telhado: '#b5533a', porta: { x: 0, w: 3.4, cor: '#6b4426' }, janelas: { esq: [-6, -12, -18], dir: [-6, -12, -18] },
     interior(gi, { d }) { gi.add(caixa(3, 0.05, d - 2, '#7b1f2b', { pos: [0, 0.23, -d / 2], sombra: false }));
       for (let z = -18; z <= -4; z += 3) for (const s of [-1, 1]) por(gi, 'banco_igreja', { largura: 4.4 }, [s * 3.6, 0.2, z]);
       por(gi, 'altar', {}, [0, 0.2, -23], 0, 0.8); const cr = PROPS.cruz_parede({ cor: '#c9a24a' }); cr.position.set(0, 7.5, -25.6); gi.add(cr);
+      for (const x of [-4.5, 4.5]) por(gi, 'vitral', {}, [x, 6.5, -25.7]); for (const x of [-4.2, 4.2]) por(gi, 'castical', {}, [x, 0.2, -20.2]);
+      for (const x of [-3.3, 3.3]) por(gi, 'vaso_flor', { cor: '#ffffff' }, [x, 1.16, -21.2]); por(gi, 'balcao', { largura: 1.6, cor: '#7a4a2a', tampo: '#c9a24a' }, [-5.4, 0.2, -19.6], 30, 0.8);
+      for (const x of [-2.6, 2.6]) gi.add(grupo([cilindro(0.12, 0.2, 2.8, '#d8d4cc', { pos: [x, 1.6, -1.6] }), cilindro(0.55, 0.35, 0.35, '#e9e6dc', { pos: [x, 3.1, -1.6], seg: 14 })]));   // pias de água benta
+      for (const z of [-9, -15]) for (const s of [-1, 1]) por(gi, 'castical', {}, [s * 6.4, 0.2, z], 0, 0.8);
       return { rezar: [-3.6, 0.2, -6.6, 0], sentar: [-3.6, 0.2, -6.6, 0], atender: [0, 1.2, -21.6, 0] }; } },
   escola: { w: 20, d: 12, h: 8, cor: '#f5e6b8', faixa: '#1e6fd9', piso: '#b99a72', letreiro: { texto: 'ESCOLA MUNICIPAL', fundo: '#1e6fd9', largura: 12 }, porta: { x: -7, w: 2.6 },
     vitrines: [{ x: -2, w: 2.6 }, { x: 3, w: 2.6 }, { x: 8, w: 2.6 }],
     interior(gi) { gi.add(caixa(10, 3.5, 0.2, '#24553b', { pos: [0, 4.5, -11.6] })); gi.add(caixa(10.4, 3.9, 0.15, '#7c5c46', { pos: [0, 4.5, -11.7] }));
       por(gi, 'mesa', { largura: 4, cor: '#7c5c46' }, [-5, 0.2, -9]);
       for (const z of [-6, -2.8]) for (const x of [-4, 0, 4, 8]) { por(gi, 'carteira', {}, [x, 0.2, z], 0, 0.8); por(gi, 'cadeira', { cor: '#2a5bd7' }, [x, 0.2, z + 1.3], 180, 0.8); }
+      por(gi, 'estante', {}, [7.3, 0.2, -11.1], 0, 0.8); por(gi, 'mural', { texto: 'A B C D E', largura: 3, altura: 1.6, cor: '#ffffff', cor_texto: '#e53935' }, [-8, 5.6, -11.75]);
+      por(gi, 'mural', { texto: 'MAPA DO BRASIL', largura: 4, altura: 2.6, cor: '#43a047', cor_texto: '#ffd23f' }, [9.75, 4.6, -5], -90); por(gi, 'relogio_parede', {}, [0, 7.0, -11.75]);
+      por(gi, 'cadeira', { cor: '#7c5c46' }, [-5, 0.2, -10.6], 0, 0.85); gi.add(grupo([cilindro(0.15, 0.2, 0.3, '#7c5c46', { pos: [-6.2, 2.8, -9] }), esfera(0.45, '#1e88e5', { pos: [-6.2, 3.4, -9] })]));   // globo
+      por(gi, 'lixeira', { cor: '#1e6fd9' }, [-8.8, 0.2, -9.6], 0, 0.7); por(gi, 'ventilador_teto', {}, [-3, 8.2, -6]); por(gi, 'ventilador_teto', {}, [5, 8.2, -6]);
+      por(gi, 'mural', { texto: 'BOAS VINDAS!', largura: 3.6, altura: 1.6, cor: '#fdd835', cor_texto: '#1d3b72' }, [-9.75, 4.6, -5], 90);
       return { falar: [-2, 0.2, -9.5, 0], sentar: [0, 0.2, -1.6, 180] }; } },
   posto_saude: { w: 14, d: 12, h: 7, cor: '#ffffff', faixa: '#1e88e5', piso: '#d6e2ea', letreiro: { texto: 'POSTO DE SAÚDE', fundo: '#1e88e5' }, porta: { x: 0, w: 2.8, vidro: true }, vitrines: [{ x: -4.5, w: 2.6 }, { x: 4.5, w: 2.6 }],
     interior(gi) { por(gi, 'balcao', { largura: 5, cor: '#1e88e5', tampo: '#f2f3f3' }, [-3.5, 0.2, -7]); por(gi, 'cadeiras_espera', { n: 3 }, [5.5, 0.2, -4], -90);
       por(gi, 'maca', {}, [4, 0.2, -9.5], 90); const cz = grupo([caixa(0.5, 1.5, 0.2, '#e53935'), caixa(1.5, 0.5, 0.2, '#e53935')]); cz.position.set(-3.5, 5, -11.6); gi.add(cz);
+      por(gi, 'prateleira', { largura: 3, altura: 5, cores: ['#ffffff', '#1e88e5', '#e53935', '#f2f3f3'], seed: 6 }, [5.6, 0.2, -11.3]); por(gi, 'suporte_soro', {}, [1.0, 0.2, -11]);
+      por(gi, 'bebedouro', {}, [-6.2, 0.2, -3.0], 90); por(gi, 'mural', { texto: 'VACINE-SE!', largura: 3.4, altura: 2, cor: '#ffffff', cor_texto: '#e53935' }, [-6.75, 4.6, -5.4], 90);
+      por(gi, 'poster', { texto: 'DENGUE NÃO!', cor: '#e53935', cor_texto: '#ffffff' }, [-0.6, 4.4, -11.8], 0, 0.7); por(gi, 'computador', {}, [-4.4, 1.2, -7.2], 180, 0.9);
+      por(gi, 'relogio_parede', {}, [-6.75, 5.8, -9], 90); por(gi, 'lixeira', { cor: '#9aa0aa' }, [6.3, 0.2, -0.9], 0, 0.7); por(gi, 'planta', {}, [-6.0, 0.2, -0.9]);
+      por(gi, 'ventilador_teto', {}, [-3, 7.2, -3]);
       return { atender: [-3.5, 0.2, -8.8, 0], sentar: [5.2, 0.2, -4.6, -90], deitar: [4, 2.55, -9.5, 90], fila: { inicio: [-3.5, -5.2], vira: 180, cresce: [0.3, 1] } }; } },
   delegacia: { w: 12, d: 12, h: 7, cor: '#e9ebef', faixa: '#1d3b72', piso: '#9aa0aa', letreiro: { texto: 'DELEGACIA', fundo: '#1d3b72' }, porta: { x: 2.5, w: 2.6, vidro: true }, vitrines: [{ x: -3, w: 2.4 }],
     interior(gi) { por(gi, 'balcao', { largura: 4, cor: '#5a5d66' }, [2.5, 0.2, -5.5]); por(gi, 'cela', { largura: 5 }, [-3.2, 0.2, -7.4]); gi.add(caixa(0.3, 7, 4.4, '#cfd3da', { pos: [-0.6, 3.6, -9.6] }));
       por(gi, 'mesa_trabalho', {}, [3.5, 0.2, -9.6], 0, 0.8);
+      por(gi, 'arquivo', {}, [5.2, 0.2, -11.0], 0, 0.8); por(gi, 'cadeira', { cor: '#1d3b72' }, [2.6, 0.2, -10.9], 0, 0.8); por(gi, 'cadeiras_espera', { n: 3, cor: '#5a5d66' }, [-5.2, 0.2, -3.5], 90);
+      por(gi, 'mural', { texto: 'PROCURADOS', largura: 3.4, altura: 2.2, cor: '#f5e6b8', cor_texto: '#c4281c' }, [5.75, 4.6, -3.5], -90); por(gi, 'bandeira', {}, [0.7, 0.2, -11.2], 0, 0.6);
+      gi.add(grupo([caixa(3.6, 0.3, 1.2, '#7a7d85', { pos: [-3.2, 1.3, -11.2] }), caixa(0.3, 1.2, 1.2, '#5a5d66', { pos: [-4.8, 0.6, -11.2] }), caixa(0.3, 1.2, 1.2, '#5a5d66', { pos: [-1.6, 0.6, -11.2] })]));   // banco da cela
+      por(gi, 'extintor', {}, [0.4, 0.2, -0.7], 180); por(gi, 'relogio_parede', {}, [5.75, 5.5, -8], -90); por(gi, 'ventilador_teto', {}, [2.5, 7.2, -3]);
+      por(gi, 'computador', {}, [2.0, 1.2, -5.7], 180, 0.9);
       return { atender: [2.5, 0.2, -7, 0], segurar_grade: [-3.2, 0.2, -8.4, 0] }; } },
   bar: { w: 10, d: 10, h: 5.5, cor: '#f5cd30', faixa: '#c4281c', piso: '#8a6a4a', letreiro: { texto: 'BAR DO ZÉ', fundo: '#c4281c' }, porta: { x: -2, w: 3.4, cor: '#3a3d44' }, vitrines: [{ x: 2.8, w: 3 }],
     interior(gi) { por(gi, 'prateleira_garrafas', { largura: 8 }, [0, -1.2, -9.4]); por(gi, 'balcao', { largura: 7, cor: '#7a4a2a', tampo: '#5a3a22' }, [0, 0.2, -6.8]);
       for (let i = 0; i < 3; i++) por(gi, 'banqueta', {}, [-2.4 + i * 2.4, 0.2, -5.0]); const tv = PROPS.tv_parede({ tela: 'futebol' }); tv.position.set(3.8, 4.2, -9.6); tv.scale.setScalar(0.6); gi.add(tv);
+      por(gi, 'mesa', { largura: 2.6, cor: '#f2f3f3' }, [3.0, 0.2, -2.8], 0, 0.75); for (const x of [1.4, 4.5]) por(gi, 'cadeira_plastico', {}, [x, 0.2, -2.8], x < 3 ? 90 : -90, 0.8);
+      por(gi, 'geladeira', {}, [-4.2, 0.2, -8.6], 90, 0.8); por(gi, 'pilha_caixas', { n: 3, cor: '#e53935', seed: 11 }, [4.2, 0.2, -8.6]);
+      por(gi, 'poster', { texto: 'CERVEJA GELADA', cor: '#f5b800', cor_texto: '#c4281c' }, [-4.75, 3.5, -4.0], 90, 0.6); por(gi, 'poster', { texto: 'GOOOL!', cor: '#1f9d48' }, [4.75, 3.6, -5.2], -90, 0.6);
+      por(gi, 'ventilador_teto', {}, [0, 5.7, -3.6]); por(gi, 'lixeira', { cor: '#c4281c' }, [-4.3, 0.2, -1.0], 0, 0.7);
       return { atender: [0, 0.2, -8.5, 0], sentar: [-2.4, 1.15, -4.7, 180] }; } },
 };
 // casa do protagonista: térrea, 5 cômodos. Frente (z=0) olha +Z.

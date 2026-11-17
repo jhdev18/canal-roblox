@@ -52,7 +52,7 @@ ligados por portas) e o posto de gasolina.
 **Locais:** prefeitura, igreja, banco, escola, posto_saude, padaria, farmacia, loterica, bar, mercado, delegacia, casa (todos com `dentro: true`),
 praca, coreto, fonte, parquinho, estatua, rua_bairro, campinho (campo de futebol do bairro, entre o mercadinho e a borracharia, com gramado dos lados), posto_gasolina, vista.
 
-- **Mapa com os nomes:** `docs/preview/mapa_mundo.jpg`. Câmera de cima para cenas: `cam: mapa` (e `alvo_xz: [x, z]` para escolher o centro).
+- **Mapa com os nomes:** `docs/preview/mapa_mundo.jpg`. Interiores de todos os prédios: `docs/preview/interiores_mundo.jpg`. Câmera de cima para cenas: `cam: mapa` (e `alvo_xz: [x, z]` para escolher o centro).
 - **Só o local gravado existe na cena:** o resto do mundo é removido ao montar cada cena (mais leve para a GPU).
   Alcance padrão: 80 na calçada, 30 dentro de prédio, só a casa num cômodo, mapa inteiro na `vista`. Mude com `alcance: 120` na cena.
 - **Portas abrem sozinhas** quando alguém chega perto e fecham depois. A porta fica em `x` = −3 na farmácia/padaria, 0 na lotérica/banco/posto de saúde/igreja/prefeitura, −5 no mercado, 2,5 na delegacia, −2 no bar e −6 na casa (em relação ao ponto da calçada).
@@ -227,7 +227,7 @@ Campos: `pele, camisa, calca, rosto, extras, acessorios, roupa, cabelo_cor, esca
 arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, cadeira, cama, sofa, tv, computador, planta, presente, caixa_correio, cerca, porta, caixao, bolo,
 semaforo (`luz: verde`), onibus (`texto`), taxi, viatura, hidrante, lixeira, faixa_pedestre, loja (`texto`, `cor`), arranha_ceu, fonte, estatua (`texto`), bandeira (`cores`), palanque (`texto`), barraca, outdoor (`texto`), mesa_escritorio, poltrona, estante, quadro_parede (`texto`),
 **móveis de casa:** cadeira_gamer, guarda_roupa, cortina, cama_casal, criado_mudo, comoda, tapete, mesa_centro, escada, vaso_sanitario, pia_banheiro, box_chuveiro, porta_retrato, painel_ferramentas, luminaria, poster (`texto`),
-**móveis de interior:** balcao, prateleira, gondola, geladeira_vitrine, caixa_registradora, carrinho_compras, guiche (`numero`), banco_igreja, altar, cruz_parede, vitral, cela, sinuca, banqueta, prateleira_garrafas, tv_parede, estufa_paes, cadeiras_espera, maca, mesa_trabalho, arquivo, bebedouro, fila_cordao, mural (`texto`),
+**móveis de interior:** balcao, prateleira, gondola, geladeira_vitrine, caixa_registradora, carrinho_compras, guiche (`numero`), banco_igreja, altar, cruz_parede, vitral, cela, sinuca, banqueta, prateleira_garrafas, tv_parede, estufa_paes, cadeiras_espera, maca, mesa_trabalho, arquivo, bebedouro, fila_cordao, mural (`texto`), relogio_parede, ventilador_teto, extintor, pilha_caixas (`n`, `cor`), banca_frutas, placa_suspensa (`texto`, `cor`), cofre, castical, suporte_soro,
 **prédios da cidade pequena (fachada em z=0):** farmacia, loterica, padaria, mercado, agencia_bancaria, prefeitura, igreja, escola, posto_saude, delegacia, bar, posto_gasolina, coreto (todos aceitam `texto` para trocar o letreiro),
 casa_br / sobrado (`cor`, `telhado`, `grade: false`, `caixa_dagua: false`), muro (`largura`, `cor`, `portao_x`, `portao: false`), portao, cerca_viva, caixa_dagua, poste_fios, churrasqueira, piscina, varal, casinha_cachorro, cachorro / gato (`cor`), bicicleta, moto (`bau: true`), balanco, escorregador, trave, bola, geladeira, fogao, pia, armario, mesa_jantar, cadeira_plastico, saco_lixo, vaso_flor, lombada
 

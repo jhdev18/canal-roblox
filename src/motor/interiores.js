@@ -77,6 +77,30 @@ export const MOVEIS = {
       if (i < n) g.add(cilindro(0.06, 0.06, 2.4, '#c4281c', { pos: [i * 2.4 + 1.2, 2.3, 0], rot: [0, 0, 90] })); } return g; },
   mural: (o = {}) => { const g = grupo([caixa(o.largura || 5, o.altura || 3, 0.12, '#a8754a')]); const w = o.largura || 5, h = o.altura || 3;
     placa(g, o.texto || 'AVISOS', w - 0.4, h - 0.4, [0, 0, 0.07], { fundo: o.cor || '#f5e6b8', corTexto: o.cor_texto || '#1d3b72' }); return g; },
+  // --- detalhes para encher os interiores ---
+  relogio_parede: () => grupo([cilindro(0.75, 0.75, 0.15, '#333', { rot: [90, 0, 0], seg: 24 }), cilindro(0.64, 0.64, 0.17, '#ffffff', { rot: [90, 0, 0], seg: 24, sombra: false }),
+    caixa(0.07, 0.45, 0.05, '#111', { pos: [0, 0.2, 0.1], sombra: false }), caixa(0.34, 0.06, 0.05, '#111', { pos: [0.15, 0, 0.11], sombra: false })]),   // pendurado na parede (centro = pos)
+  ventilador_teto: () => { const g = grupo([cilindro(0.06, 0.06, 1.0, '#555', { pos: [0, -0.5, 0] }), cilindro(0.35, 0.3, 0.3, '#e9e6dc', { pos: [0, -1.1, 0], seg: 14 })]);
+    for (let i = 0; i < 4; i++) { const p = caixa(2.2, 0.05, 0.45, '#a8754a', { pos: [Math.cos(i * Math.PI / 2) * 1.2, -1.15, Math.sin(i * Math.PI / 2) * 1.2], sombra: false }); p.rotation.y = -i * Math.PI / 2; g.add(p); }
+    return g; },   // pos = ponto no teto
+  extintor: () => grupo([cilindro(0.26, 0.26, 1.1, '#d32f2f', { pos: [0, 1.75, 0], seg: 12 }), cilindro(0.12, 0.12, 0.25, '#222', { pos: [0, 2.42, 0], seg: 8 }),
+    caixa(0.7, 0.9, 0.15, '#c4281c', { pos: [0, 3.0, -0.2] }), caixa(0.5, 0.08, 0.3, '#888', { pos: [0, 1.15, -0.05] })]),   // no chão, encostado na parede
+  pilha_caixas: (o = {}) => { const r = rng(o.seed ?? 3), g = grupo([]), c = o.cor || '#c8a06a'; let y = 0;
+    for (let i = 0; i < (o.n || 3); i++) { const w = r.entre(1.2, 1.8), h = r.entre(0.8, 1.2); g.add(caixa(w, h, r.entre(1.1, 1.5), i % 2 ? c : '#b88f5a', { pos: [r.entre(-0.2, 0.2), y + h / 2, r.entre(-0.15, 0.15)], rot: [0, r.entre(-12, 12), 0] }));
+      g.add(caixa(w * 0.98, 0.06, 0.25, '#e8d9b0', { pos: [0, y + h + 0.01, 0], sombra: false })); y += h; }
+    return g; },
+  banca_frutas: (o = {}) => { const w = o.largura || 3, g = grupo([caixa(w, 1.8, 1.6, '#8a5a33', { pos: [0, 0.9, 0] })]), cs = ['#e53935', '#fdd835', '#43a047', '#fb8c00', '#8e24aa'];
+    for (let k = 0; k < 3; k++) { const x0 = -w / 2 + w / 6 + k * w / 3; g.add(caixa(w / 3 - 0.1, 0.3, 1.5, '#b87a35', { pos: [x0, 1.95, 0] }));
+      for (let i = 0; i < 6; i++) g.add(esfera(0.22, cs[(k + (o.seed || 0)) % 5], { pos: [x0 + ((i % 3) - 1) * 0.3, 2.25, (Math.floor(i / 3) - 0.5) * 0.5], sombra: false })); }
+    return g; },
+  placa_suspensa: (o = {}) => { const w = o.largura || 3, g = grupo([]); placa(g, o.texto || 'CAIXA', w, 0.8, [0, 0, 0], { fundo: o.cor || '#1d3b72', corTexto: o.cor_texto || '#ffffff' });
+    for (const x of [-w / 2 + 0.3, w / 2 - 0.3]) g.add(cilindro(0.02, 0.02, 1.2, '#555', { pos: [x, 1.0, 0], seg: 6, sombra: false })); return g; },   // pos = centro da placa (fios sobem até o teto)
+  cofre: () => grupo([caixa(2.4, 3.2, 2, '#4a4d55', { pos: [0, 1.6, 0], mat: { metal: 0.6, rough: 0.4 } }), cilindro(0.4, 0.4, 0.15, '#c9a24a', { pos: [0.3, 1.9, 1.05], rot: [90, 0, 0], seg: 16 }),
+    caixa(0.12, 0.9, 0.12, '#c9a24a', { pos: [-0.7, 1.9, 1.05] })]),
+  castical: () => grupo([cilindro(0.5, 0.6, 0.2, '#c9a24a', { pos: [0, 0.1, 0], seg: 12 }), cilindro(0.08, 0.08, 3.4, '#c9a24a', { pos: [0, 1.8, 0], seg: 8 }), cilindro(0.18, 0.18, 0.6, '#f6f2e6', { pos: [0, 3.8, 0], seg: 10 }),
+    esfera(0.12, mat('#ffd27a', { emissive: '#ffb84a', emissiveIntensity: 2.2 }), { pos: [0, 4.2, 0], sombra: false })]),
+  suporte_soro: () => grupo([cilindro(0.5, 0.5, 0.1, '#9aa0aa', { pos: [0, 0.05, 0], seg: 10 }), cilindro(0.05, 0.05, 5, '#9aa0aa', { pos: [0, 2.5, 0], seg: 8 }), caixa(0.8, 0.05, 0.05, '#9aa0aa', { pos: [0, 4.9, 0] }),
+    caixa(0.5, 0.8, 0.2, mat('#dff2ff', { rough: 0.1 }), { pos: [0.35, 4.4, 0], round: 0.08 })]),
 };
 registrarProps(MOVEIS);
 
