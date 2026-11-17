@@ -51,9 +51,11 @@ export function texturaTela(tela = {}) {
     g.fillStyle = '#e53935'; g.beginPath(); g.arc(140, 900, 55, 0, 7); g.fill(); g.fillStyle = '#43a047'; g.beginPath(); g.arc(400, 900, 55, 0, 7); g.fill();
   } else if (tipo === 'notificacao') {
     g.font = F(120, 300); g.fillText(tela.relogio || '12:00', 270, 260);
-    g.fillStyle = 'rgba(255,255,255,.92)'; g.beginPath(); g.roundRect(30, 370, 480, 250, 28); g.fill();
-    g.fillStyle = '#222'; g.textAlign = 'left'; g.font = F(26, 600); g.fillText((tela.app || 'MENSAGENS').toUpperCase(), 60, 425);
-    g.font = F(42, 800); g.fillText(tela.titulo || '', 60, 490); g.font = F(40, 500); quebra(g, tela.texto || '', 60, 548, 420, 48);
+    g.font = F(40, 800); const lt = linhasDe(g, tela.titulo || '', 420).slice(0, 2); g.font = F(38, 500); const lx = linhasDe(g, tela.texto || '', 420).slice(0, 4);
+    g.fillStyle = 'rgba(255,255,255,.92)'; g.beginPath(); g.roundRect(30, 370, 480, 90 + lt.length * 48 + lx.length * 46, 28); g.fill();
+    g.fillStyle = '#222'; g.textAlign = 'left'; g.font = F(26, 600); g.fillText((tela.app || 'MENSAGENS').toUpperCase(), 60, 415);
+    g.font = F(40, 800); lt.forEach((l, i) => g.fillText(l, 60, 468 + i * 48));
+    g.font = F(38, 500); lx.forEach((l, i) => g.fillText(l, 60, 476 + lt.length * 48 + i * 46));
   } else { // mensagem (chat)
     g.fillStyle = 'rgba(255,255,255,.12)'; g.fillRect(0, 70, 540, 110); g.fillStyle = '#fff'; g.font = F(36, 700); g.fillText(tela.de || 'Desconhecido', 270, 140);
     let y = 240; const msgs = tela.mensagens || [{ texto: tela.texto || '...' }];
