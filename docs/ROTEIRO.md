@@ -50,7 +50,7 @@ ligados por portas) e o posto de gasolina.
 ```
 
 **Locais:** prefeitura, igreja, banco, escola, posto_saude, padaria, farmacia, loterica, bar, mercado, delegacia, casa (todos com `dentro: true`),
-praca, coreto, fonte, parquinho, estatua, rua_bairro, posto_gasolina, vista.
+praca, coreto, fonte, parquinho, estatua, rua_bairro, campinho (campo de futebol do bairro, entre o mercadinho e a borracharia), posto_gasolina, vista.
 
 - **Mapa com os nomes:** `docs/preview/mapa_mundo.jpg`. Câmera de cima para cenas: `cam: mapa` (e `alvo_xz: [x, z]` para escolher o centro).
 - **Só o local gravado existe na cena:** o resto do mundo é removido ao montar cada cena (mais leve para a GPU).

@@ -179,12 +179,12 @@ export const LOTES_MUNDO = [
 const CASA_LOTE = { id: 'casa', f: [78, -12], rot: 0 };
 const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { f: [0, 6.5], rot: 0, recuo: 2.5, chao: 0.45 }, fonte: { f: [0, -10], rot: 180, recuo: -5, chao: 0.45 },
   parquinho: { f: [13, 13], rot: 0, recuo: 0, chao: 0.45 }, estatua: { f: [-12, 0], rot: -90, recuo: -4, chao: 0.45 }, rua_bairro: { f: [92, 0], rot: 90, recuo: 0, chao: 0.1 },
-  posto_gasolina: { f: [52, 9], rot: 180, recuo: 3, chao: 0.2 } };
+  posto_gasolina: { f: [52, 9], rot: 180, recuo: 3, chao: 0.2 }, campinho: { f: [139, 22.5], rot: 90, recuo: 0, chao: 0.2 } };
 /** Centro de cada lugar no mapa (para desenhar a planta com nomes). */
 export function centrosMundo() {
   const out = LOTES_MUNDO.map(l => { const d = PREDIOS_MUNDO[l.id].d, r = l.rot * RAD; return { id: l.id, x: l.f[0] - Math.sin(r) * d / 2, z: l.f[1] - Math.cos(r) * d / 2 }; });
   return [...out, { id: 'casa', x: CASA_LOTE.f[0], z: CASA_LOTE.f[1] - CASA.d / 2 }, { id: 'posto_gasolina', x: 60, z: 17 }, { id: 'coreto', x: 4, z: 4 }, { id: 'fonte', x: 0, z: -16 },
-    { id: 'estatua', x: -15, z: -6 }, { id: 'parquinho', x: 15, z: 15 }, { id: 'rua_bairro', x: 130, z: 0 }, ...EXTRAS_MAPA.map(e => ({ id: '_' + e.nome, nome: e.nome, x: e.x, z: e.z }))];
+    { id: 'estatua', x: -15, z: -6 }, { id: 'parquinho', x: 15, z: 15 }, { id: 'rua_bairro', x: 125, z: 0 }, { id: 'campinho', x: 139, z: 23 }, ...EXTRAS_MAPA.map(e => ({ id: '_' + e.nome, nome: e.nome, x: e.x, z: e.z }))];
 }
 export const LOCAIS_MUNDO = [...LOTES_MUNDO.map(l => l.id), 'casa', ...Object.keys(PONTOS), 'vista'];
 export const LOCAIS_COM_INTERIOR = [...LOTES_MUNDO.map(l => l.id), 'casa'];
@@ -232,6 +232,7 @@ export function construirMundo(o, g, r) {
   const LOJAS_BAIRRO = [[113, 1], [139, -1], [165, 1]];   // [x, lado] ocupados por mercadinho, oficina e borracharia
   for (let x = 48; x <= 210; x += 13) for (const lado of [-1, 1]) { if (lado < 0 && Math.abs(x - CASA_LOTE.f[0]) < 18) continue; if (lado > 0 && x < 60) continue;
     if (LOJAS_BAIRRO.some(([lx, ll]) => ll === lado && Math.abs(lx - x) < 6)) continue;
+    if (lado > 0 && x > CAMPINHO.x - CAMPINHO.w / 2 - 2 && x < CAMPINHO.x + CAMPINHO.w / 2 + 2) continue;   // lugar do campinho
     por(g, r() < 0.3 ? 'sobrado' : 'casa_br', { cor: r.item(cores), noite: n, largura: 9 }, [x, 0, lado * 13], lado > 0 ? 180 : 0);
     por(g, 'muro', { largura: 12, cor: '#e9e6dc', portao_x: r.entre(-2, 2) }, [x, 0, lado * 8.1], lado > 0 ? 180 : 0); }
   for (let x = 46; x <= 200; x += 16) por(g, 'poste_fios', { noite: n }, [x, 0, -5.6]);
@@ -253,6 +254,24 @@ function predio(g, x, z, rot, alt, cor, n) { const p = PROPS.predio({ altura: al
 function caixaDaguaTorre(g, x, z) { const t = grupo([cilindro(4, 4, 5, '#d8dde3', { pos: [0, 21, 0], seg: 20 }), cilindro(4.3, 4.3, 0.6, '#9aa0aa', { pos: [0, 23.7, 0], seg: 20 }),
     ...[0, 90, 180, 270].map(a => caixa(0.6, 18.5, 0.6, '#9aa0aa', { pos: [Math.sin(a * RAD) * 3, 9.25, Math.cos(a * RAD) * 3] })), caixa(6.6, 0.4, 0.4, '#9aa0aa', { pos: [0, 9, 0] }), caixa(0.4, 0.4, 6.6, '#9aa0aa', { pos: [0, 9, 0] })]);
   const pl = placaTexto('ÁGUA', 3.2, 1.1, { fundo: '#1e6fd9', corTexto: '#fff' }); pl.position.set(0, 21, 4.05); t.add(pl); t.position.set(x, 0, z); g.add(t); }
+export const CAMPINHO = { x: 139, z: 22.5, w: 38, d: 21 };   // entre o mercadinho (x 113) e a borracharia (x 165), lado sul da rua
+function campinho(g, n, r) {
+  const { x, z, w, d } = CAMPINHO, L = '#f2f3f3';
+  g.add(caixa(w + 4, 0.16, d + 4, '#3fae3a', { pos: [x, 0.08, z] })); g.add(caixa(w, 0.18, d, '#58b947', { pos: [x, 0.09, z] }));
+  for (let i = 0; i < 26; i++) g.add(caixa(r.entre(1.2, 3.5), 0.03, r.entre(1, 3), '#a08a62', { pos: [x + r.entre(-w / 2 + 2, w / 2 - 2), 0.19, z + r.entre(-d / 2 + 2, d / 2 - 2)], sombra: false }));   // terra batida
+  for (const [lw, ld, dx, dz] of [[w, 0.25, 0, -d / 2], [w, 0.25, 0, d / 2], [0.25, d, -w / 2, 0], [0.25, d, w / 2, 0], [0.25, d, 0, 0],
+    [0.25, 8, -w / 2 + 5, 0], [5, 0.25, -w / 2 + 2.5, -4], [5, 0.25, -w / 2 + 2.5, 4], [0.25, 8, w / 2 - 5, 0], [5, 0.25, w / 2 - 2.5, -4], [5, 0.25, w / 2 - 2.5, 4]])
+    g.add(caixa(lw, 0.03, ld, L, { pos: [x + dx, 0.2, z + dz], sombra: false }));
+  for (let i = 0; i < 20; i++) { const a = i / 20 * Math.PI * 2; g.add(caixa(1.0, 0.03, 0.25, L, { pos: [x + Math.cos(a) * 3.5, 0.2, z + Math.sin(a) * 3.5], rot: [0, -a / RAD + 90, 0], sombra: false })); }   // círculo central
+  for (const sx of [-1, 1]) { const t = PROPS.trave(); t.position.set(x + sx * (w / 2 - 0.2), 0.18, z); t.rotation.y = -sx * 90 * RAD; t.scale.setScalar(0.75); g.add(t); }
+  const bola = PROPS.bola(); bola.position.set(x + 2, 0.18, z + 1.5); g.add(bola);
+  const tela = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.28, roughness: 1 });
+  for (const [lw, ld, dx, dz] of [[w + 4, 0.08, 0, d / 2 + 2], [0.08, d + 4, -w / 2 - 2, 0], [0.08, d + 4, w / 2 + 2, 0]]) g.add(caixa(lw, 4.5, ld, tela, { pos: [x + dx, 2.4, z + dz], sombra: false }));   // alambrado (frente aberta para a rua)
+  for (let k = -w / 2 - 2; k <= w / 2 + 2.01; k += 4) g.add(caixa(0.12, 4.6, 0.12, '#888', { pos: [x + k, 2.3, z + d / 2 + 2] }));
+  for (let k = -d / 2 - 2; k <= d / 2 + 2.01; k += 4) for (const sx of [-1, 1]) g.add(caixa(0.12, 4.6, 0.12, '#888', { pos: [x + sx * (w / 2 + 2), 2.3, z + k] }));
+  for (const dx of [-8, 0, 8]) { const b = PROPS.banco({}); b.position.set(x + dx, 0.18, z - d / 2 - 1.2); g.add(b); }
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) { const p = PROPS.poste_fios({ noite: n }); p.position.set(x + sx * (w / 2 + 3), 0, z + sz * (d / 2 + 1)); g.add(p); }
+}
 function quadra(g, x, z) { g.add(caixa(26, 0.15, 16, '#2e8b57', { pos: [x, 0.08, z] }));
   for (const [w, d, dx, dz] of [[24, 0.2, 0, -7], [24, 0.2, 0, 7], [0.2, 14, -12, 0], [0.2, 14, 12, 0], [0.2, 14, 0, 0]]) g.add(caixa(w, 0.03, d, '#f2f3f3', { pos: [x + dx, 0.17, z + dz], sombra: false }));
   for (const s of [-1, 1]) { const t = PROPS.trave(); t.position.set(x + s * 12.5, 0.15, z); t.rotation.y = -s * 90 * RAD; t.scale.setScalar(0.6); g.add(t); }
@@ -273,8 +292,7 @@ export const EXTRAS_MAPA = [
   { nome: 'Mercadinho', x: 113, z: 12 },
   { nome: 'Oficina', x: 139, z: -12 },
   { nome: 'Borracharia', x: 165, z: 12 },
-  { nome: 'Quadra', x: 120, z: 72 },
-];
+  ];
 function povoar(g, n, r) {
   const marca = () => {};   // posições dos nomes no mapa ficam em EXTRAS_MAPA
   // cantos e vãos em volta da praça
@@ -298,7 +316,7 @@ function povoar(g, n, r) {
   loja(g, 165, 9, 180, 'BORRACHARIA', '#f5b800', 8, n); for (let i = 0; i < 3; i++) g.add(cilindro(0.9, 0.9, 0.6, '#1b1b1b', { pos: [168.5, 0.5 + i * 0.62, 7.6], seg: 14 })); marca('Borracharia', 160, 12);
   for (let x = 74; x <= 204; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x, 0, lado * 52], lado > 0 ? 180 : 0);
   for (const lado of [-1, 1]) g.add(caixa(170, 0.2, 7, '#4f5361', { pos: [130, 0.11, lado * 40] }));   // ruas paralelas (longe o bastante da casa do protagonista, que é funda)
-  quadra(g, 120, 72);
+  campinho(g, n, r);
   for (let i = 0; i < 10; i++) por(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(55, 200), 0, r.item([-1, 1]) * r.entre(60, 66)]);
 }
 
