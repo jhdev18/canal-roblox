@@ -41,7 +41,7 @@ legenda:
   destaque: "#ffd23f" # cor das palavras listadas em `destaque:` no roteiro
 
 audio:
-  musica_padrao: suspense   # usada quando o roteiro não define `musica` (nenhuma = sem música)
+  musica_padrao: nenhuma    # sem música: adicione um som em alta no app do YouTube ao publicar (veja README)
   musica_volume: 0.25
   ducking: true             # música abaixa enquanto a voz fala
   sfx_volume: 0.8

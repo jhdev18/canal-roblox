@@ -108,14 +108,6 @@ async function principal() {
   const saida = path.join(pasta, `${nome}${a.cenas ? '_parcial' : ''}${a.rapido ? '_rapido' : ''}.mp4`);
   const musica = rot.musica ?? cfg.audio.musica_padrao;
   const total = await montarVideo({ cenas: cenas.map(c => ({ clipe: c.clipe, audio: c.audioArq, dur: c.dur, som: c.som })), trabalho, saida, musica, cfg });
-  // crédito obrigatório (músicas CC BY) -> texto pronto para colar na descrição do vídeo
-  const arqCred = p('assets', 'musicas', 'creditos.json');
-  const cred = fs.existsSync(arqCred) ? JSON.parse(fs.readFileSync(arqCred, 'utf8'))[musica] : null;
-  if (cred) {
-    const desc = saida.replace(/\.mp4$/, '_descricao.txt');
-    fs.writeFileSync(desc, `${rot.titulo || nome}\n\nMúsica:\n${cred.credito}\n`);
-    log(`crédito da música (obrigatório na descrição): ${path.relative(p(), desc)}`);
-  }
   if (gastoElevenLabs()) log(`ElevenLabs: ${gastoElevenLabs()} caracteres usados nesta execução (falas repetidas vêm do cache)`);
   log(`pronto: ${path.relative(p(), saida)} (${fmt(total)})`);
 }

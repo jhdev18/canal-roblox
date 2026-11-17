@@ -6,7 +6,7 @@ Lista atualizada de tudo que existe: `npm run catalogo`.
 ```yaml
 titulo: Nesse mundo todos sabem quem é seu inimigo
 destaque: [inimigo]        # (opcional) palavras da legenda em amarelo
-musica: suspense           # (opcional) suspense, triste, alegre, engracado, epico, curioso, lofi, perseguicao | nenhuma
+musica: nenhuma            # (opcional) nenhuma (padrão) | suspense, triste, alegre, engracado, epico, curioso, lofi, perseguicao
 padrao: { hora: dia }      # (opcional) valores aplicados a todas as cenas
 voz: { velocidade: 1.15 }  # (opcional) sobrescreve config.yaml > voz (ex.: outro voice_id do ElevenLabs)
 legenda: { tamanho: 100 }  # (opcional) sobrescreve config.yaml > legenda
@@ -86,7 +86,7 @@ arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, ca
 
 ## Música
 
-`musica:` escolhe a trilha (arquivo em assets/musicas). Combine o clima: suspense (revelação), triste (perda), alegre (final feliz), engracado (comédia), epico (virada), curioso (infância/sonho), lofi (calmo), perseguicao (fuga). Sem `musica` = `audio.musica_padrao` do config. Virais (após `node ferramentas/baixar_musicas.mjs`): sneaky_snitch, monkeys_spinning_monkeys, fluffing_a_duck, scheming_weasel, pixel_peeker_polka, run_amok, amazing_plan, investigations, hitman, cipher, volatile_reaction, heartbreaking, wallpaper, local_forecast, carefree (CC BY: crédito gerado em saida/<video>_descricao.txt). Lista instalada: `node gerar.mjs --musicas`.
+`musica:` escolhe a trilha (arquivo em assets/musicas). Combine o clima: suspense (revelação), triste (perda), alegre (final feliz), engracado (comédia), epico (virada), curioso (infância/sonho), lofi (calmo), perseguicao (fuga). Sem `musica` = `audio.musica_padrao` do config. Padrão do config: `nenhuma` (a música popular é adicionada no app do YouTube ao publicar).
 
 ## Dicas de estilo (o que funciona nesse formato)
 

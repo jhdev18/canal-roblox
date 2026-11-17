@@ -47,13 +47,17 @@ node gerar.mjs roteiros/exemplo_inimigo.yaml
 
 **Como escrever roteiros:** veja [`docs/ROTEIRO.md`](docs/ROTEIRO.md) e o exemplo em `roteiros/exemplo_inimigo.yaml`.
 
-## Músicas de fundo
+## Música (popular, sem crédito)
 
-8 trilhas **originais, compostas por código e em domínio público (CC0)** já vêm em `assets/musicas/`:
-`suspense, triste, alegre, engracado, epico, curioso, lofi, perseguicao`. Use `musica: triste` no roteiro
-(padrão: `suspense`; `musica: nenhuma` desliga). A música abaixa sozinha enquanto a voz fala (ducking).
-Para **músicas virais gratuitas** (Sneaky Snitch, Monkeys Spinning Monkeys, Investigations… de Kevin MacLeod) rode `node ferramentas/baixar_musicas.mjs`: o crédito obrigatório sai pronto em `saida/<video>_descricao.txt`.
-Detalhes, como gerar variações e outras fontes gratuitas: [`assets/musicas/LICENCA.md`](assets/musicas/LICENCA.md).
+Por padrão o vídeo sai **só com narração** (`musica_padrao: nenhuma`). Para usar uma música **popular e em alta**:
+
+1. No app do YouTube, toque em **Criar → Enviar vídeo** (ou abra o Short no editor do YouTube Studio).
+2. Toque em **Adicionar som** e escolha a música em alta.
+3. Em **Volume**, deixe o som original (a narração) em ~100% e a música em ~15–25%.
+
+As músicas dessa biblioteca são licenciadas pelo próprio YouTube para Shorts: são legais, não precisam de crédito e não geram reivindicação de Content ID. No TikTok e no Reels o processo é o mesmo.
+
+Se quiser música já embutida no arquivo, o projeto traz 8 trilhas originais sem direitos autorais em `assets/musicas/` (`musica: suspense` no roteiro). Veja [`assets/musicas/LICENCA.md`](assets/musicas/LICENCA.md).
 
 ## GPU (importante)
 
