@@ -273,7 +273,7 @@ export const EXTRAS_MAPA = [
   { nome: 'Mercadinho', x: 108, z: 12 },
   { nome: 'Oficina', x: 134, z: -12 },
   { nome: 'Borracharia', x: 160, z: 12 },
-  { nome: 'Quadra', x: 120, z: 48 },
+  { nome: 'Quadra', x: 120, z: 72 },
 ];
 function povoar(g, n, r) {
   const marca = () => {};   // posições dos nomes no mapa ficam em EXTRAS_MAPA
@@ -296,10 +296,10 @@ function povoar(g, n, r) {
   loja(g, 108, 8.1, 180, 'MERCADINHO', '#43a047', 9, n); marca('Mercadinho', 108, 12);
   loja(g, 134, -8.1, 0, 'OFICINA', '#3a3d44', 11, n, '#cfd3da'); por(g, 'carro', { cor: '#1d3b72' }, [134, 0.2, -8.6], 90, 0.9); marca('Oficina', 134, -12);
   loja(g, 160, 8.1, 180, 'BORRACHARIA', '#f5b800', 8, n); for (let i = 0; i < 3; i++) g.add(cilindro(0.9, 0.9, 0.6, '#1b1b1b', { pos: [163.5, 0.5 + i * 0.62, 7.4], seg: 14 })); marca('Borracharia', 160, 12);
-  for (let x = 52; x <= 206; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x + 6, 0, lado * 32], lado > 0 ? 180 : 0);
-  for (const lado of [-1, 1]) g.add(caixa(170, 0.2, 7, '#4f5361', { pos: [130, 0.11, lado * 22] }));   // ruas paralelas do bairro
-  quadra(g, 120, 48); marca('Quadra', 120, 48);
-  for (let i = 0; i < 10; i++) por(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(55, 200), 0, r.item([-1, 1]) * r.entre(40, 60)]);
+  for (let x = 52; x <= 206; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x + 6, 0, lado * 52], lado > 0 ? 180 : 0);
+  for (const lado of [-1, 1]) g.add(caixa(170, 0.2, 7, '#4f5361', { pos: [130, 0.11, lado * 40] }));   // ruas paralelas (longe o bastante da casa do protagonista, que é funda)
+  quadra(g, 120, 72);
+  for (let i = 0; i < 10; i++) por(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(55, 200), 0, r.item([-1, 1]) * r.entre(60, 66)]);
 }
 
 /**
