@@ -299,7 +299,7 @@ const ASSENTOS = {
   sofa: () => [[-1.4, 0, 0.3, 0], [1.4, 0, 0.3, 0]], banco: () => [[-1.0, 0.1, 0.1, 0], [1.0, 0.1, 0.1, 0]],
   cadeiras_espera: (o = {}) => Array.from({ length: o.n || 4 }, (_, i) => [(i - ((o.n || 4) - 1) / 2) * 2.2, 0, 0.1, 0]),
   banco_igreja: (o = {}) => { const w = o.largura || 7, k = Math.max(1, Math.floor(w / 2.2)); return Array.from({ length: k }, (_, i) => [(i - (k - 1) / 2) * 2.2, 0.1, -0.1, 0]); },
-  banqueta: () => [[0, 1.7, 0, 180]], cadeira_gamer: () => [[0, 0, 0.2, 0]],
+  banqueta: () => [[0, 1.7, 0, 180]], cadeira_gamer: () => [[0, 0.55, 0.15, 0]],   // assento mais alto que a cadeira comum
 };
 function marcarAssentos() {
   for (const [k, f] of Object.entries(ASSENTOS)) { const orig = PROPS[k]; if (!orig || orig._assentos) continue;
