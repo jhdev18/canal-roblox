@@ -239,7 +239,7 @@ function portasECortes() {
   for (const a of atual.atores) { if (a.figurante || (foco && a.id !== foco)) continue; a.ator.raiz.getWorldPosition(_v);
     for (const dy of [4.4, 2.6, 0.9]) { const p = _v.clone(); p.y += dy; const dir = p.sub(cam.position); const dist = dir.length(); _rc.set(cam.position, dir.normalize()); _rc.far = dist - 0.25;
       for (const h of _rc.intersectObjects(atual.corteMeshes, false)) { const u = h.object.userData.unidade; if (!u) continue;
-        if (u.userData.movel && u.userData.caixa.distanceToPoint(_v) < 2.6) continue;   // móvel colado no ator (cadeira, cama): fica
+        if (u.userData.movel && ANCORA_DA_ACAO[a.acao] && u.userData.caixa.distanceToPoint(_v) < 2.6) continue;   // móvel que o ator está usando (cadeira, cama, balcão): fica
         u.visible = false; } } }
 }
 

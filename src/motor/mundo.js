@@ -108,6 +108,7 @@ function predioOco(o0, ctx) {
   g.add(unidade(teto, unidades));
   const gi = new THREE.Group(); g.add(gi); g.userData.ancoras = M.ancoras(o.interior?.(gi, { w: o0.w, d: o0.d, h: o0.h, n }) || {}); M.objetos(gi);   // desenhado no tamanho antigo, espalhado no novo
   usarAssentos(g.userData.ancoras, assentosDe(gi), -d / 2);
+  if (foco) for (const ch of [...gi.children]) { ch.userData.movel = true; unidade(ch, unidades); }   // móvel que tapar a câmera some (o que está colado no ator fica)
   if (foco) { const grande = Math.max(w, d) > 26; luzInterna(gi, 0, -d / 2, h, n, (o.luz || 1) * (grande ? 1.1 : 1.25), Math.max(30, Math.max(w, d) * 1.3));
     if (grande) luzInterna(gi, 0, -d * (w > d ? 0.5 : 0.22), h, n, 0.8, Math.max(w, d)); }
   g.userData.d = d; g.userData.w = w; g.userData.h = h; g.userData.portaX = o.porta?.x || 0; return g;
