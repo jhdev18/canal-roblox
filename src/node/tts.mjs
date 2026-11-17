@@ -8,19 +8,30 @@ function limpar(txt) { return txt.replace(/[*_#~`]/g, '').replace(/\s+/g, ' ').t
 let caracteresGastos = 0;
 export const gastoElevenLabs = () => caracteresGastos;
 
-/** Lê ELEVENLABS_API_KEY do ambiente ou do arquivo .env na raiz do projeto. */
+/** Lê ELEVENLABS_API_KEY: primeiro o arquivo .env da raiz (o que o usuário edita), depois a variável de ambiente.
+ *  Com várias linhas, prefere a que começa com sk_ (chave de verdade). Guarda a origem em `origemChave` para mensagens de erro. */
+export let origemChave = '';
 export function chaveElevenLabs() {
-  if (process.env.ELEVENLABS_API_KEY) return process.env.ELEVENLABS_API_KEY.trim();
-  const env = p('.env');
-  if (fs.existsSync(env)) for (const l of fs.readFileSync(env, 'utf8').split(/\r?\n/)) {
-    const m = l.match(/^\s*ELEVENLABS_API_KEY\s*=\s*["']?([^"'\s]+)/); if (m) return m[1];
+  const env = p('.env'), achadas = [];
+  if (fs.existsSync(env)) for (const l of fs.readFileSync(env, 'utf8').replace(/^\uFEFF/, '').split(/\r?\n/)) {
+    const m = l.match(/^\s*ELEVENLABS_API_KEY\s*=\s*["']?([^"'\s]+)/); if (m) achadas.push(m[1]);
   }
+  if (achadas.length) { origemChave = 'arquivo .env'; return achadas.find(k => k.startsWith('sk_')) || achadas[achadas.length - 1]; }
+  if (process.env.ELEVENLABS_API_KEY) { origemChave = 'variável de ambiente ELEVENLABS_API_KEY do Windows'; return process.env.ELEVENLABS_API_KEY.trim(); }
   return null;
 }
 
+/** Explica o problema mais comum antes de gastar uma chamada: arquivo com nome errado, ID no lugar da chave. */
+function checarChave(chave) {
+  if (!chave) { const txt = fs.existsSync(p('.env.txt')) ? '\nAchei ".env.txt": o Bloco de Notas salvou com .txt no fim. Renomeie para ".env" (ren .env.txt .env).' : '';
+    throw new Error('Chave do ElevenLabs não encontrada. Crie o arquivo .env na raiz com:\n  ELEVENLABS_API_KEY=sk_sua_chave\n(copie de .env.exemplo)' + txt); }
+  if (!chave.startsWith('sk_')) throw new Error(`A chave lida (${origemChave}) começa com "${chave.slice(0, 3)}", não com "sk_": isso é o ID da chave, não a chave.\n`
+    + 'No site do ElevenLabs: Profile → API Keys → Create API Key, copie o valor que começa com sk_ (só aparece na hora) e coloque no .env:\n  ELEVENLABS_API_KEY=sk_...'
+    + (origemChave.startsWith('variável') ? '\nEssa chave veio de uma variável do Windows: apague-a (set ELEVENLABS_API_KEY= nesta janela, e em "Editar as variáveis de ambiente") ou crie o .env.' : ''));
+}
+
 async function chamarEleven(caminho, { metodo = 'GET', corpo, base } = {}) {
-  const chave = chaveElevenLabs();
-  if (!chave) throw new Error('Chave do ElevenLabs não encontrada. Crie o arquivo .env na raiz com:\n  ELEVENLABS_API_KEY=sua_chave\n(copie de .env.exemplo)');
+  const chave = chaveElevenLabs(); checarChave(chave);
   const r = await fetch((base || process.env.ELEVENLABS_URL || 'https://api.elevenlabs.io') + caminho, {
     method: metodo, headers: { 'xi-api-key': chave, 'Content-Type': 'application/json', Accept: 'application/json' }, body: corpo ? JSON.stringify(corpo) : undefined });
   if (!r.ok) {
