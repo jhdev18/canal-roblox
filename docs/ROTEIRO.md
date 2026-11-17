@@ -24,6 +24,8 @@ cenas:                     # 1 cena = 1 corte (~1–2 s, 3–7 palavras)
     atores: [garoto celular malandro]    # forma curta: "id ação rosto"
 ```
 
+> Se a fala tiver `:` ou começar com aspas, coloque a fala entre aspas: `fala: "Ele disse: corre!"`
+
 ## Campos da cena
 
 | campo | valores | padrão |
