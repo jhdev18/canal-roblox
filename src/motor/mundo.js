@@ -179,7 +179,7 @@ const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { 
 export function centrosMundo() {
   const out = LOTES_MUNDO.map(l => { const d = PREDIOS_MUNDO[l.id].d, r = l.rot * RAD; return { id: l.id, x: l.f[0] - Math.sin(r) * d / 2, z: l.f[1] - Math.cos(r) * d / 2 }; });
   return [...out, { id: 'casa', x: CASA_LOTE.f[0], z: CASA_LOTE.f[1] - CASA.d / 2 }, { id: 'posto_gasolina', x: 60, z: 17 }, { id: 'coreto', x: 4, z: 4 }, { id: 'fonte', x: 0, z: -16 },
-    { id: 'estatua', x: -15, z: -6 }, { id: 'parquinho', x: 15, z: 15 }, { id: 'rua_bairro', x: 130, z: 0 }];
+    { id: 'estatua', x: -15, z: -6 }, { id: 'parquinho', x: 15, z: 15 }, { id: 'rua_bairro', x: 130, z: 0 }, ...EXTRAS_MAPA.map(e => ({ id: '_' + e.nome, nome: e.nome, x: e.x, z: e.z }))];
 }
 export const LOCAIS_MUNDO = [...LOTES_MUNDO.map(l => l.id), 'casa', ...Object.keys(PONTOS), 'vista'];
 export const LOCAIS_COM_INTERIOR = [...LOTES_MUNDO.map(l => l.id), 'casa'];
@@ -231,8 +231,68 @@ export function construirMundo(o, g, r) {
   por(g, 'posto_gasolina', { noite: n }, [52, 0.2, 9], 180);
   for (const [x, z, v, c] of [[-31, 16, 0, '#1d3b72'], [31, 12, 180, '#f2f3f3'], [10, 31, 90, '#f5c400']]) por(g, c === '#f5c400' ? 'taxi' : 'carro', { cor: c }, [x, 0.2, z], v);
   for (const z of [-1, 1]) for (let x = -70; x <= 70; x += 12) por(g, r() < 0.3 ? 'sobrado' : 'casa_br', { cor: r.item(cores), noite: n, largura: 8 }, [x, 0, z * 68], z > 0 ? 180 : 0);
+  povoar(g, n, r);
   g.add(caixa(500, 16, 80, '#3fae3a', { pos: [0, 0, -170] }));
   g.userData.unidades = unidades; g.userData.portas = portas;
+}
+
+// ---------------- prédios extras (só por fora) para a cidade não ficar vazia ----------------
+/** Loja colocada pela linha da fachada (f) e direção (rot). */
+function loja(g, fx, fz, rot, texto, cor, w = 9, n, parede) { const p = PROPS.loja({ texto, cor, largura: w, noite: n, parede }); const r = rot * RAD;
+  p.position.set(fx - Math.sin(r) * 3, 0.2, fz - Math.cos(r) * 3); p.rotation.y = r; g.add(p); return p; }
+function predio(g, x, z, rot, alt, cor, n) { const p = PROPS.predio({ altura: alt, largura: 10, cor, noite: n }); p.position.set(x, 0, z); p.rotation.y = rot * RAD; g.add(p);
+  for (let y = 3; y < alt - 1; y += 3.2) for (const xx of [-3, 0, 3]) { const v = caixa(1.6, 0.15, 0.7, '#d8d4cc', { pos: [xx, y - 0.9, 4.3] }); p.add(v); }   // sacadas
+  return p; }
+function caixaDaguaTorre(g, x, z) { const t = grupo([cilindro(4, 4, 5, '#d8dde3', { pos: [0, 21, 0], seg: 20 }), cilindro(4.3, 4.3, 0.6, '#9aa0aa', { pos: [0, 23.7, 0], seg: 20 }),
+    ...[0, 90, 180, 270].map(a => caixa(0.6, 18.5, 0.6, '#9aa0aa', { pos: [Math.sin(a * RAD) * 3, 9.25, Math.cos(a * RAD) * 3] })), caixa(6.6, 0.4, 0.4, '#9aa0aa', { pos: [0, 9, 0] }), caixa(0.4, 0.4, 6.6, '#9aa0aa', { pos: [0, 9, 0] })]);
+  const pl = placaTexto('ÁGUA', 3.2, 1.1, { fundo: '#1e6fd9', corTexto: '#fff' }); pl.position.set(0, 21, 4.05); t.add(pl); t.position.set(x, 0, z); g.add(t); }
+function quadra(g, x, z) { g.add(caixa(26, 0.15, 16, '#2e8b57', { pos: [x, 0.08, z] }));
+  for (const [w, d, dx, dz] of [[24, 0.2, 0, -7], [24, 0.2, 0, 7], [0.2, 14, -12, 0], [0.2, 14, 12, 0], [0.2, 14, 0, 0]]) g.add(caixa(w, 0.03, d, '#f2f3f3', { pos: [x + dx, 0.17, z + dz], sombra: false }));
+  for (const s of [-1, 1]) { const t = PROPS.trave(); t.position.set(x + s * 12.5, 0.15, z); t.rotation.y = -s * 90 * RAD; t.scale.setScalar(0.6); g.add(t); }
+  for (const s of [-1, 1]) g.add(caixa(26.4, 4, 0.1, new THREE.MeshStandardMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.3 }), { pos: [x, 2, z + s * 8.2], sombra: false })); }
+
+export const EXTRAS_MAPA = [
+  { nome: 'Sorveteria', x: -40, z: -FR - 3 },
+  { nome: 'Açougue', x: 37, z: -FR - 3 },
+  { nome: 'Papelaria', x: -40.5, z: FR + 3 },
+  { nome: 'Salão de beleza', x: 38, z: FR + 3 },
+  { nome: 'Loja de roupas', x: -5, z: FR + 3 },
+  { nome: 'Ótica', x: 6.8, z: FR + 3 },
+  { nome: 'Apartamentos', x: -64, z: -24 },
+  { nome: 'Apartamentos', x: -64, z: 24 },
+  { nome: 'Pousada', x: -63, z: 8 },
+  { nome: "Caixa d'água", x: -82, z: 0 },
+  { nome: 'Apartamentos', x: 50, z: -58 },
+  { nome: 'Mercadinho', x: 108, z: 12 },
+  { nome: 'Oficina', x: 134, z: -12 },
+  { nome: 'Borracharia', x: 160, z: 12 },
+  { nome: 'Quadra', x: 120, z: 48 },
+];
+function povoar(g, n, r) {
+  const marca = () => {};   // posições dos nomes no mapa ficam em EXTRAS_MAPA
+  // cantos e vãos em volta da praça
+  loja(g, -40, -FR, 0, 'SORVETERIA', '#ff66cc', 8, n); marca('Sorveteria', -40, -FR - 3);
+  loja(g, 37, -FR, 0, 'AÇOUGUE', '#8a1f1f', 8, n); marca('Açougue', 37, -FR - 3);
+  loja(g, -40.5, FR, 180, 'PAPELARIA', '#6b32a8', 8, n); marca('Papelaria', -40.5, FR + 3);
+  loja(g, 38, FR, 180, 'SALÃO DE BELEZA', '#e0207a', 9, n); marca('Salão de beleza', 38, FR + 3);
+  loja(g, -5, FR, 180, 'LOJA DE ROUPAS', '#1e6fd9', 8, n); marca('Loja de roupas', -5, FR + 3);
+  loja(g, 6.8, FR, 180, 'ÓTICA', '#00897b', 7, n); marca('Ótica', 6.8, FR + 3);
+  // a oeste, atrás das lojas: prédios de apartamentos, pousada e a caixa d'água da cidade
+  for (const [z, a, c] of [[-24, 16, '#9fb3c8'], [-8, 12, '#e9d8b0'], [24, 18, '#c9b2e8']]) predio(g, -64, z, 90, a, c, n);
+  marca('Apartamentos', -64, -24); marca('Apartamentos', -64, 24);
+  loja(g, -59, 8, 90, 'POUSADA', '#2e7d32', 12, n, '#f6efe0'); marca('Pousada', -63, 8);
+  caixaDaguaTorre(g, -82, 0); marca("Caixa d'água", -82, 0);
+  for (let z = -40; z <= 40; z += 13) por(g, r() < 0.4 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#ffe08a', '#f28b5b']), noite: n, largura: 8.5 }, [-98, 0, z], 90);
+  // norte e sul atrás das fileiras: mais casas e um prédio
+  predio(g, -48, -58, 0, 14, '#f0b446', n); predio(g, 50, -58, 0, 12, '#8fc1e3', n); marca('Apartamentos', 50, -58);
+  // bairro: comércio de rua, segunda fileira de casas e quadra
+  loja(g, 108, 8.1, 180, 'MERCADINHO', '#43a047', 9, n); marca('Mercadinho', 108, 12);
+  loja(g, 134, -8.1, 0, 'OFICINA', '#3a3d44', 11, n, '#cfd3da'); por(g, 'carro', { cor: '#1d3b72' }, [134, 0.2, -8.6], 90, 0.9); marca('Oficina', 134, -12);
+  loja(g, 160, 8.1, 180, 'BORRACHARIA', '#f5b800', 8, n); for (let i = 0; i < 3; i++) g.add(cilindro(0.9, 0.9, 0.6, '#1b1b1b', { pos: [163.5, 0.5 + i * 0.62, 7.4], seg: 14 })); marca('Borracharia', 160, 12);
+  for (let x = 52; x <= 206; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x + 6, 0, lado * 32], lado > 0 ? 0 : 180);
+  for (const lado of [-1, 1]) g.add(caixa(170, 0.2, 7, '#4f5361', { pos: [130, 0.11, lado * 22] }));   // ruas paralelas do bairro
+  quadra(g, 120, 48); marca('Quadra', 120, 48);
+  for (let i = 0; i < 10; i++) por(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(55, 200), 0, r.item([-1, 1]) * r.entre(40, 60)]);
 }
 
 /** Leva o ponto da cena para a origem (atores), com o fundo em -Z e a câmera em +Z. Devolve as âncoras já transformadas. */
