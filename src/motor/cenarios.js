@@ -237,7 +237,7 @@ export const CENARIOS = {
     construirMundo(o, g, r); const e = enquadrarMundo(g, o);
     // só existe o pedaço do mundo em volta do local gravado
     const vista = !o.local || o.local === 'vista', principal = g.children.find(c => c.userData?.lote?.id === o.local);
-    const raio = o.alcance ?? (vista ? Infinity : o.comodo ? 4 : o.dentro ? 30 : 80);
+    const raio = o.alcance ?? (vista ? Infinity : o.comodo ? 4 : o.dentro ? 45 : 80);
     g.userData.recortados = recortarMundo(g, raio, principal ? [principal] : []);
     if (o.comodo === 'quarto_pais' && e.ancoras.deitar_pais) { e.ancoras.deitar = e.ancoras.deitar_pais; e.ancoras.dormir = e.ancoras.deitar_pais; }
     g.userData.ancoras = e.ancoras; },

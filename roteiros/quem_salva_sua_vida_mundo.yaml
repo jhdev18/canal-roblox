@@ -76,16 +76,16 @@ cenas:
     dentro: true
     hora: dia
     cam: medio
-    alvo_xz: [3.5, -4.5]           # câmera na maca do posto de saúde
-    atores: [{ id: valentao, acao: sentar, rosto: triste, x: 3.5, z: -4.3, y: 1.5, vira: 0 }, { id: garoto, acao: chorar, x: 0.9, z: -2.4, vira: 40 }]
+    alvo_xz: [6, -7]           # câmera na maca do posto de saúde
+    atores: [{ id: valentao, acao: sentar, rosto: triste, x: 6.2, z: -6.9, y: 1.5, vira: 0 }, { id: garoto, acao: chorar, x: 3.4, z: -5.0, vira: 40 }]
   - fala: O garoto doou sangue e salvou a vida dele.
     cam: close
     foco: garoto
     atores: [{ id: garoto, acao: falar, rosto: triste, x: -1.4, vira: 60 }, { id: medico, acao: parado, rosto: feliz, x: 1.4, vira: -60 }]
   - fala: Foi aí que o valentão mostrou o celular dele.
     cam: medio
-    alvo_xz: [3.5, -4.5]
-    atores: [{ id: valentao, acao: sentar, rosto: nervoso, x: 3.5, z: -4.3, y: 1.5, vira: 0 }, { id: garoto, acao: parado, rosto: surpreso, x: 0.9, z: -2.4, vira: 40 }]
+    alvo_xz: [6, -7]
+    atores: [{ id: valentao, acao: sentar, rosto: nervoso, x: 6.2, z: -6.9, y: 1.5, vira: 0 }, { id: garoto, acao: parado, rosto: surpreso, x: 3.4, z: -5.0, vira: 40 }]
   - fala: Quem ia salvar a vida dele era o garoto.
     onde: celular
     tela: { tipo: notificacao, app: Destino, titulo: Quem vai salvar sua vida, texto: "O garoto que você mais maltratou" }
