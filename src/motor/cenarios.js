@@ -5,6 +5,8 @@ import * as THREE from 'three';
 import { caixa, cilindro, esfera, plano, grupo, mat, cor, rng, canvas, texturaCanvas } from './util.js';
 import { PROPS, placaTexto } from './props.js';
 import { construirCidade, enquadrarLocal } from './cidade.js';
+import { INTERIORES } from './interiores.js';
+export { INTERIOR_DO_LOCAL } from './interiores.js';
 
 const CEU = { dia: '#8ec9ff', tarde: '#ffb27a', noite: '#0e1a3a' };
 function ambiente(hora, interno = false) {
@@ -17,20 +19,21 @@ function nuvens(g, r) {
     for (let j = 0; j < 4; j++) { const e = esfera(r.entre(6, 10), mat('#ffffff', { lambert: true, emissive: '#c2d2e6', fog: false }), { pos: [cx + j * 8 - 12, cy + r.entre(-2, 2), cz] }); e.castShadow = false; g.add(e); } }
 }
 function lua(g) { g.add(esfera(6, mat('#f4f1d0', { basic: true, fog: false }), { pos: [-40, 70, -180], sombra: false })); }
-function add(g, tipo, o, pos, vira = 0) { const p = PROPS[tipo](o); p.position.set(...pos); p.rotation.y = THREE.MathUtils.degToRad(vira); g.add(p); return p; }
-function sala(g, { largura = 26, profundo = 8, altura = 11, parede = '#e8e6e1', chao = '#bfb6a8', teto = '#f4f4f4' } = {}) {
+export function add(g, tipo, o, pos, vira = 0) { const p = PROPS[tipo](o); p.position.set(...pos); p.rotation.y = THREE.MathUtils.degToRad(vira); g.add(p); return p; }
+export function sala(g, { largura = 26, profundo = 8, altura = 11, parede = '#e8e6e1', chao = '#bfb6a8', teto = '#f4f4f4' } = {}) {
+  g.userData.limites = { x: largura / 2 - 0.8, y: altura - 0.8, z: -profundo + 0.8 };
   g.add(caixa(largura, 0.4, 60, chao, { pos: [0, -0.2, 20] }));
   g.add(caixa(largura, altura, 0.5, parede, { pos: [0, altura / 2, -profundo] }));
   g.add(caixa(0.5, altura, 60, parede, { pos: [-largura / 2, altura / 2, 20] })); g.add(caixa(0.5, altura, 60, parede, { pos: [largura / 2, altura / 2, 20] }));
   g.add(caixa(largura, 0.4, 60, teto, { pos: [0, altura, 20], sombra: false }));
   g.add(caixa(largura - 0.6, 0.5, 0.2, '#d8d4cc', { pos: [0, 0.25, -profundo + 0.3] }));   // rodapé
 }
-function janela(g, x, y, z, w = 5, h = 4, noite = false) {
+export function janela(g, x, y, z, w = 5, h = 4, noite = false) {
   g.add(caixa(w + 0.4, h + 0.4, 0.3, '#ffffff', { pos: [x, y, z] }));
   g.add(caixa(w, h, 0.32, mat(noite ? '#20305a' : '#bfe6ff', { emissive: noite ? '#101a33' : '#bfe6ff', emissiveIntensity: noite ? 0.4 : 0.9 }), { pos: [x, y, z + 0.02], sombra: false }));
   g.add(caixa(0.2, h, 0.36, '#ffffff', { pos: [x, y, z + 0.04] })); g.add(caixa(w, 0.2, 0.36, '#ffffff', { pos: [x, y, z + 0.04] }));
 }
-function luzTeto(g, x, z, noite) { g.add(caixa(3, 0.15, 3, mat('#ffffff', { emissive: '#ffffff', emissiveIntensity: 1.5 }), { pos: [x, 10.7, z], sombra: false }));
+export function luzTeto(g, x, z, noite) { g.add(caixa(3, 0.15, 3, mat('#ffffff', { emissive: '#ffffff', emissiveIntensity: 1.5 }), { pos: [x, 10.7, z], sombra: false }));
   const l = new THREE.PointLight(0xfff2dd, noite ? 90 : 45, 40, 1.4); l.position.set(x, 9.5, z); g.add(l); }
 
 // ---------- Tela de celular (canvas) ----------
@@ -309,7 +312,8 @@ export const CENARIOS = {
   },
   vazio(o, g, r) { g.add(caixa(500, 0.2, 500, o.chao || '#d5d9e2', { pos: [0, -0.1, 0] })); },
 };
-const INTERNOS = new Set(['sala', 'quarto', 'escola', 'hospital', 'gabinete', 'cozinha']);
+Object.assign(CENARIOS, INTERIORES);
+const INTERNOS = new Set(['sala', 'quarto', 'escola', 'hospital', 'gabinete', 'cozinha', ...Object.keys(INTERIORES)]);
 export const NOMES_CENARIOS = Object.keys(CENARIOS);
 
 export function construirCenario(nome, o = {}) {
@@ -322,5 +326,5 @@ export function construirCenario(nome, o = {}) {
   if (nome === 'celular') { amb.ceu = o.cor || '#6b7a99'; amb.nevoa = [200, 400]; }
   if (nome === 'vazio') { amb.ceu = o.cor || '#eef1f6'; amb.nevoa = [60, 140]; }
   if (nome === 'cidade_pequena') { amb.nevoa = [120, 520]; amb.sombra = (!o.local || o.local === 'vista') ? 120 : 50; }
-  return { grupo: g, ...amb, ancoras: g.userData.ancoras || {}, interno: INTERNOS.has(nome), cameraFixa: nome === 'celular' };
+  return { grupo: g, ...amb, ancoras: g.userData.ancoras || {}, limites: g.userData.limites, interno: INTERNOS.has(nome), cameraFixa: nome === 'celular' };
 }

@@ -38,7 +38,7 @@ function iniciar(c) {
 }
 
 /** Posição base de cada ator (auto-distribui quem não tem x). */
-const ANCORA_DA_ACAO = { deitar: 'deitar', dormir: 'deitar', sentar: 'sentar', discursar: 'discursar', assinar: 'assinar', cozinhar: 'cozinhar', lavar_louca: 'lavar_louca' };
+const ANCORA_DA_ACAO = { deitar: 'deitar', dormir: 'deitar', sentar: 'sentar', discursar: 'discursar', assinar: 'assinar', cozinhar: 'cozinhar', lavar_louca: 'lavar_louca', atender: 'atender', rezar: 'rezar', segurar_grade: 'segurar_grade' };
 function posicoes(atores, ancoras = {}) {
   const usadas = {};
   const semX = atores.filter(a => a.x === undefined && !(ancoras[ANCORA_DA_ACAO[a.acao]] && a.y === undefined)); const n = semX.length;
@@ -158,7 +158,9 @@ function posar(t) {
     }
   }
   const camC = atual.cen.cameraFixa ? { camera: 'detalhe', mov: c.mov || 'zoom_in', angulo: 0, dist: c.dist || 3.1 } : c;
-  posicionarCamera(cam, camC, t, dur, alvo, atores.length && !c.foco ? atual.espalha : 0);
+  const mira = posicionarCamera(cam, camC, t, dur, alvo, atores.length && !c.foco ? atual.espalha : 0);
+  const L = atual.cen.limites; // interiores: a câmera não atravessa paredes
+  if (L && mira) { cam.position.x = Math.max(-L.x, Math.min(L.x, cam.position.x)); cam.position.y = Math.max(0.8, Math.min(L.y, cam.position.y)); cam.position.z = Math.max(L.z, cam.position.z); cam.lookAt(mira); }
   const foco = alvo(t); const d = new THREE.Vector3(...atual.cen.sol.dir).normalize();
   sol.target.position.copy(foco); sol.position.copy(foco).addScaledVector(d, 60 + (atual.cen.sombra || 35)); sol.target.updateMatrixWorld();
 }
@@ -186,7 +188,7 @@ function liberarVisao() {
         for (const h of rc.intersectObject(raizCen, true)) {
           const o = topo(h.object); if (!o || escondidos.has(o)) continue;
           caixa.setFromObject(o).getSize(tam); if (Math.max(tam.x, tam.z) > 45) continue;   // chão/rua/parede gigante: mantém
-          if (caixa.containsPoint(base)) continue;                                          // o ator está dentro (ex.: sala, palco)
+          if (caixa.containsPoint(base) || caixa.distanceToPoint(base) < 2.6) continue;     // colado no ator (balcão, mesa, palco): faz parte da cena
           o.visible = false; escondidos.add(o);
         }
       }

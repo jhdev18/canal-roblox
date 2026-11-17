@@ -43,7 +43,18 @@ comércio em volta, ruas de saída, casas e posto de gasolina. Cada cena escolhe
 
 **Locais:** prefeitura, igreja, banco, escola, posto_saude, padaria, farmacia, loterica, bar, mercado, delegacia, posto_gasolina, praca_central, coreto, vista
 (`prefeitura` e `escola` sozinhos continuam sendo os cenários grandes antigos; para a versão da cidade pequena use `onde: cidade_pequena` + `local: prefeitura`).
-O ator fica na calçada, em frente à fachada, e a câmera de frente para o prédio. Cenas seguidas sem `onde:` continuam no mesmo local.
+O ator fica na calçada, em frente à fachada, e a câmera de frente para o prédio.
+
+**Por dentro:** acrescente `dentro: true` (ou use direto `onde: interior_<local>`):
+```yaml
+- onde: farmacia
+  dentro: true
+  atores: [medico atender, { id: idosa, acao: pagar, x: 3, vira: -150 }]   # atender vai sozinho para trás do balcão
+```
+Interiores: farmacia, loterica, padaria, mercado, banco, prefeitura (recepção), igreja (nave com bancos e altar), posto_saude (recepção + maca),
+delegacia (balcão + cela), bar (balcão, garrafas, TV no futebol, sinuca), posto_gasolina (conveniência), escola (= sala de aula `escola`).
+Âncoras: `atender` vai para trás do balcão/guichê; `sentar` para as cadeiras de espera, banquetas do bar ou mesas da padaria;
+`rezar` para o banco da igreja; `segurar_grade` para dentro da cela; `deitar` para a maca do posto de saúde. Cenas seguidas sem `onde:` continuam no mesmo local.
 O motor esconde sozinho o que ficar entre a câmera e os atores (postes, árvores, figurantes); use `liberar_visao: false` para desligar.
 
 ## Campos da cena
@@ -114,7 +125,8 @@ Dica: em vídeo vertical, para mostrar muita gente use `cam: alto` + `dist: 2.8`
 
 **Ações:** parado, falar, andar, correr, acenar, celular, digitar, sentar, deitar, dormir, assustar, chorar, triste, bravo, comemorar, pular, apontar, abracar, olhar_redor, cair, dancar, pensar, socar, palmas, ajoelhar, empurrar, tremer,
 discursar, acenar_multidao, apertar_mao, continencia, andar_confiante, andar_celular, correr_medo, fugir, carregar, entrevistar, filmar, assinar, cochichar, maos_pra_cima, implorar, espiar, agachar, comemorar_vitoria, rir, negar, concordar, cocar_cabeca, girar, desmaiar,
-chutar, varrer, regar, gritar, bater_porta, espreguicar, cozinhar, comer, lavar_louca, pedir_silencio, sentar_chao, passear_cachorro
+chutar, varrer, regar, gritar, bater_porta, espreguicar, cozinhar, comer, lavar_louca, pedir_silencio, sentar_chao, passear_cachorro,
+atender, pagar, rezar, segurar_grade
 
 **Rostos:** neutro, feliz, sorriso, rindo, malandro, desconfiado, triste, chorando, assustado, surpreso, bravo, dormindo, apaixonado, nervoso, morto, pensativo, confiante (+ qualquer `assets/rostos/<nome>.png`)
 
@@ -148,6 +160,7 @@ Campos: `pele, camisa, calca, rosto, extras, acessorios, roupa, cabelo_cor, esca
 
 arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, cadeira, cama, sofa, tv, computador, planta, presente, caixa_correio, cerca, porta, caixao, bolo,
 semaforo (`luz: verde`), onibus (`texto`), taxi, viatura, hidrante, lixeira, faixa_pedestre, loja (`texto`, `cor`), arranha_ceu, fonte, estatua (`texto`), bandeira (`cores`), palanque (`texto`), barraca, outdoor (`texto`), mesa_escritorio, poltrona, estante, quadro_parede (`texto`),
+**móveis de interior:** balcao, prateleira, gondola, geladeira_vitrine, caixa_registradora, carrinho_compras, guiche (`numero`), banco_igreja, altar, cruz_parede, vitral, cela, sinuca, banqueta, prateleira_garrafas, tv_parede, estufa_paes, cadeiras_espera, maca, mesa_trabalho, arquivo, bebedouro, fila_cordao, mural (`texto`),
 **prédios da cidade pequena (fachada em z=0):** farmacia, loterica, padaria, mercado, agencia_bancaria, prefeitura, igreja, escola, posto_saude, delegacia, bar, posto_gasolina, coreto (todos aceitam `texto` para trocar o letreiro),
 casa_br / sobrado (`cor`, `telhado`, `grade: false`, `caixa_dagua: false`), muro (`largura`, `cor`, `portao_x`, `portao: false`), portao, cerca_viva, caixa_dagua, poste_fios, churrasqueira, piscina, varal, casinha_cachorro, cachorro / gato (`cor`), bicicleta, moto (`bau: true`), balanco, escorregador, trave, bola, geladeira, fogao, pia, armario, mesa_jantar, cadeira_plastico, saco_lixo, vaso_flor, lombada
 

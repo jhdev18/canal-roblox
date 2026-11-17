@@ -45,4 +45,5 @@ export function posicionarCamera(cam, c, t, dur, alvoFn, espalhamento = 0) {
   if (mov === 'tremor') { cam.position.x += Math.sin(t * 47) * 0.08; cam.position.y += Math.sin(t * 61) * 0.08; }
   cam.lookAt(alvo);
   if (c.inclinar) cam.rotateZ(THREE.MathUtils.degToRad(c.inclinar));
+  return alvo;
 }

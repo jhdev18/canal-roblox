@@ -4,7 +4,7 @@ import YAML from 'yaml';
 import { p, sugerir } from './util.mjs';
 import { NOMES_ACOES } from '../motor/acoes.js';
 import { NOMES_CAMERAS, MOVIMENTOS } from '../motor/camera.js';
-import { NOMES_CENARIOS } from '../motor/cenarios.js';
+import { NOMES_CENARIOS, INTERIOR_DO_LOCAL } from '../motor/cenarios.js';
 import { LOCAIS } from '../motor/cidade.js';
 import { NOMES_PROPS } from '../motor/props.js';
 import { NOMES_ACESSORIOS, NOMES_ROUPAS, NOMES_PROPS_MAO } from '../motor/personagem.js';
@@ -102,6 +102,11 @@ export function carregarRoteiro(arquivo) {
     });
     // atalho: `onde: farmacia` = cidade_pequena em frente à farmácia (nomes que não são cenários próprios)
     if (!cat.cenarios.includes(cen.cenario) && LOCAIS.includes(cen.cenario)) { cen.local = cen.cenario; cen.cenario = 'cidade_pequena'; }
+    if (c.dentro) { // dentro do prédio: troca o local da cidade pelo cenário interior correspondente
+      const alvo = INTERIOR_DO_LOCAL[cen.local ?? cen.cenario];
+      if (!alvo) throw new Error(`${onde}: "dentro: true" não existe para "${cen.local ?? cen.cenario}". Prédios com interior: ${Object.keys(INTERIOR_DO_LOCAL).join(', ')}`);
+      cen.cenario = alvo; cen.local = undefined;
+    }
     if (cen.local !== undefined) { if (cen.cenario !== 'cidade_pequena') throw new Error(`${onde}: \`local\` só vale com onde: cidade_pequena`); checar('local', cen.local, LOCAIS, onde); }
     checar('cenário', cen.cenario, cat.cenarios, onde); checar('câmera', cen.camera, cat.cameras, onde); checar('movimento', cen.mov, cat.movimentos, onde);
     checar('hora', cen.hora, cat.horas, onde);
