@@ -29,9 +29,9 @@ cenas:                     # 1 cena = 1 corte (~1–2 s, 3–7 palavras)
 ## Mundo integrado (recomendado)
 
 Um mapa único e contínuo, como um mapa do Roblox: **praça no centro** (coreto, fonte, estátua, jardins, parquinho, bancos, pipoqueiro),
-prédios em volta **ocos por dentro e por fora no mesmo lugar** (prefeitura com gabinete, igreja, banco, escola, posto de saúde, padaria,
-farmácia, lotérica, bar, mercado, delegacia com cela), uma rua de bairro a leste com a **casa do protagonista** (térrea, 5 cômodos
-ligados por portas) e o posto de gasolina.
+prédios em volta **ocos por dentro e por fora no mesmo lugar** (prefeitura com gabinete, igreja, banco, **escola e posto de saúde com
+vários cômodos**, padaria, farmácia, lotérica, bar, mercado, delegacia com cela), uma rua de bairro a leste com a **casa do protagonista**
+(térrea, 5 cômodos ligados por portas) e o posto de gasolina.
 
 ```yaml
 - onde: mundo
@@ -46,6 +46,14 @@ ligados por portas) e o posto de gasolina.
   comodo: quarto                  # sala | cozinha | quarto | banheiro | quarto_pais
   atores: [garoto jogar_pc]
 - onde: mundo
+  local: escola
+  comodo: biblioteca              # corredor | sala_aula | biblioteca | diretoria | cantina
+  atores: [menina sentar]
+- onde: mundo
+  local: posto_saude
+  comodo: enfermaria              # recepcao | corredor | consultorio | sala_exames | enfermaria
+  atores: [valentao deitar]
+- onde: mundo
   local: vista                    # cidade inteira de cima (cam: alto + dist: 7)
 ```
 
@@ -53,15 +61,23 @@ ligados por portas) e o posto de gasolina.
 praca, coreto, fonte, parquinho, estatua, rua_bairro, campinho (campo de futebol do bairro, entre o mercadinho e a borracharia, com gramado dos lados), posto_gasolina, vista.
 
 - **Escala:** tudo é medido pelo personagem (5,2 de altura, 2 de largura; ~3 studs por metro). Portas com 6,2 de altura, assentos com 2,2–2,4 de largura na altura da pose `sentar`, bancadas de cozinha na cintura. Ao criar móvel novo, siga essas medidas e não use escala menor que 1 em móveis de uso.
-- **Tamanho dos prédios:** ambientes grandes, no estilo Roblox (farmácia 18×18 com teto de 10; prefeitura 32×22; igreja 20×32 com teto de 15). A praça tem um calçadão arborizado em volta, depois o anel de ruas.
+- **Tamanho dos prédios:** ambientes grandes, no estilo Roblox (farmácia 18×18 com teto de 10; prefeitura 32×22; igreja 20×32 com teto de 15; escola 30×36 e posto de saúde 24×38, com cômodos). A praça tem um calçadão arborizado em volta, depois o anel de ruas.
 - **Mapa com os nomes:** `docs/preview/mapa_mundo.jpg`. Interiores de todos os prédios: `docs/preview/interiores_mundo.jpg`. Câmera de cima para cenas: `cam: mapa` (e `alvo_xz: [x, z]` para escolher o centro).
 - **Só o local gravado existe na cena:** o resto do mundo é removido ao montar cada cena (mais leve para a GPU).
   Alcance padrão: 80 na calçada, 45 dentro de prédio, só a casa num cômodo, mapa inteiro na `vista`. Mude com `alcance: 120` na cena.
-- **Portas abrem sozinhas** quando alguém chega perto e fecham depois. A porta fica em `x` = −4,8 na farmácia/padaria, 0 na lotérica/banco/posto de saúde/igreja/prefeitura, −8,6 no mercado, 4 na delegacia, −3,5 no bar e −6 na casa (em relação ao ponto da calçada).
+- **Portas abrem sozinhas** quando alguém chega perto e fecham depois. A porta fica em `x` = −4,8 na farmácia/padaria, 0 na lotérica/banco/posto de saúde/igreja/prefeitura, −1 na escola, −8,6 no mercado, 4 na delegacia, −3,5 no bar e −6 na casa (em relação ao ponto da calçada).
 - **Paredes e tetos somem sozinhos** quando ficam entre a câmera e o ator (vista em corte), e voltam depois. Com `foco:`, só o ator em foco abre o corte.
 - Dentro da casa, os móveis dos outros cômodos ficam escondidos para não atrapalhar a câmera.
+- **Cômodos (`comodo:`)** existem na casa, na escola e no posto de saúde (fotos: `docs/preview/comodos.jpg`). `dentro: true` sem `comodo:` entra no cômodo padrão:
+  casa → `sala`, escola → `sala_aula`, posto_saude → `recepcao`. Numa cena de cômodo, somem os móveis dos cômodos que ficam entre ele e a câmera, e as âncoras/assentos são só os daquele cômodo.
+  - **Escola** (30×36, teto 10): a porta da frente dá no hall, que vira o **corredor** (armários coloridos, bebedouro, portas com placa SALA 1 e BIBLIOTECA);
+    na frente ficam a **diretoria** (mesa, poltrona, bandeiras, estante; `sentar`/`assinar` = poltrona da diretora) e a **cantina** (balcão de lanches, `atender` atrás dele, `fila`, mesa de refeitório com bancos);
+    no fundo a **sala_aula** (quadro-negro, mesa da professora, 8 carteiras; `sentar` = carteiras, alunos de costas — use `angulo: 180` para vê-los de frente) e a **biblioteca** (estantes de livros, mesa de leitura; `sentar` = cadeiras do lado de lá da mesa, de frente para a câmera).
+  - **Posto de saúde** (24×38, teto 10): **recepcao** (balcão com `atender`, `fila`, cadeiras de espera), **corredor** com o **consultorio** à esquerda
+    (mesa do médico: `sentar`/`atender`; maca: `deitar`) e a **sala_exames** à direita (maca: `deitar`, monitor cardíaco, raio-x, balança), e a **enfermaria** no fundo
+    (3 leitos com biombos, soro e monitor; `sentar` = sentado no leito do meio, `deitar` = deitado nele).
 - Todas as âncoras continuam funcionando (`atender`, `fila: N`, `rezar`, `segurar_grade`, `sentar`, `deitar`, `jogar_pc`, `cozinhar`…).
-- **Assentos de verdade:** no mundo, `sentar` e `rezar` usam os assentos reais (cadeiras, carteiras, cadeiras de espera, bancos da igreja e da praça, sofá, poltrona, banquetas). Cada personagem pega o assento livre mais perto do ponto principal; vários sentados não se sobrepõem.
+- **Assentos de verdade:** no mundo, `sentar` e `rezar` usam os assentos reais (cadeiras, carteiras, cadeiras de espera, bancos da igreja, da praça e do refeitório, sofá, poltrona, banquetas, leitos). Cada personagem pega o assento livre mais perto do ponto principal; vários sentados não se sobrepõem.
 
 ## Cidade pequena (cenários separados, versão anterior)
 
@@ -147,7 +163,7 @@ Dica: `cam: aberto` + `angulo: -55` mostra a fila de lado.
 | `texto_palanque` / `palanque: false` | placa do palanque da prefeitura / remove o palanque | PREFEITURA |
 | `multidao` | figurantes gerados automaticamente (abaixo) | — |
 | `fila` | fila de pessoas em interiores com balcão/guichê (`fila: 6`) | — |
-| `comodo` | cômodo da `casa_protagonista` | quarto |
+| `comodo` | cômodo da `casa_protagonista`; no mundo, cômodo da casa, escola ou posto_saude | quarto · padrão do local |
 | `alcance` | (mundo/cidade) até onde o mundo existe em volta do local gravado | 80 fora · 45 dentro · casa |
 
 ## Atores
@@ -230,7 +246,7 @@ Campos: `pele, camisa, calca, rosto, extras, acessorios, roupa, cabelo_cor, esca
 arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, cadeira, cama, sofa, tv, computador, planta, presente, caixa_correio, cerca, porta, caixao, bolo,
 semaforo (`luz: verde`), onibus (`texto`), taxi, viatura, hidrante, lixeira, faixa_pedestre, loja (`texto`, `cor`), arranha_ceu, fonte, estatua (`texto`), bandeira (`cores`), palanque (`texto`), barraca, outdoor (`texto`), mesa_escritorio, poltrona, estante, quadro_parede (`texto`),
 **móveis de casa:** cadeira_gamer, guarda_roupa, cortina, cama_casal, criado_mudo, comoda, tapete, mesa_centro, escada, vaso_sanitario, pia_banheiro, box_chuveiro, porta_retrato, painel_ferramentas, luminaria, poster (`texto`),
-**móveis de interior:** balcao, prateleira, gondola, geladeira_vitrine, caixa_registradora, carrinho_compras, guiche (`numero`), banco_igreja, altar, cruz_parede, vitral, cela, sinuca, banqueta, prateleira_garrafas, tv_parede, estufa_paes, cadeiras_espera, maca, mesa_trabalho, arquivo, bebedouro, fila_cordao, mural (`texto`), relogio_parede, ventilador_teto, extintor, pilha_caixas (`n`, `cor`), banca_frutas, placa_suspensa (`texto`, `cor`), cofre, castical, suporte_soro,
+**móveis de interior:** balcao, prateleira, gondola, geladeira_vitrine, caixa_registradora, carrinho_compras, guiche (`numero`), banco_igreja, altar, cruz_parede, vitral, cela, sinuca, banqueta, prateleira_garrafas, tv_parede, estufa_paes, cadeiras_espera, maca, mesa_trabalho, arquivo, bebedouro, fila_cordao, mural (`texto`), relogio_parede, ventilador_teto, extintor, pilha_caixas (`n`, `cor`), banca_frutas, placa_suspensa (`texto`, `cor`), cofre, castical, suporte_soro, quadro_negro (`texto`, `largura`), armario_escolar (`n`, `cor`), estante_livros (`largura`, `altura`), mesa_refeitorio (`largura`, com bancos e assentos), globo, leito (`cor` do cobertor; assento sentado na cama), biombo, monitor_cardiaco, negatoscopio, balanca, cadeira_rodas,
 **prédios da cidade pequena (fachada em z=0):** farmacia, loterica, padaria, mercado, agencia_bancaria, prefeitura, igreja, escola, posto_saude, delegacia, bar, posto_gasolina, coreto (todos aceitam `texto` para trocar o letreiro),
 casa_br / sobrado (`cor`, `telhado`, `grade: false`, `caixa_dagua: false`), muro (`largura`, `cor`, `portao_x`, `portao: false`), portao, cerca_viva, caixa_dagua, poste_fios, churrasqueira, piscina, varal, casinha_cachorro, cachorro / gato (`cor`), bicicleta, moto (`bau: true`), balanco, escorregador, trave, bola, geladeira, fogao, pia, armario, mesa_jantar, cadeira_plastico, saco_lixo, vaso_flor, lombada
 

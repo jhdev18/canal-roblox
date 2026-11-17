@@ -4,7 +4,7 @@ import YAML from 'yaml';
 import { p, sugerir } from './util.mjs';
 import { NOMES_ACOES } from '../motor/acoes.js';
 import { NOMES_CAMERAS, MOVIMENTOS } from '../motor/camera.js';
-import { NOMES_CENARIOS, INTERIOR_DO_LOCAL, COMODOS_CASA, LOCAIS_MUNDO, LOCAIS_COM_INTERIOR, COMODOS_DO_MUNDO } from '../motor/cenarios.js';
+import { NOMES_CENARIOS, INTERIOR_DO_LOCAL, COMODOS_CASA, LOCAIS_MUNDO, LOCAIS_COM_INTERIOR, COMODOS_DO_MUNDO, COMODO_PADRAO_MUNDO } from '../motor/cenarios.js';
 import { LOCAIS } from '../motor/cidade.js';
 import { NOMES_PROPS } from '../motor/props.js';
 import { NOMES_ACESSORIOS, NOMES_ROUPAS, NOMES_PROPS_MAO } from '../motor/personagem.js';
@@ -112,8 +112,10 @@ export function carregarRoteiro(arquivo) {
       if (cen.comodo && !cen.local) cen.local = 'casa';
       cen.local ??= 'praca'; checar('local do mundo', cen.local, LOCAIS_MUNDO, onde);
       if (cen.dentro && !LOCAIS_COM_INTERIOR.includes(cen.local)) throw new Error(`${onde}: "${cen.local}" não tem interior. Com interior: ${LOCAIS_COM_INTERIOR.join(', ')}`);
-      if (cen.comodo) { if (cen.local !== 'casa') throw new Error(`${onde}: \`comodo\` é da casa do protagonista (local: casa)`); checar('cômodo', cen.comodo, COMODOS_DO_MUNDO, onde); }
-      if (cen.local === 'casa' && cen.dentro && !cen.comodo) cen.comodo = 'sala';
+      if (cen.comodo) { const lista = COMODOS_DO_MUNDO[cen.local];
+        if (!lista) throw new Error(`${onde}: "${cen.local}" não tem cômodos. \`comodo\` vale para: ${Object.entries(COMODOS_DO_MUNDO).map(([l, c]) => `${l} (${c.join(', ')})`).join(' · ')}`);
+        checar(`cômodo de ${cen.local}`, cen.comodo, lista, onde); }
+      if (cen.dentro && !cen.comodo && COMODO_PADRAO_MUNDO[cen.local]) cen.comodo = COMODO_PADRAO_MUNDO[cen.local];
     } else if (c.dentro) { // dentro do prédio: troca o local da cidade pelo cenário interior correspondente
       const alvo = INTERIOR_DO_LOCAL[cen.local ?? cen.cenario];
       if (!alvo) throw new Error(`${onde}: "dentro: true" não existe para "${cen.local ?? cen.cenario}". Prédios com interior: ${Object.keys(INTERIOR_DO_LOCAL).join(', ')}`);

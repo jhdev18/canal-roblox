@@ -7,8 +7,8 @@ import { PROPS, placaTexto } from './props.js';
 import { construirCidade, enquadrarLocal } from './cidade.js';
 import { INTERIORES } from './interiores.js';
 import { construirCasa, enquadrarComodo } from './casa.js';
-import { construirMundo, enquadrarMundo, recortarMundo } from './mundo.js';
-export { LOCAIS_MUNDO, LOCAIS_COM_INTERIOR, COMODOS_DO_MUNDO } from './mundo.js';
+import { construirMundo, enquadrarMundo, recortarMundo, COMODO_PADRAO_MUNDO } from './mundo.js';
+export { LOCAIS_MUNDO, LOCAIS_COM_INTERIOR, COMODOS_DO_MUNDO, COMODO_PADRAO_MUNDO } from './mundo.js';
 export { COMODOS_CASA } from './casa.js';
 export { INTERIOR_DO_LOCAL } from './interiores.js';
 
@@ -234,6 +234,7 @@ export const CENARIOS = {
   },
   cidade_pequena(o, g, r) { construirCidade(o, g, r); if (o.local && o.local !== 'vista') { enquadrarLocal(g, o.local); recortarMundo(g, o.alcance ?? 80); g.userData.jaEnquadrado = true; } },
   mundo(o, g, r) { // MUNDO INTEGRADO: praça no centro, prédios ocos por fora e por dentro, portas automáticas, casa do protagonista
+    if (o.dentro && !o.comodo && COMODO_PADRAO_MUNDO[o.local]) o = { ...o, comodo: COMODO_PADRAO_MUNDO[o.local] };   // casa, escola e posto de saúde: entra no cômodo padrão
     construirMundo(o, g, r); const e = enquadrarMundo(g, o);
     // só existe o pedaço do mundo em volta do local gravado
     const vista = !o.local || o.local === 'vista', principal = g.children.find(c => c.userData?.lote?.id === o.local);

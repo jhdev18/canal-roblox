@@ -1,6 +1,6 @@
 // Gera pranchas de catálogo (docs/preview/*.jpg) fotografando cada asset com o próprio motor.
 // Rode de novo sempre que criar um asset:   node ferramentas/preview_assets.mjs [categoria...] [--gpu nao]
-// Categorias: personagens rostos extras acessorios roupas acoes cenarios predios locais interiores casa ambientes telas props
+// Categorias: personagens rostos extras acessorios roupas acoes cenarios predios locais interiores casa ambientes mundo comodos telas props
 // Rodando todas (sem argumentos), também gera docs/preview/geral.jpg com tudo junto.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -66,6 +66,22 @@ const CATEGORIAS = {
       M('casa: quarto', { local: 'casa', comodo: 'quarto', angulo: 20 }, [ator(spec('garoto'), 'jogar_pc')]),
       M('casa: sala', { local: 'casa', comodo: 'sala' }, [ator(spec('pai'), 'sentar')]),
       M('casa: cozinha', { local: 'casa', comodo: 'cozinha', angulo: -20 }, [ator(spec('mae'), 'cozinhar')])]; },
+  comodos: () => { const A = (b, acao = 'parado', o = {}) => ({ ...ator(spec(b), acao, o), id: b });
+    const M = (nome, o, atores = [], t = 0.5) => ({ nome, t, cena: { cenario: 'mundo', mov: 'fixo', dur: 2, camera: 'aberto', dist: 1.5, ...o, atores } });
+    return [M('escola (de cima)', { local: 'escola', camera: 'mapa', dist: 0.7, alvo_xz: [0, -20.6] }, [A('garoto', 'parado', { x: 0, z: -20.6 })]),
+      M('escola: corredor', { local: 'escola', comodo: 'corredor' }, [A('garoto', 'andar'), A('menina', 'acenar')]),
+      M('escola: sala_aula', { local: 'escola', comodo: 'sala_aula', angulo: 15 }, [A('valentao', 'bravo'), A('garoto', 'triste')]),
+      M('sala_aula: sentar', { local: 'escola', comodo: 'sala_aula', angulo: 180, dist: 1.1 }, [A('garoto', 'sentar'), A('menina', 'sentar'), A('valentao', 'sentar')]),
+      M('escola: biblioteca', { local: 'escola', comodo: 'biblioteca', angulo: 10 }, [A('menina', 'sentar'), A('garoto')]),
+      M('escola: diretoria', { local: 'escola', comodo: 'diretoria', angulo: 15 }, [A('professora', 'sentar'), A('garoto', 'tremer', { x: 1.2 })]),
+      M('escola: cantina', { local: 'escola', comodo: 'cantina', angulo: 20 }, [A('cidada', 'atender'), A('garoto', 'parado', { x: 0.5, z: 0.4, vira: 180 }), A('menina', 'sentar')]),
+      M('posto (de cima)', { local: 'posto_saude', camera: 'mapa', dist: 0.75, alvo_xz: [0, -21.6] }, [A('garoto', 'parado', { x: 0, z: -21.6 })]),
+      M('posto: recepcao', { local: 'posto_saude', comodo: 'recepcao', angulo: 15 }, [A('cidada', 'atender'), A('idosa', 'sentar')]),
+      M('posto: corredor', { local: 'posto_saude', comodo: 'corredor' }, [A('medico', 'andar'), A('idosa', 'sentar')]),
+      M('posto: consultorio', { local: 'posto_saude', comodo: 'consultorio', angulo: 15 }, [A('medico', 'sentar'), A('idosa', 'falar', { x: 1, z: -0.5, vira: -20 })]),
+      M('posto: sala_exames', { local: 'posto_saude', comodo: 'sala_exames', angulo: 15 }, [A('medico', 'atender'), A('garoto', 'deitar')]),
+      M('posto: enfermaria', { local: 'posto_saude', comodo: 'enfermaria', angulo: 15 }, [A('valentao', 'sentar', { rosto: 'triste' }), A('garoto', 'chorar', { x: 2.6, z: 0.4, vira: -30 })]),
+      M('enfermaria: deitar', { local: 'posto_saude', comodo: 'enfermaria', angulo: 30, camera: 'medio' }, [A('valentao', 'deitar')])]; },
   locais: () => LOCAIS.filter(l => l !== 'vista').map(l => ({ nome: 'onde: ' + l, cena: { cenario: 'cidade_pequena', local: l, mov: 'fixo', dur: 1.2, camera: 'aberto', dist: 1.3, altura: 2, angulo: 15,
     atores: [ator(NOOB(), 'acenar')] } })),
   telas: () => [
@@ -92,7 +108,7 @@ function pagina(titulo, itens, colunas) {
 }
 
 const TITULOS = { personagens: 'Personagens (assets/personagens.yaml)', rostos: 'Rostos (rosto:)', extras: 'Extras de rosto (extras:)', acessorios: 'Acessórios (acessorios:)',
-  roupas: 'Roupas (roupa:)', mundo: 'Mundo integrado (onde: mundo + local: / dentro: / comodo:)', casa: 'Casa do protagonista (onde: casa_protagonista + comodo:)', ambientes: 'Ambientes completos: filas e gabinete do prefeito', interiores: 'Interiores dos prédios (onde: <local> + dentro: true)', predios: 'Prédios da cidade pequena (props: — e cada um é um local em onde:)', locais: 'Locais da cidade pequena (onde: <local>)', acoes: 'Ações (acao:)', cenarios: 'Cenários (onde: + hora:)', telas: 'Telas de celular (onde: celular + tela:)', props: 'Props de cenário (props:)' };
+  roupas: 'Roupas (roupa:)', mundo: 'Mundo integrado (onde: mundo + local: / dentro: / comodo:)', comodos: 'Escola e posto de saúde com cômodos (onde: mundo + local: escola | posto_saude + comodo:)', casa: 'Casa do protagonista (onde: casa_protagonista + comodo:)', ambientes: 'Ambientes completos: filas e gabinete do prefeito', interiores: 'Interiores dos prédios (onde: <local> + dentro: true)', predios: 'Prédios da cidade pequena (props: — e cada um é um local em onde:)', locais: 'Locais da cidade pequena (onde: <local>)', acoes: 'Ações (acao:)', cenarios: 'Cenários (onde: + hora:)', telas: 'Telas de celular (onde: celular + tela:)', props: 'Props de cenário (props:)' };
 
 const todos = [];
 const motor = await abrirMotor({ largura: 360, altura: 640, fps: 30, ao: true, sombra: 2048, gpu });
