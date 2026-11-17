@@ -4,7 +4,7 @@ import YAML from 'yaml';
 import { p, sugerir } from './util.mjs';
 import { NOMES_ACOES } from '../motor/acoes.js';
 import { NOMES_CAMERAS, MOVIMENTOS } from '../motor/camera.js';
-import { NOMES_CENARIOS, INTERIOR_DO_LOCAL } from '../motor/cenarios.js';
+import { NOMES_CENARIOS, INTERIOR_DO_LOCAL, COMODOS_CASA } from '../motor/cenarios.js';
 import { LOCAIS } from '../motor/cidade.js';
 import { NOMES_PROPS } from '../motor/props.js';
 import { NOMES_ACESSORIOS, NOMES_ROUPAS, NOMES_PROPS_MAO } from '../motor/personagem.js';
@@ -19,7 +19,7 @@ function rostosValidos() {
 export function catalogo() {
   return { cenarios: NOMES_CENARIOS, acoes: NOMES_ACOES, rostos: rostosValidos(), extras_rosto: Object.keys(EXTRAS_ROSTO), acessorios: NOMES_ACESSORIOS,
     roupas: NOMES_ROUPAS, props: NOMES_PROPS, props_mao: NOMES_PROPS_MAO, cameras: NOMES_CAMERAS, movimentos: MOVIMENTOS,
-    personagens: Object.keys(carregarPersonagens()), locais: LOCAIS, horas: ['dia', 'tarde', 'noite'], telas: ['mensagem', 'notificacao', 'alarme', 'ligacao'] };
+    personagens: Object.keys(carregarPersonagens()), locais: LOCAIS, comodos: COMODOS_CASA, horas: ['dia', 'tarde', 'noite'], telas: ['mensagem', 'notificacao', 'alarme', 'ligacao'] };
 }
 
 function checar(tipo, nome, lista, onde) {
@@ -67,18 +67,23 @@ export function carregarRoteiro(arquivo) {
     const c = { ...padrao, ...(typeof c0 === 'string' ? { fala: c0 } : c0) };
     const cen = {
       idx: i, fala: c.fala ? String(c.fala) : '', dur: c.dur, som: c.som, audio: c.audio,
-      cenario: c.onde ?? c.cenario ?? ant.cenario ?? 'rua', local: c.local ?? (c.onde === undefined && c.cenario === undefined ? ant.local : undefined), hora: c.hora ?? ant.hora ?? 'dia', seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela,
+      cenario: c.onde ?? c.cenario ?? ant.cenario ?? 'rua', local: c.local ?? (c.onde === undefined && c.cenario === undefined ? ant.local : undefined),
+      comodo: c.comodo ?? (c.onde === undefined && c.cenario === undefined ? ant.comodo : undefined), hora: c.hora ?? ant.hora ?? 'dia', seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela,
       camera: c.cam ?? c.camera ?? CAM_CICLO[i % CAM_CICLO.length][0], mov: c.mov, angulo: c.angulo ?? (c.cam || c.camera ? undefined : CAM_CICLO[i % CAM_CICLO.length][1]),
       dist: c.dist, altura: c.altura, inclinar: c.inclinar, foco: c.foco, props: c.props || [],
       multidao: c.multidao,
       texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque,
     };
+    if (c.fila) { // fila de pessoas (lotérica, banco, mercado, padaria, farmácia, posto de saúde)
+      const f = typeof c.fila === 'number' ? { n: c.fila } : c.fila;
+      cen.multidao = { modo: 'fila', personagens: 'todos', ...f };
+    }
     if (cen.multidao === undefined && MULTIDAO_PADRAO[cen.cenario]) cen.multidao = { ...MULTIDAO_PADRAO[cen.cenario] };
     if (cen.multidao === false) cen.multidao = undefined;
     else if (cen.multidao && MULTIDAO_PADRAO[cen.cenario]) cen.multidao = { ...MULTIDAO_PADRAO[cen.cenario], ...(typeof cen.multidao === 'number' ? { n: cen.multidao } : cen.multidao) };
     if (cen.multidao) {
       if (typeof cen.multidao === 'number') cen.multidao = { n: cen.multidao };
-      if (cen.multidao.modo) checar('modo da multidão', cen.multidao.modo, ['espalhado', 'grupos', 'passantes'], onde);
+      if (cen.multidao.modo) checar('modo da multidão', cen.multidao.modo, ['espalhado', 'grupos', 'passantes', 'fila'], onde);
       const ps = cen.multidao.personagens;
       if (ps) { const nomes = ps === 'todos' ? Object.keys(templates) : [].concat(ps);
         cen.multidao.specs = nomes.map(nm => { checar('personagem (multidão)', nm, Object.keys(templates), onde); return { id: nm, ...resolverSpec(nm, templates) }; }); delete cen.multidao.personagens; }
@@ -107,6 +112,9 @@ export function carregarRoteiro(arquivo) {
       if (!alvo) throw new Error(`${onde}: "dentro: true" não existe para "${cen.local ?? cen.cenario}". Prédios com interior: ${Object.keys(INTERIOR_DO_LOCAL).join(', ')}`);
       cen.cenario = alvo; cen.local = undefined;
     }
+    if (['casa', 'casa_do_protagonista'].includes(cen.cenario)) cen.cenario = 'casa_protagonista';
+    if (cen.cenario === 'casa_protagonista') { cen.comodo ??= 'quarto'; checar('cômodo', cen.comodo, COMODOS_CASA, onde); }
+    else if (c.comodo) throw new Error(`${onde}: \`comodo\` só vale com onde: casa_protagonista`);
     if (cen.local !== undefined) { if (cen.cenario !== 'cidade_pequena') throw new Error(`${onde}: \`local\` só vale com onde: cidade_pequena`); checar('local', cen.local, LOCAIS, onde); }
     checar('cenário', cen.cenario, cat.cenarios, onde); checar('câmera', cen.camera, cat.cameras, onde); checar('movimento', cen.mov, cat.movimentos, onde);
     checar('hora', cen.hora, cat.horas, onde);

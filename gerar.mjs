@@ -97,7 +97,7 @@ async function principal() {
     c.dur = Math.max(1, Math.round(bruto * fps)) / fps;  // alinhado a quadros
     c.palavras = temposPalavras(c.fala, audio ? audio.dur : c.dur * 0.9, cfg.legenda, audio?.palavras);
   }
-  const visual = (c) => ({ cenario: c.cenario, local: c.local, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, camera: c.camera, mov: c.mov,
+  const visual = (c) => ({ cenario: c.cenario, local: c.local, comodo: c.comodo, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, camera: c.camera, mov: c.mov,
     angulo: c.angulo, dist: c.dist, altura: c.altura, inclinar: c.inclinar, foco: c.foco, props: c.props, dur: c.dur,
     multidao: c.multidao, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque,
     atores: c.atores.map(x => ({ ...x, spec: { ...x.spec } })) });

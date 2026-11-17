@@ -1,6 +1,6 @@
 // Gera pranchas de catálogo (docs/preview/*.jpg) fotografando cada asset com o próprio motor.
 // Rode de novo sempre que criar um asset:   node ferramentas/preview_assets.mjs [categoria...] [--gpu nao]
-// Categorias: personagens rostos extras acessorios roupas acoes cenarios predios locais interiores telas props
+// Categorias: personagens rostos extras acessorios roupas acoes cenarios predios locais interiores casa ambientes telas props
 // Rodando todas (sem argumentos), também gera docs/preview/geral.jpg com tudo junto.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -43,6 +43,15 @@ const CATEGORIAS = {
   interiores: () => cat.cenarios.filter(n => n.startsWith('interior_')).map(n => ({ nome: n.replace('interior_', '') + ' · dentro', cena: { cenario: n, mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: n === 'interior_delegacia' ? -28 : 18, altura: 1, dist: 1.15,
     atores: n === 'interior_igreja' ? [ator(spec('idosa'), 'rezar')] : n === 'interior_delegacia' ? [ator(spec('policial'), 'atender'), ator(spec('ladrao'), 'segurar_grade')]
       : [ator(spec({ farmacia: 'medico', posto_saude: 'medico', bar: 'vizinho', prefeitura: 'assessor', banco: 'assessor' }[n.replace('interior_', '')] || 'cidada'), 'atender')] } })),
+  casa: () => [['quarto', 'jogar_pc', 'garoto'], ['quarto_pais', 'dormir', 'mae'], ['sala', 'sentar', 'pai'], ['cozinha', 'cozinhar', 'mae'], ['banheiro', 'parado', 'garoto'], ['garagem', 'parado', 'pai'], ['vista', null, null]]
+    .map(([c, a, p]) => ({ nome: 'comodo: ' + c, cena: { cenario: 'casa_protagonista', comodo: c, mov: 'fixo', dur: 1.2, camera: c === 'vista' ? 'geral' : 'aberto', dist: c === 'vista' ? 3.2 : 1.05,
+      angulo: c === 'vista' ? 0 : 12, altura: c === 'vista' ? 0 : 1, atores: a ? [ator(spec(p), a)] : [] } })),
+  ambientes: () => {
+    const todos = Object.keys(tpl).map(k => ({ id: k, ...resolverSpec(k, tpl) }));
+    const fila = (cen, n, quem) => ({ cenario: cen, mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: -55, dist: 1.5, altura: 0.5, atores: [ator(spec(quem), 'atender')], multidao: { modo: 'fila', n, specs: todos } });
+    return [{ nome: 'fila: lotérica', cena: fila('interior_loterica', 6, 'cidada') }, { nome: 'fila: banco', cena: fila('interior_banco', 5, 'assessor') },
+      { nome: 'fila: mercado', cena: { ...fila('interior_mercado', 5, 'cidada'), angulo: 20 } }, { nome: 'fila: padaria', cena: fila('interior_padaria', 4, 'cidada') },
+      { nome: 'gabinete (prefeito)', cena: { cenario: 'gabinete', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 20, dist: 1.2, atores: [ator(spec('prefeito'), 'assinar'), ator(spec('assessor'), 'cochichar', { x: 4, z: -5, vira: -40 })] } }]; },
   locais: () => LOCAIS.filter(l => l !== 'vista').map(l => ({ nome: 'onde: ' + l, cena: { cenario: 'cidade_pequena', local: l, mov: 'fixo', dur: 1.2, camera: 'aberto', dist: 1.3, altura: 2, angulo: 15,
     atores: [ator(NOOB(), 'acenar')] } })),
   telas: () => [
@@ -69,7 +78,7 @@ function pagina(titulo, itens, colunas) {
 }
 
 const TITULOS = { personagens: 'Personagens (assets/personagens.yaml)', rostos: 'Rostos (rosto:)', extras: 'Extras de rosto (extras:)', acessorios: 'Acessórios (acessorios:)',
-  roupas: 'Roupas (roupa:)', interiores: 'Interiores dos prédios (onde: <local> + dentro: true)', predios: 'Prédios da cidade pequena (props: — e cada um é um local em onde:)', locais: 'Locais da cidade pequena (onde: <local>)', acoes: 'Ações (acao:)', cenarios: 'Cenários (onde: + hora:)', telas: 'Telas de celular (onde: celular + tela:)', props: 'Props de cenário (props:)' };
+  roupas: 'Roupas (roupa:)', casa: 'Casa do protagonista (onde: casa_protagonista + comodo:)', ambientes: 'Ambientes completos: filas e gabinete do prefeito', interiores: 'Interiores dos prédios (onde: <local> + dentro: true)', predios: 'Prédios da cidade pequena (props: — e cada um é um local em onde:)', locais: 'Locais da cidade pequena (onde: <local>)', acoes: 'Ações (acao:)', cenarios: 'Cenários (onde: + hora:)', telas: 'Telas de celular (onde: celular + tela:)', props: 'Props de cenário (props:)' };
 
 const todos = [];
 const motor = await abrirMotor({ largura: 360, altura: 640, fps: 30, ao: true, sombra: 2048, gpu });

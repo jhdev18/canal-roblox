@@ -98,6 +98,8 @@ export const ACOES = {
   atender: (t) => { const b = respirar(poseBase(), t, 0.5); b.bd = [55 + S(t * 3) * 10, -12]; b.be = [50, -10]; b.cab[0] = 6 + S(t * 4) * 4; b.cab[1] = S(t * 0.9) * 12; return b; },
   pagar: (t) => { const b = respirar(poseBase(), t, 0.4); const k = ease(t / 0.5); b.bd = [30 + 55 * k, -8]; b.cab[0] = 10; return b; },
   rezar: (t) => { const b = ACOES.sentar(t); b.bd = [95, -26]; b.be = [95, -26]; b.cab[0] = 20; return b; },
+  jogar_pc: (t) => { const b = ACOES.sentar(t); b.bd = [68 + S(t * 16) * 5, -12]; b.be = [68 - S(t * 13) * 5, -12]; b.cab[0] = 4 + S(t * 2) * 3; b.tor[0] = 6; return b; },
+  esperar: (t) => { const b = respirar(poseBase(), t, 0.6); b.bd = [55, -38]; b.be = [55, -38]; b.tor[2] = S(t * 0.8) * 3; b.cab = [4 + S(t * 0.5) * 6, S(t * 0.37) * 25, 0]; return b; },
   segurar_grade: (t) => { const b = poseBase(); b.bd = [105 + S(t * 6) * 4, 8]; b.be = [105 - S(t * 6) * 4, 8]; b.cab[0] = -4; b.dx = S(t * 9) * 0.04; b.tor[0] = 4; return b; },
 };
 
@@ -126,7 +128,7 @@ export const ROSTO_DA_ACAO = { chorar: 'chorando', assustar: 'assustado', bravo:
   discursar: 'confiante', andar_confiante: 'confiante', acenar_multidao: 'sorriso', correr_medo: 'assustado', fugir: 'assustado',
   maos_pra_cima: 'assustado', implorar: 'triste', espiar: 'desconfiado', cochichar: 'malandro', comemorar_vitoria: 'rindo',
   rir: 'rindo', negar: 'desconfiado', cocar_cabeca: 'pensativo', desmaiar: 'morto', apertar_mao: 'sorriso', gritar: 'bravo', espreguicar: 'dormindo', comer: 'feliz', chutar: 'confiante',
-  atender: 'sorriso', rezar: 'dormindo', segurar_grade: 'triste' };
+  atender: 'sorriso', rezar: 'dormindo', segurar_grade: 'triste', jogar_pc: 'confiante', esperar: 'desconfiado' };
 
 /** Objetos que aparecem na mão automaticamente com a ação. */
 export const PROP_DA_ACAO = { celular: 'celular', digitar: 'celular', andar_celular: 'celular', entrevistar: 'microfone', filmar: 'filmadora',

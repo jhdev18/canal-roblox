@@ -57,6 +57,35 @@ delegacia (balcão + cela), bar (balcão, garrafas, TV no futebol, sinuca), post
 `rezar` para o banco da igreja; `segurar_grade` para dentro da cela; `deitar` para a maca do posto de saúde. Cenas seguidas sem `onde:` continuam no mesmo local.
 O motor esconde sozinho o que ficar entre a câmera e os atores (postes, árvores, figurantes); use `liberar_visao: false` para desligar.
 
+## Casa do protagonista (ambiente completo)
+
+Uma casa inteira de 2 andares (frente aberta, como set de filmagem): **térreo** garagem · sala · cozinha, **andar de cima** banheiro · quarto · quarto_pais.
+
+```yaml
+- onde: casa_protagonista
+  comodo: quarto              # quarto | quarto_pais | sala | cozinha | banheiro | garagem | vista
+  atores: [garoto jogar_pc]   # vai sozinho para a cadeira gamer, de frente para o PC
+- comodo: sala                # sem `onde:` continua na mesma casa
+  atores: [pai sentar, mae falar]
+- onde: casa_protagonista
+  comodo: vista               # a casa inteira em corte (casa de bonecas). Use cam: geral + dist: 2.6
+```
+Âncoras: quarto (`deitar`/`dormir` na cama, `sentar`/`jogar_pc` na cadeira gamer), quarto_pais (`deitar`/`dormir` na cama de casal),
+sala (`sentar` no sofá), cozinha (`sentar` na mesa, `cozinhar` no fogão, `lavar_louca` na pia). A câmera não sai do cômodo.
+
+## Filas
+
+`fila: 6` coloca 6 pessoas do elenco em fila (cada uma olhando para a da frente, esperando, mexendo no celular…)
+em lotérica, banco, mercado, padaria, farmácia e posto de saúde (por dentro). Forma longa: `fila: { n: 5, personagens: [idosa, gari], espaco: 2.5 }`.
+Dica: `cam: aberto` + `angulo: -55` mostra a fila de lado.
+
+```yaml
+- onde: loterica
+  dentro: true
+  fila: 6
+  atores: [cidada atender]
+```
+
 ## Campos da cena
 
 | campo | valores | padrão |
@@ -80,6 +109,8 @@ O motor esconde sozinho o que ficar entre a câmera e os atores (postes, árvore
 | `texto` | texto do outdoor (cidade), da estátua (praça) ou da fachada (prefeitura) | — |
 | `texto_palanque` / `palanque: false` | placa do palanque da prefeitura / remove o palanque | PREFEITURA |
 | `multidao` | figurantes gerados automaticamente (abaixo) | — |
+| `fila` | fila de pessoas em interiores com balcão/guichê (`fila: 6`) | — |
+| `comodo` | cômodo da `casa_protagonista` | quarto |
 
 ## Atores
 
@@ -126,7 +157,7 @@ Dica: em vídeo vertical, para mostrar muita gente use `cam: alto` + `dist: 2.8`
 **Ações:** parado, falar, andar, correr, acenar, celular, digitar, sentar, deitar, dormir, assustar, chorar, triste, bravo, comemorar, pular, apontar, abracar, olhar_redor, cair, dancar, pensar, socar, palmas, ajoelhar, empurrar, tremer,
 discursar, acenar_multidao, apertar_mao, continencia, andar_confiante, andar_celular, correr_medo, fugir, carregar, entrevistar, filmar, assinar, cochichar, maos_pra_cima, implorar, espiar, agachar, comemorar_vitoria, rir, negar, concordar, cocar_cabeca, girar, desmaiar,
 chutar, varrer, regar, gritar, bater_porta, espreguicar, cozinhar, comer, lavar_louca, pedir_silencio, sentar_chao, passear_cachorro,
-atender, pagar, rezar, segurar_grade
+atender, pagar, rezar, segurar_grade, jogar_pc, esperar
 
 **Rostos:** neutro, feliz, sorriso, rindo, malandro, desconfiado, triste, chorando, assustado, surpreso, bravo, dormindo, apaixonado, nervoso, morto, pensativo, confiante (+ qualquer `assets/rostos/<nome>.png`)
 
@@ -160,6 +191,7 @@ Campos: `pele, camisa, calca, rosto, extras, acessorios, roupa, cabelo_cor, esca
 
 arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, cadeira, cama, sofa, tv, computador, planta, presente, caixa_correio, cerca, porta, caixao, bolo,
 semaforo (`luz: verde`), onibus (`texto`), taxi, viatura, hidrante, lixeira, faixa_pedestre, loja (`texto`, `cor`), arranha_ceu, fonte, estatua (`texto`), bandeira (`cores`), palanque (`texto`), barraca, outdoor (`texto`), mesa_escritorio, poltrona, estante, quadro_parede (`texto`),
+**móveis de casa:** cadeira_gamer, guarda_roupa, cortina, cama_casal, criado_mudo, comoda, tapete, mesa_centro, escada, vaso_sanitario, pia_banheiro, box_chuveiro, porta_retrato, painel_ferramentas, luminaria, poster (`texto`),
 **móveis de interior:** balcao, prateleira, gondola, geladeira_vitrine, caixa_registradora, carrinho_compras, guiche (`numero`), banco_igreja, altar, cruz_parede, vitral, cela, sinuca, banqueta, prateleira_garrafas, tv_parede, estufa_paes, cadeiras_espera, maca, mesa_trabalho, arquivo, bebedouro, fila_cordao, mural (`texto`),
 **prédios da cidade pequena (fachada em z=0):** farmacia, loterica, padaria, mercado, agencia_bancaria, prefeitura, igreja, escola, posto_saude, delegacia, bar, posto_gasolina, coreto (todos aceitam `texto` para trocar o letreiro),
 casa_br / sobrado (`cor`, `telhado`, `grade: false`, `caixa_dagua: false`), muro (`largura`, `cor`, `portao_x`, `portao: false`), portao, cerca_viva, caixa_dagua, poste_fios, churrasqueira, piscina, varal, casinha_cachorro, cachorro / gato (`cor`), bicicleta, moto (`bau: true`), balanco, escorregador, trave, bola, geladeira, fogao, pia, armario, mesa_jantar, cadeira_plastico, saco_lixo, vaso_flor, lombada

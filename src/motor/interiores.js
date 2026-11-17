@@ -94,7 +94,7 @@ export const INTERIORES = {
     placa(g, 'FARMÁCIA', 6, 1.2, [0, 9.4, -7.7], { fundo: '#16a05d', corTexto: '#fff' });
     const cz = grupo([caixa(0.6, 1.8, 0.2, mat('#1fd16f', { emissive: '#1fd16f', emissiveIntensity: 0.8 })), caixa(1.8, 0.6, 0.2, mat('#1fd16f', { emissive: '#1fd16f', emissiveIntensity: 0.8 }))]); cz.position.set(-9, 9.4, -7.7); g.add(cz);
     luzTeto(g, -5, -1, n); luzTeto(g, 5, -1, n);
-    g.userData.ancoras = { atender: [0, 0, -5.0, 0] };
+    g.userData.ancoras = { atender: [0, 0, -5.0, 0], fila: { inicio: [0, -1.4], vira: 180, cresce: [-0.55, 1] } };
   },
   interior_loterica(o, g, r) { const n = o.hora === 'noite';
     sala(g, { parede: o.parede || '#e9eef7', chao: '#cfd6e4' }); g.add(caixa(26, 1.0, 0.2, '#1d4fa0', { pos: [0, 1.0, -7.7] }));
@@ -103,7 +103,7 @@ export const INTERIORES = {
     const m = MOVEIS.mural({ texto: 'PRÊMIO R$ 50 MILHÕES', largura: 7, altura: 2.2, cor: '#1d3b72', cor_texto: '#ffd23f' }); m.position.set(-8.5, 6.4, -7.6); g.add(m);
     add(g, 'fila_cordao', { n: 3 }, [-3.6, 0, 2.5]); add(g, 'bebedouro', {}, [11.5, 0, 0]);
     luzTeto(g, -5, -1, n); luzTeto(g, 5, -1, n);
-    g.userData.ancoras = { atender: [0, 0, -6.2, 0] };
+    g.userData.ancoras = { atender: [0, 0, -6.2, 0], fila: { inicio: [0, -2.4], vira: 180, cresce: [-0.7, 1] } };
   },
   interior_padaria(o, g, r) { const n = o.hora === 'noite';
     sala(g, { parede: o.parede || '#f3e2c0', chao: '#b98b5e' }); piso(g, 26, '#b98b5e', '#a67a50');
@@ -113,7 +113,7 @@ export const INTERIORES = {
     for (const x of [-7, 4]) { add(g, 'mesa', { largura: 3, cor: '#f2f3f3' }, [x, 0, 5]); add(g, 'cadeira_plastico', {}, [x - 2.2, 0, 5], 90); add(g, 'cadeira_plastico', {}, [x + 2.2, 0, 5], -90); }
     placa(g, 'PÃO QUENTINHO', 7, 1.1, [-3, 9.4, -7.7], { fundo: '#8a4a1f', corTexto: '#ffe9b0' });
     luzTeto(g, -5, -1, n); luzTeto(g, 5, -1, n);
-    g.userData.ancoras = { atender: [6.5, 0, -5.3, 0], sentar: [-9.0, 0, 5, 90] };
+    g.userData.ancoras = { atender: [6.5, 0, -5.3, 0], sentar: [-9.0, 0, 5, 90], fila: { inicio: [6.5, -1.6], vira: 180, cresce: [-0.3, 1] } };
   },
   interior_mercado(o, g, r) { const n = o.hora === 'noite';
     sala(g, { largura: 34, parede: o.parede || '#f2f3f3', chao: '#dfe2e6', profundo: 16 }); piso(g, 34, '#dfe2e6', '#cfd3d9', -16, 30);
@@ -123,7 +123,7 @@ export const INTERIORES = {
     add(g, 'carrinho_compras', {}, [-4, 0, 7], 30); add(g, 'carrinho_compras', {}, [5, 0, 8], -20);
     g.add(caixa(34, 1.2, 0.2, '#c4281c', { pos: [0, 9.6, -15.7] })); placa(g, 'MERCADO', 8, 1.0, [0, 9.6, -15.6], { fundo: '#c4281c', corTexto: '#fff' });
     for (const z of [-8, 2]) for (const x of [-10, 0, 10]) luzTeto(g, x, z, n);
-    g.userData.ancoras = { atender: [0, 0, 3.5, -90] };
+    g.userData.ancoras = { atender: [0, 0, 3.5, -90], fila: { inicio: [-2.0, 2.2], vira: 90, cresce: [-1, 0.25] } };
   },
   interior_banco(o, g, r) { const n = o.hora === 'noite';
     sala(g, { parede: o.parede || '#e3e5ea', chao: '#b8bcc6', altura: 12 }); piso(g, 26, '#b8bcc6', '#a9adb7');
@@ -134,7 +134,7 @@ export const INTERIORES = {
     g.add(cilindro(1.0, 1.0, 0.2, mat('#c9a24a', { metal: 0.8, rough: 0.3 }), { pos: [9.5, 3.0, -7.3], rot: [90, 0, 0], seg: 20 }));
     placa(g, 'BANCO', 5, 1.2, [-3, 10, -7.7], { fundo: '#1d3b72', corTexto: '#fff' });
     luzTeto(g, -5, -1, n); luzTeto(g, 5, -1, n);
-    g.userData.ancoras = { atender: [0, 0, -6.2, 0] };
+    g.userData.ancoras = { atender: [0, 0, -6.2, 0], fila: { inicio: [0, -2.4], vira: 180, cresce: [-0.7, 1] } };
   },
   interior_prefeitura(o, g, r) { const n = o.hora === 'noite';   // salão de atendimento/recepção da prefeitura
     sala(g, { parede: o.parede || '#efe9dc', chao: '#9b7b5a', altura: 12 }); g.add(caixa(10, 0.05, 20, '#7b1f2b', { pos: [0, 0.03, 0], sombra: false }));
@@ -167,7 +167,7 @@ export const INTERIORES = {
     placa(g, 'POSTO DE SAÚDE', 7, 1.0, [-5, 10.2, -7.7], { fundo: '#1e88e5', corTexto: '#fff' }); add(g, 'bebedouro', {}, [11.5, 0, -6]);
     const m = MOVEIS.mural({ texto: 'VACINE-SE!', largura: 4, altura: 2.4, cor: '#ffffff', cor_texto: '#e53935' }); m.position.set(0, 6, -7.6); g.add(m);
     luzTeto(g, -5, -1, n); luzTeto(g, 5, -1, n);
-    g.userData.ancoras = { atender: [-5, 0, -5.6, 0], sentar: [5.7, 0, -2.0, -90], deitar: [8, 2.35, -2.2, 0] };
+    g.userData.ancoras = { atender: [-5, 0, -5.6, 0], sentar: [5.7, 0, -2.0, -90], deitar: [8, 2.35, -2.2, 0], fila: { inicio: [-5, -1.6], vira: 180, cresce: [0.2, 1] } };
   },
   interior_delegacia(o, g, r) { const n = o.hora === 'noite';   // balcão, mesa do delegado e cela (grades de frente para a câmera)
     sala(g, { parede: o.parede || '#e2e5ea', chao: '#9aa0aa' }); g.add(caixa(26, 1.5, 0.2, '#1d3b72', { pos: [0, 0.75, -7.7] }));

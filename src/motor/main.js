@@ -38,7 +38,7 @@ function iniciar(c) {
 }
 
 /** Posição base de cada ator (auto-distribui quem não tem x). */
-const ANCORA_DA_ACAO = { deitar: 'deitar', dormir: 'deitar', sentar: 'sentar', discursar: 'discursar', assinar: 'assinar', cozinhar: 'cozinhar', lavar_louca: 'lavar_louca', atender: 'atender', rezar: 'rezar', segurar_grade: 'segurar_grade' };
+const ANCORA_DA_ACAO = { deitar: 'deitar', dormir: 'deitar', sentar: 'sentar', discursar: 'discursar', assinar: 'assinar', cozinhar: 'cozinhar', lavar_louca: 'lavar_louca', atender: 'atender', rezar: 'rezar', segurar_grade: 'segurar_grade', jogar_pc: 'jogar_pc' };
 function posicoes(atores, ancoras = {}) {
   const usadas = {};
   const semX = atores.filter(a => a.x === undefined && !(ancoras[ANCORA_DA_ACAO[a.acao]] && a.y === undefined)); const n = semX.length;
@@ -65,7 +65,7 @@ function posNoTempo(a, t) { // posição da raiz do ator no tempo t (sem tocar n
 async function montar(c) {
   if (atual) { cena.remove(atual.raiz); }
   const raiz = new THREE.Group(); cena.add(raiz);
-  const cen = construirCenario(c.cenario, { local: c.local, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque });
+  const cen = construirCenario(c.cenario, { local: c.local, comodo: c.comodo, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque });
   raiz.add(cen.grupo);
   cena.background = cor(cen.ceu); cena.fog = new THREE.Fog(cor(cen.ceu), cen.nevoa[0], cen.nevoa[1]);
   const sr = cen.sombra || 35; Object.assign(sol.shadow.camera, { left: -sr, right: sr, top: sr, bottom: -sr, far: 120 + sr * 2 }); sol.shadow.camera.updateProjectionMatrix();
@@ -81,7 +81,7 @@ async function montar(c) {
     const pet = petTipo ? criarProp({ tipo: petTipo, cor: a.pet_cor }) : null; if (pet) raiz.add(pet);
     return { ...a, ator: p, base: bases[i], pet };
   });
-  if (c.multidao) for (const f of criarMultidao(c.multidao, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); atores.push(f); }
+  if (c.multidao) for (const f of criarMultidao({ ...c.multidao, ancoraFila: cen.ancoras.fila }, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); atores.push(f); }
   const prin = atores.filter(a => !a.figurante).map(a => a.base.x);
   const xs = prin; const espalha = xs.length > 1 ? Math.max(...xs) - Math.min(...xs) : 0;
   atual = { c, raiz, atores, cen, dur: c.dur, espalha, nquadros: Math.max(1, Math.round(c.dur * cfg.fps)) };
@@ -108,7 +108,7 @@ function criarMultidao(m, seed) {
   const r = rng('multidao' + seed + (m.seed || '')); const n = Math.min(m.n ?? 12, 40);
   const [x0, x1, z0, z1] = m.area || [-10, 10, -9, -4];
   const modo = m.modo || 'espalhado', livre = m.livre ?? 0;
-  const acoes = [].concat(m.acao || (modo === 'grupos' ? CONVERSA : modo === 'passantes' ? ['andar', 'andar', 'andar_celular', 'passear_cachorro', 'andar'] : ['parado', 'palmas', 'acenar', 'comemorar']));
+  const acoes = [].concat(m.acao || (modo === 'fila' ? ['esperar', 'parado', 'celular', 'esperar', 'olhar_redor', 'cocar_cabeca'] : modo === 'grupos' ? CONVERSA : modo === 'passantes' ? ['andar', 'andar', 'andar_celular', 'passear_cachorro', 'andar'] : ['parado', 'palmas', 'acenar', 'comemorar']));
   const specs = [...(m.specs || [])].sort(() => r() - 0.5);
   const evitar = (x, z) => Math.hypot(x, z) < livre || (m.evitar || []).some(([ex, ez, er]) => Math.hypot(x - ex, z - ez) < er);
   const ocupados = []; const minimo = m.espaco ?? (modo === 'grupos' ? 7 : 2.8);
@@ -120,6 +120,11 @@ function criarMultidao(m, seed) {
     while (lugares.length < n) { const pt = ponto(); if (!pt) break; const [cx, cz] = pt; const k = Math.min(n - lugares.length, 2 + Math.floor(r() * 3)); const g0 = r() * 6.28;
       for (let j = 0; j < k; j++) { const a = g0 + j / k * 6.28 + r.entre(-0.3, 0.3), rr = k === 2 ? 1.5 : 2.0;
         const x = cx + Math.sin(a) * rr, z = cz + Math.cos(a) * rr; lugares.push({ x, z, vira: Math.atan2(cx - x, cz - z) * 180 / Math.PI }); } }
+  } else if (modo === 'fila') { // uma pessoa atrás da outra, cada uma olhando para a da frente
+    const F = { inicio: [0, -2.2], vira: 180, cresce: [0, 1], ...(m.ancoraFila || {}), ...(m.inicio ? { inicio: m.inicio } : {}), ...(m.cresce ? { cresce: m.cresce } : {}) };
+    const L = Math.hypot(...F.cresce) || 1, dx = F.cresce[0] / L, dz = F.cresce[1] / L, esp = m.espaco ?? 2.3;
+    for (let i = 0; i < n; i++) { const curva = Math.sin(i * 0.9) * 0.35; const x = F.inicio[0] + dx * esp * i + dz * curva, z = F.inicio[1] + dz * esp * i - dx * curva;
+      const px = i === 0 ? null : lugares[i - 1]; lugares.push({ x, z, vira: px ? Math.atan2(px.x - x, px.z - z) * 180 / Math.PI : F.vira }); }
   } else if (modo === 'passantes') {
     for (let i = 0; i < n; i++) { const lado = r() < 0.5 ? -1 : 1, faixa = m.faixas || [[x0, x0 + 2.5], [x1 - 2.5, x1]];
       const fx = faixa[lado < 0 ? 0 : 1]; let ok = null;
@@ -177,7 +182,8 @@ function liberarVisao() {
     posar(t); cena.updateMatrixWorld(true);
     for (const o of raizCen.children) { // objetos colados na lente (copas de árvore, postes) também saem
       if (escondidos.has(o)) continue; caixa.setFromObject(o).getSize(tam);
-      if (Math.max(tam.x, tam.z) <= 45 && caixa.distanceToPoint(cam.position) < 3.5) { o.visible = false; escondidos.add(o); }
+      const temAtor = alvos.some(a => { const b = a.ator.raiz.getWorldPosition(new THREE.Vector3()); return caixa.containsPoint(b) || caixa.distanceToPoint(b) < 2.6; });
+      if (!temAtor && Math.max(tam.x, tam.z) <= 45 && caixa.distanceToPoint(cam.position) < 3.5) { o.visible = false; escondidos.add(o); }
     }
     for (const a of alvos) {
       a.ator.raiz.updateMatrixWorld(true); const base = a.ator.raiz.getWorldPosition(new THREE.Vector3());
