@@ -54,7 +54,7 @@ function fachadaDetalhes(fr, o, w, h, P, n) {
   for (const s of [-1, 1]) fr.add(caixa(0.3, 6.3, 0.3, base, { pos: [P.x + s * (P.w / 2 + 0.25), 3.3, 0.25] }));
   if (o.letreiro) { const t = placaTexto(o.letreiro.texto, Math.min(mw + 1, w - 2), 0.85, { fundo: o.letreiro.fundo, corTexto: o.letreiro.cor || '#fff', emissivo: n });
     t.position.set(P.x, 7.45, 0.45); fr.add(t); }                                                                                // placa na altura do olhar (a do alto continua)
-  for (const v of o.vitrines || []) { fr.add(caixa(v.w + 0.4, 0.25, 0.5, base, { pos: [v.x, 0.8, 0.3] })); fr.add(caixa(v.w + 0.4, 0.25, 0.35, base, { pos: [v.x, 5.9, 0.25] })); }   // peitoril e verga
+  for (const v of o.vitrines || []) { fr.add(caixa(v.w + 0.4, 0.25, 0.5, base, { pos: [v.x, (v.y0 ?? 0.9) - 0.1, 0.3] })); fr.add(caixa(v.w + 0.4, 0.25, 0.35, base, { pos: [v.x, (v.y1 ?? 5.8) + 0.1, 0.25] })); }   // peitoril e verga
 }
 
 /**
@@ -79,11 +79,11 @@ function mapaInterior(w0, d0, h0, w, d, h) {
 function predioOco(o0, ctx) {
   const { n, unidades, portas, foco } = ctx, g = new THREE.Group();
   const [w, d, h] = o0.tam || [o0.w, o0.d, o0.h], M = mapaInterior(o0.w, o0.d, o0.h, w, d, h);
-  const o = { ...o0, porta: o0.porta && { ...o0.porta, x: M.x(o0.porta.x) }, vitrines: (o0.vitrines || []).map(v => ({ x: M.x(v.x), w: v.w * Math.min(1.5, w / o0.w) })),
+  const o = { ...o0, porta: o0.porta && { ...o0.porta, x: M.x(o0.porta.x) }, vitrines: (o0.vitrines || []).map(v => ({ x: M.x(v.x), w: v.w * Math.min(1.5, w / o0.w), y0: v.janela ? 3.0 : 0.9, y1: v.janela ? 6.6 : 5.8 })),   // janela: peitoril na cintura; vitrine: do joelho até acima da cabeça
     janelas: o0.janelas && { fundo: (o0.janelas.fundo || []).map(M.x), esq: (o0.janelas.esq || []).map(M.z), dir: (o0.janelas.dir || []).map(M.z) } };
   g.add(caixa(w - 0.2, 0.2, d - 0.2, o.piso || '#d9d4c8', { pos: [0, 0.1, -d / 2] }));                                  // piso (topo em 0.2)
   const P = o.porta || { x: 0, w: 2.4 };
-  const fr = parede(w, h, o.cor, [{ x: P.x, w: P.w + 0.2, y0: 0, y1: 6.3 }, ...(o.vitrines || []).map(v => ({ x: v.x, w: v.w, y0: 0.9, y1: 5.8, vidro: true }))], n);   // vitrine: do joelho até acima da cabeça
+  const fr = parede(w, h, o.cor, [{ x: P.x, w: P.w + 0.2, y0: 0, y1: 6.3 }, ...(o.vitrines || []).map(v => ({ x: v.x, w: v.w, y0: v.y0 ?? 0.9, y1: v.y1 ?? 5.8, vidro: true }))], n);
   fr.position.set(0, 0, -0.2); const dp = porta(P.w, 6.2, P.cor || '#7a4b2a', P.vidro, portas); dp.position.set(P.x - P.w / 2, 0.2, 0); fr.add(dp);
   dp.position.z = 0.0;
   if (o.faixa) fr.add(caixa(w + 0.06, 0.5, 0.12, o.faixa, { pos: [0, h - 1.1, 0.25] }));
@@ -208,7 +208,7 @@ const PREDIOS_MUNDO = {
       for (const z of [-9, -15]) for (const s of [-1, 1]) por(gi, 'castical', {}, [s * 6.4, 0.2, z], 0, 0.8);
       return { rezar: [-3.6, 0.2, -6.6, 0], sentar: [-3.6, 0.2, -6.6, 0], atender: [0, 1.2, -21.6, 0] }; } },
   escola: { tam: [30, 20, 11], w: 20, d: 12, h: 8, cor: '#f5e6b8', faixa: '#1e6fd9', piso: '#b99a72', letreiro: { texto: 'ESCOLA MUNICIPAL', fundo: '#1e6fd9', largura: 12 }, porta: { x: -7, w: 2.6 },
-    vitrines: [{ x: -2, w: 2.6 }, { x: 3, w: 2.6 }, { x: 8, w: 2.6 }],
+    vitrines: [{ x: -2.5, w: 3, janela: true }, { x: 2, w: 3, janela: true }, { x: 6.5, w: 3, janela: true }], janelas: { esq: [-3.5, -8.5], dir: [-3.5, -8.5] },
     interior(gi) { gi.add(caixa(10, 3.5, 0.2, '#24553b', { pos: [0, 4.5, -11.6] })); gi.add(caixa(10.4, 3.9, 0.15, '#7c5c46', { pos: [0, 4.5, -11.7] }));
       por(gi, 'mesa', { largura: 4, cor: '#7c5c46' }, [-5, 0.2, -9]);
       for (const z of [-6, -2.8]) for (const x of [-4, 0, 4, 8]) { por(gi, 'carteira', {}, [x, 0.2, z]); por(gi, 'cadeira', { cor: '#2a5bd7' }, [x, 0.2, z + 1.5], 180); }
