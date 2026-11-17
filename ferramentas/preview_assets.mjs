@@ -76,7 +76,9 @@ const CATEGORIAS = {
   props: () => cat.props.map(n => { const G = { casa: [3, 1], predio: [9, 1.6], poste: [3, 1], arvore: [3, 1], pinheiro: [3, 1], carro: [-0.5, 1], taxi: [-0.5, 1], viatura: [-0.5, 1],
       onibus: [0, 1.5], arranha_ceu: [20, 2.8], bandeira: [3, 1.1], outdoor: [6, 1.2], semaforo: [2.5, 0.9], loja: [1.5, 1.2], palanque: [0, 0.9], estante: [1, 0.8], fonte: [0, 0.9], estatua: [1.5, 0.9], barraca: [0, 0.9],
       casa_br: [3, 1], sobrado: [5, 1.2], muro: [0, 0.7], balanco: [1, 0.8], escorregador: [0, 0.7], trave: [0, 0.8], geladeira: [0, 0.6], churrasqueira: [0, 0.6], poste_fios: [3, 1], piscina: [-2, 0.8], varal: [0, 0.6] }[n];
-    return { nome: n, cena: { ...FUNDO, camera: G ? 'geral' : 'medio', angulo: 30, altura: G ? G[0] : -1.5, dist: G ? G[1] : undefined, props: [{ tipo: n }], atores: [] } }; }),
+    const Y = { ventilador_teto: 4.2, placa_suspensa: 3.2, relogio_parede: 2.6, mural: 2.6, quadro_parede: 2.8, poster: 2.4, tv_parede: 2.6, cruz_parede: 3.4, vitral: 3.2, cortina: 4, porta_retrato: 2.2 }[n];   // objetos de parede/teto: no ar, onde ficam de verdade
+    const CHAO = ['faixa_pedestre', 'lombada', 'placa_lateral', 'tapete'].includes(n);   // rentes ao chão: câmera mais alta
+    return { nome: n, cena: { ...FUNDO, camera: G || CHAO ? 'geral' : 'medio', angulo: 30, altura: CHAO ? 6 : G ? G[0] : -1.5, dist: CHAO ? 0.6 : G ? G[1] : undefined, props: [{ tipo: n, y: Y }], atores: [] } }; }),
 };
 
 function pagina(titulo, itens, colunas) {
