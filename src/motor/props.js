@@ -228,7 +228,31 @@ export const NOMES_PROPS = Object.keys(PROPS);
 /** Outros módulos (ex.: cidade.js) registram props aqui; a lista de nomes acompanha. */
 export function registrarProps(obj) {
   for (const k of Object.keys(obj)) if (PROPS[k]) throw new Error(`prop "${k}" já existe: escolha outro nome`);
-  Object.assign(PROPS, obj); NOMES_PROPS.splice(0, NOMES_PROPS.length, ...Object.keys(PROPS)); }
+  Object.assign(PROPS, obj); NOMES_PROPS.splice(0, NOMES_PROPS.length, ...Object.keys(PROPS)); marcarAssentos(); }
+
+/**
+ * Assentos de cada móvel (coordenadas locais [x, y, z, vira]): onde fica a raiz de quem usa `sentar` nele.
+ * O cenário junta todos os assentos e cada personagem sentado pega um livre (ver `assentosDe`).
+ */
+const ASSENTOS = {
+  cadeira: () => [[0, 0, 0.2, 0]], cadeira_plastico: () => [[0, 0, 0.2, 0]], poltrona: () => [[0, 0, 0.3, 0]],
+  sofa: () => [[-1.4, 0, 0.3, 0], [1.4, 0, 0.3, 0]], banco: () => [[-1.0, 0.1, 0.1, 0], [1.0, 0.1, 0.1, 0]],
+  cadeiras_espera: (o = {}) => Array.from({ length: o.n || 4 }, (_, i) => [(i - ((o.n || 4) - 1) / 2) * 2.2, 0, 0.1, 0]),
+  banco_igreja: (o = {}) => { const w = o.largura || 7, k = Math.max(1, Math.floor(w / 2.2)); return Array.from({ length: k }, (_, i) => [(i - (k - 1) / 2) * 2.2, 0.1, -0.1, 0]); },
+  banqueta: () => [[0, 1.7, 0, 180]],
+};
+function marcarAssentos() {
+  for (const [k, f] of Object.entries(ASSENTOS)) { const orig = PROPS[k]; if (!orig || orig._assentos) continue;
+    PROPS[k] = (o = {}) => { const g = orig(o); g.userData.assentos = f(o); return g; }; PROPS[k]._assentos = true; }
+}
+marcarAssentos();
+/** Todos os assentos dentro de `raiz`, em coordenadas de `raiz` ([x, y, z, vira em graus]). */
+export function assentosDe(raiz) {
+  raiz.updateMatrixWorld(true); const inv = raiz.matrixWorld.clone().invert(), out = [], v = new THREE.Vector3(), q = new THREE.Quaternion(), e = new THREE.Euler();
+  raiz.traverse(o => { if (!o.userData.assentos || o.userData.oculto) return; const m = inv.clone().multiply(o.matrixWorld); q.setFromRotationMatrix(m); e.setFromQuaternion(q, 'YXZ');
+    for (const [x, y, z, vr] of o.userData.assentos) { v.set(x, y, z).applyMatrix4(m); out.push([v.x, v.y, v.z, e.y * 180 / Math.PI + vr]); } });
+  return out;
+}
 
 /** Casa brasileira: telhado de telha em duas águas, grade na janela, caixa d'água opcional. andares = 1 ou 2. */
 function casaBR(o, andares) {

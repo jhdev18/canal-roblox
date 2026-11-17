@@ -5,7 +5,7 @@
 // Roteiro: `onde: mundo` + `local: farmacia` (+ `dentro: true`) · `local: casa` + `comodo: quarto` · `local: vista`.
 import * as THREE from 'three';
 import { caixa, cilindro, esfera, plano, grupo, mat, rng } from './util.js';
-import { PROPS, placaTexto } from './props.js';
+import { PROPS, placaTexto, assentosDe } from './props.js';
 
 const RAD = Math.PI / 180;
 const VIDRO = (n) => new THREE.MeshStandardMaterial({ color: n ? 0xffe3a3 : 0xcfeaff, transparent: true, opacity: n ? 0.6 : 0.28, roughness: 0.05,
@@ -35,6 +35,13 @@ function porta(w, h, cor, vidro, portas) {
 function luzInterna(g, x, z, h, n, forca = 1, alc = 30) { const l = new THREE.PointLight(0xfff2dd, (n ? 70 : 45) * forca, alc, 1.4); l.position.set(x, h - 1.0, z); g.add(l);
   g.add(caixa(2.2, 0.12, 2.2, mat('#ffffff', { emissive: '#ffffff', emissiveIntensity: 1.3 }), { pos: [x, h - 0.08, z], sombra: false })); }
 const por = (g, tipo, o, pos, vira = 0, esc) => { const p = PROPS[tipo](o); p.position.set(...pos); p.rotation.y = vira * RAD; if (esc) p.scale.setScalar(esc); g.add(p); return p; };
+
+/** `sentar` (e `rezar`) passam a ser a lista de assentos reais, do mais perto do ponto principal ao mais longe: cada pessoa pega um livre. */
+function usarAssentos(anc, lista, zc) {
+  if (!lista.length) return;
+  for (const k of ['sentar', 'rezar']) { if (k === 'rezar' && !anc.rezar) continue; const ref = anc[k] || [0, 0, zc];
+    anc[k] = lista.slice().sort((a, b) => Math.hypot(a[0] - ref[0], a[2] - ref[2]) - Math.hypot(b[0] - ref[0], b[2] - ref[2])); }
+}
 
 /**
  * Interiores foram desenhados num tamanho menor (w0,d0,h0); aqui vão para o tamanho novo (w,d,h) sem esticar os móveis:
@@ -80,6 +87,7 @@ function predioOco(o0, ctx) {
   else teto.add(caixa(w - 0.6, 0.05, d - 0.6, '#8f939c', { pos: [0, h + 0.33, -d / 2] }));
   g.add(unidade(teto, unidades));
   const gi = new THREE.Group(); g.add(gi); g.userData.ancoras = M.ancoras(o.interior?.(gi, { w: o0.w, d: o0.d, h: o0.h, n }) || {}); M.objetos(gi);   // desenhado no tamanho antigo, espalhado no novo
+  usarAssentos(g.userData.ancoras, assentosDe(gi), -d / 2);
   if (foco) { const grande = Math.max(w, d) > 26; luzInterna(gi, 0, -d / 2, h, n, (o.luz || 1) * (grande ? 1.1 : 1.25), Math.max(30, Math.max(w, d) * 1.3));
     if (grande) luzInterna(gi, 0, -d * (w > d ? 0.5 : 0.22), h, n, 0.8, Math.max(w, d)); }
   g.userData.d = d; g.userData.w = w; g.userData.h = h; return g;
@@ -233,6 +241,7 @@ function casaProtagonista(ctx) {
   if (foco) { const [x, z] = COMODOS_MUNDO[ctx.comodo || 'sala']; luzInterna(g, x, z, h, n, 1.1); }   // só a luz do cômodo da cena (cada luz pesa no render)
   g.userData.ancoras = { sentar: [-7.4, 0.2, -8.4, 0], cozinhar: [10.4, 0.2, -5, 90], lavar_louca: [10.4, 0.2, -8.2, 90], deitar: [-11.1, 1.65, -13.2, 0], dormir: [-11.1, 1.65, -13.2, 0],
     jogar_pc: [-6.7, 0.7, -14, 90], deitar_pais: [6.8, 1.65, -13.4, 0] };
+  usarAssentos(g.userData.ancoras, assentosDe(g), -5);
   return g;
 }
 
@@ -458,8 +467,9 @@ export function enquadrarMundo(g, { local, dentro, comodo }) {
   if (lote) for (const [k, v] of Object.entries(ancLocal)) {
     if (k === 'fila') { const [ix, iz] = rot(v.inicio[0], v.inicio[1], lote.rot * RAD); const [mx, mz] = [lote.f[0] + ix - S[0], lote.f[1] + iz - S[1]]; const [fx, fz] = rot(mx, mz, th);
       const [cx, cz] = rot(...rot(v.cresce[0], v.cresce[1], lote.rot * RAD), th); ancoras.fila = { inicio: [fx, fz], vira: v.vira + lote.rot - r, cresce: [cx, cz] }; continue; }
-    const [ax, az] = rot(v[0], v[2], lote.rot * RAD); const [fx, fz] = rot(lote.f[0] + ax - S[0], lote.f[1] + az - S[1], th);
-    ancoras[k === 'deitar_pais' ? 'deitar_pais' : k] = [fx, (v[1] ?? 0) + 0.2 - chao + 0.0, fz, (v[3] ?? 0) + lote.rot - r];
+    const um = (p) => { const [ax, az] = rot(p[0], p[2], lote.rot * RAD); const [fx, fz] = rot(lote.f[0] + ax - S[0], lote.f[1] + az - S[1], th);
+      return [fx, (p[1] ?? 0) + 0.2 - chao, fz, (p[3] ?? 0) + lote.rot - r]; };
+    ancoras[k] = Array.isArray(v[0]) ? v.map(um) : um(v);
   }
   return { ancoras };
 }

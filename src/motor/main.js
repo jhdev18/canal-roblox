@@ -40,10 +40,14 @@ function iniciar(c) {
 /** Posição base de cada ator (auto-distribui quem não tem x). */
 const ANCORA_DA_ACAO = { deitar: 'deitar', dormir: 'deitar', sentar: 'sentar', discursar: 'discursar', assinar: 'assinar', cozinhar: 'cozinhar', lavar_louca: 'lavar_louca', atender: 'atender', rezar: 'rezar', segurar_grade: 'segurar_grade', jogar_pc: 'jogar_pc' };
 function posicoes(atores, ancoras = {}) {
-  const usadas = {};
+  const usadas = {}, ocupados = new Set();
   const semX = atores.filter(a => a.x === undefined && !(ancoras[ANCORA_DA_ACAO[a.acao]] && a.y === undefined)); const n = semX.length;
   return atores.map(a => {
     const anc = ancoras[ANCORA_DA_ACAO[a.acao]];
+    if (anc && a.y === undefined && Array.isArray(anc[0])) { // lista de assentos reais: pega o primeiro livre
+      const p = anc.find(q => !ocupados.has(q.join())) || anc[0]; ocupados.add(p.join());
+      return { x: p[0], y: p[1], z: p[2], vira: p[3] ?? 0 };
+    }
     if (anc && a.y === undefined) { // vai sozinho para a cama/sofá do cenário (y explícito no roteiro = posição manual)
       const k = usadas[a.acao] = (usadas[a.acao] ?? -1) + 1;
       const v = anc[3] ?? 0, passo = a.acao === 'sentar' ? k * 2.2 : 0;

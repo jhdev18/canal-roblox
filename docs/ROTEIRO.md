@@ -61,6 +61,7 @@ praca, coreto, fonte, parquinho, estatua, rua_bairro, campinho (campo de futebol
 - **Paredes e tetos somem sozinhos** quando ficam entre a câmera e o ator (vista em corte), e voltam depois. Com `foco:`, só o ator em foco abre o corte.
 - Dentro da casa, os móveis dos outros cômodos ficam escondidos para não atrapalhar a câmera.
 - Todas as âncoras continuam funcionando (`atender`, `fila: N`, `rezar`, `segurar_grade`, `sentar`, `deitar`, `jogar_pc`, `cozinhar`…).
+- **Assentos de verdade:** no mundo, `sentar` e `rezar` usam os assentos reais (cadeiras, carteiras, cadeiras de espera, bancos da igreja e da praça, sofá, poltrona, banquetas). Cada personagem pega o assento livre mais perto do ponto principal; vários sentados não se sobrepõem.
 
 ## Cidade pequena (cenários separados, versão anterior)
 
