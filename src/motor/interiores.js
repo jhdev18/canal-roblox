@@ -127,6 +127,14 @@ export const MOVEIS = {
     return g; },   // bancos dos dois lados (assentos de frente um para o outro)
   globo: () => grupo([cilindro(0.5, 0.6, 0.2, '#7c5c46', { pos: [0, 0.1, 0], seg: 14 }), cilindro(0.06, 0.06, 0.6, '#c9a24a', { pos: [0, 0.4, 0], seg: 6 }), esfera(0.6, '#1e88e5', { pos: [0, 1.25, 0] }),
     esfera(0.35, '#43a047', { pos: [0.3, 1.4, 0.32], sombra: false }), esfera(0.3, '#43a047', { pos: [-0.35, 1.05, 0.3], sombra: false })]),   // em cima da mesa
+  // --- delegacia ---
+  banco_cela: (o = {}) => { const w = o.largura || 3.8; return grupo([caixa(w, 0.3, 1.3, o.cor || '#9aa0aa', { pos: [0, 0.95, 0] }), caixa(w - 0.2, 0.15, 1.2, '#4f6f8f', { pos: [0, 1.15, 0.02] }),
+    caixa(0.3, 0.8, 1.2, '#7a7d85', { pos: [-w / 2 + 0.3, 0.4, 0] }), caixa(0.3, 0.8, 1.2, '#7a7d85', { pos: [w / 2 - 0.3, 0.4, 0] })]); },   // banco de concreto com colchonete
+  luminaria_pendente: () => grupo([cilindro(0.03, 0.03, 2.6, '#333', { pos: [0, -1.3, 0], seg: 6, sombra: false }), cilindro(0.35, 1.0, 0.8, '#2b2b2b', { pos: [0, -2.9, 0], seg: 14 }),
+    esfera(0.3, mat('#fff3d6', { emissive: '#ffd27a', emissiveIntensity: 2.0 }), { pos: [0, -3.25, 0], sombra: false })]),   // pos = ponto no teto
+  espelho_falso: (o = {}) => { const w = o.largura || 5; return grupo([caixa(w + 0.4, 3.4, 0.15, '#5a5d66'), caixa(w, 3.0, 0.18, mat('#1c2430', { rough: 0.05, metal: 0.8 }), { sombra: false })]); },   // vidro da sala de interrogatório (na parede)
+  camera_seguranca: () => grupo([caixa(0.3, 0.3, 0.6, '#d8dde3', { pos: [0, 0, 0.3] }), caixa(0.5, 0.5, 1.0, '#e9ebef', { pos: [0, -0.3, 0.8], rot: [20, 0, 0] }),
+    cilindro(0.15, 0.15, 0.1, mat('#111', { emissive: '#ff2020', emissiveIntensity: 0.5 }), { pos: [0, -0.48, 1.3], rot: [110, 0, 0], seg: 10, sombra: false })]),   // presa na parede (frente em +Z)
   // --- posto de saúde ---
   leito: (o = {}) => { const c = '#d8dde3', g = grupo([caixa(3.2, 0.35, 7, c, { pos: [0, 1.6, 0] }), caixa(3.0, 0.55, 6.8, '#f2f3f3', { pos: [0, 2.05, 0] }),
       caixa(2.2, 0.4, 1.2, '#ffffff', { pos: [0, 2.5, -2.8], round: 0.15 }), caixa(3.05, 0.6, 3.6, o.cor || '#7fb8d8', { pos: [0, 2.1, 1.5] }),

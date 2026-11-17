@@ -241,7 +241,8 @@ const ASSENTOS = {
   banco_igreja: (o = {}) => { const w = o.largura || 7, k = Math.max(1, Math.floor(w / 2.2)); return Array.from({ length: k }, (_, i) => [(i - (k - 1) / 2) * 2.2, 0.1, -0.1, 0]); },
   banqueta: () => [[0, 1.7, 0, 180]],
   mesa_refeitorio: (o = {}) => { const k = Math.floor((o.largura || 7) / 2.2); return [-1, 1].flatMap(s => Array.from({ length: k }, (_, i) => [(i - (k - 1) / 2) * 2.2, 0.05, s * 1.95, s > 0 ? 180 : 0])); },
-  leito: () => [[0, 1.3, -1.0, 0]],   // sentado na cama, encostado na cabeceira, pernas sobre o colchão
+  leito: () => [[0, 1.3, -1.0, 0]],
+  banco_cela: (o = {}) => [[-0.95, 0.15, 0.15, 0], [0.95, 0.15, 0.15, 0]],   // sentado na cama, encostado na cabeceira, pernas sobre o colchão
 };
 function marcarAssentos() {
   for (const [k, f] of Object.entries(ASSENTOS)) { const orig = PROPS[k]; if (!orig || orig._assentos) continue;

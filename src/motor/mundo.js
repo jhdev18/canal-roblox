@@ -114,7 +114,8 @@ function montarComodos(gi, o, ctx) {
   let frente = Infinity;
   if (alvo) { const [px, pz] = C[alvo].ponto; frente = (C[alvo].r.find(r => em(px, pz, r)) || C[alvo].r[0])[2]; }
   const esconder = (k) => !!(alvo && k && k !== alvo && fundoDe(k) >= frente - 0.01);   // cômodo inteiro na frente do cômodo da cena
-  const marcar = (p, k) => { p.userData.movel = true; p.userData.comodo = k; unidade(p, unidades); if (esconder(k)) p.userData.oculto = true; return p; };
+  const VAZADOS = new Set(['cela']);   // grades: dá para ver através, então nunca entram no corte
+  const marcar = (p, k, tipo) => { p.userData.movel = true; p.userData.comodo = k; if (!VAZADOS.has(tipo)) unidade(p, unidades); if (esconder(k)) p.userData.oculto = true; return p; };
   // pisos de cada cômodo
   for (const c of Object.values(C)) if (c.piso) for (const [x0, x1, z0, z1] of c.r) gi.add(caixa(x1 - x0, 0.02, z0 - z1, c.piso, { pos: [(x0 + x1) / 2, 0.21, (z0 + z1) / 2], sombra: false }));
   // paredes internas (ao longo de X com `z:`, ao longo de Z com `x:`)
@@ -131,7 +132,7 @@ function montarComodos(gi, o, ctx) {
     gi.add(unidade(pa, unidades));
   }
   // móveis
-  const por = (tipo, op, pos, vira = 0, esc) => { const p = PROPS[tipo](op); p.position.set(...pos); p.rotation.y = vira * RAD; if (esc) p.scale.setScalar(esc); gi.add(p); return marcar(p, qual(pos[0], pos[2])); };
+  const por = (tipo, op, pos, vira = 0, esc) => { const p = PROPS[tipo](op); p.position.set(...pos); p.rotation.y = vira * RAD; if (esc) p.scale.setScalar(esc); gi.add(p); return marcar(p, qual(pos[0], pos[2]), tipo); };
   const solto = (obj) => { gi.add(obj); return marcar(obj, qual(obj.position.x, obj.position.z)); };
   const todas = o.mobilia({ por, solto, n }) || {};
   if (!alvo) return { ancoras: {}, alvo };
@@ -327,15 +328,57 @@ const PREDIOS_MUNDO = {
         sala_exames: { atender: [8.4, 0.2, -23.2, 0], deitar: [10.6, 3.05, -26.0, 90] },
         enfermaria: { sentar: [0, 1.5, -37.2, 0], deitar: [0, 3.0, -33.3, 0] },
       }; } },
-  delegacia: { tam: [18, 18, 10], w: 12, d: 12, h: 7, cor: '#e9ebef', faixa: '#1d3b72', piso: '#9aa0aa', letreiro: { texto: 'DELEGACIA', fundo: '#1d3b72' }, porta: { x: 2.5, w: 2.6, vidro: true }, vitrines: [{ x: -3, w: 2.4 }],
-    interior(gi) { por(gi, 'balcao', { largura: 4, cor: '#5a5d66' }, [2.5, 0.2, -5.5]); por(gi, 'cela', { largura: 5 }, [-3.2, 0.2, -7.4]); gi.add(caixa(0.3, 7, 4.4, '#cfd3da', { pos: [-0.6, 3.6, -9.6] }));
-      por(gi, 'mesa_trabalho', {}, [3.5, 0.2, -9.6], 0);
-      por(gi, 'arquivo', {}, [5.2, 0.2, -11.0], 0); por(gi, 'cadeira', { cor: '#1d3b72' }, [2.6, 0.2, -10.9], 0); por(gi, 'cadeiras_espera', { n: 3, cor: '#5a5d66' }, [-5.2, 0.2, -3.5], 90);
-      por(gi, 'mural', { texto: 'PROCURADOS', largura: 3.4, altura: 2.2, cor: '#f5e6b8', cor_texto: '#c4281c' }, [5.75, 4.6, -3.5], -90); por(gi, 'bandeira', {}, [0.7, 0.2, -11.2], 0, 0.6);
-      gi.add(grupo([caixa(3.6, 0.3, 1.2, '#7a7d85', { pos: [-3.2, 1.3, -11.2] }), caixa(0.3, 1.2, 1.2, '#5a5d66', { pos: [-4.8, 0.6, -11.2] }), caixa(0.3, 1.2, 1.2, '#5a5d66', { pos: [-1.6, 0.6, -11.2] })]));   // banco da cela
-      por(gi, 'extintor', {}, [0.4, 0.2, -0.7], 180); por(gi, 'relogio_parede', {}, [5.75, 5.5, -8], -90); por(gi, 'ventilador_teto', {}, [2.5, 7.2, -3]);
-      por(gi, 'computador', {}, [2.0, 1.2, -5.7], 180);
-      return { atender: [2.5, 0.2, -7, 0], segurar_grade: [-3.2, 0.2, -8.4, 0] }; } },
+  // DELEGACIA (vários cômodos): plantão na frente, corredor no meio (sala do delegado à esquerda, interrogatório à direita), carceragem com 3 celas no fundo
+  delegacia: { tam: [24, 34, 10], w: 24, d: 34, h: 10, cor: '#e9ebef', faixa: '#1d3b72', piso: '#9aa0aa', letreiro: { texto: 'DELEGACIA DE POLÍCIA', fundo: '#1d3b72', largura: 14 },
+    porta: { x: 0, w: 3.0, vidro: true }, vitrines: [{ x: -7, w: 3.5 }, { x: 7, w: 3.5 }], janelas: { esq: [-15, -28], dir: [-15] },
+    parede_interna: '#dfe3ea', cor_porta: '#5a6b85', cor_placa: '#1d3b72', comodo_padrao: 'recepcao',
+    comodos: {
+      recepcao: { r: [[-12, 12, 0, -11]], ponto: [0, -4.5], piso: '#b8bcc6' },
+      corredor: { r: [[-3, 3, -11, -23]], ponto: [0, -16.5], piso: '#c3c7cf' },
+      sala_delegado: { r: [[-12, -3, -11, -23]], ponto: [-7.5, -13.8], piso: '#8a6a4a' },
+      interrogatorio: { r: [[3, 12, -11, -23]], ponto: [7.5, -14.2], piso: '#a3a6ad' },
+      carceragem: { r: [[-12, 12, -23, -34]], ponto: [0, -26.0], piso: '#9aa0aa', luzes: [[-8, -26.5, 0.6], [8, -26.5, 0.6]] },
+    },
+    paredes: [
+      { z: -11, de: -12, ate: 12, vaos: [{ em: 0, w: 6, aberto: true }] },
+      { x: -3, de: -11, ate: -23, vaos: [{ em: -21.5, w: 2.4, porta: true, placa: ['DELEGADO', 1] }] },
+      { x: 3, de: -11, ate: -23, vaos: [{ em: -21.5, w: 2.4, porta: true, placa: ['INTERROGATÓRIO', -1] }] },
+      { z: -23, de: -12, ate: 12, vaos: [{ em: 0, w: 4, y1: 8.4, placa: ['CARCERAGEM', 1] }] },
+      { x: -4, de: -28.5, ate: -34 }, { x: 4, de: -28.5, ate: -34 },   // divisórias entre as celas
+    ],
+    mobilia({ por, solto }) {
+      // recepção / plantão
+      por('balcao', { largura: 7, cor: '#5a5d66', tampo: '#d8dde3' }, [-5.5, 0.2, -7.5]); por('computador', {}, [-7.0, 1.2, -7.7], 180); por('placa_suspensa', { texto: 'PLANTÃO 24H', cor: '#1d3b72', largura: 3.6 }, [-5.5, 7.8, -7.5]);
+      por('quadro_parede', { texto: 'POLÍCIA', cor: '#1d3b72' }, [-9.5, 6.4, -10.8]); por('bandeira', {}, [-11.0, 0.2, -10.3], 0, 0.6);
+      por('cadeiras_espera', { n: 3, cor: '#5a5d66' }, [7.5, 0.2, -9.9]); por('cadeiras_espera', { n: 2, cor: '#5a5d66' }, [10.8, 0.2, -4.0], -90);
+      por('mural', { texto: 'PROCURADOS', largura: 3.4, altura: 2.2, cor: '#f5e6b8', cor_texto: '#c4281c' }, [11.75, 5.2, -8.0], -90);
+      por('mural', { texto: 'DISQUE 190', largura: 3, altura: 1.4, cor: '#1d3b72', cor_texto: '#ffffff' }, [7.5, 6.2, -10.8]);
+      por('bebedouro', {}, [-11.0, 0.2, -2.0], 90); por('relogio_parede', {}, [-11.75, 6.5, -6.0], 90); por('extintor', {}, [3.8, 0.2, -10.6]);
+      por('planta', {}, [11.0, 0.2, -1.0]); por('lixeira', { cor: '#5a5d66' }, [-3.6, 0.2, -1.0], 0, 0.7); por('camera_seguranca', {}, [-11.7, 8.6, -10.5], 135);
+      por('ventilador_teto', {}, [-6, 10.2, -5]); por('ventilador_teto', {}, [6, 10.2, -5]);
+      // corredor
+      por('banco', { cor: '#5a5d66' }, [-2.2, 0.2, -15.5], 90); por('extintor', {}, [2.7, 0.2, -12.0], -90); por('arquivo', {}, [2.0, 0.2, -18.0], -90);
+      por('mural', { texto: 'SILÊNCIO', largura: 2.6, altura: 1.2, cor: '#ffffff', cor_texto: '#1d3b72' }, [-2.75, 5.4, -18.5], 90); por('camera_seguranca', {}, [2.8, 8.6, -12.0], -90);
+      // sala do delegado
+      por('mesa_escritorio', {}, [-7.5, 0.2, -17.8], 180); por('poltrona', { cor: '#2a1a12' }, [-7.5, 0.2, -20.4]); por('computador', {}, [-9.3, 0.35, -18.4], 180);
+      por('cadeira', { cor: '#5a3a22' }, [-10.4, 0.2, -14.4], 150); por('quadro_parede', { texto: 'DELEGADO', cor: '#1d3b72' }, [-7.5, 6.4, -22.75]); por('bandeira', {}, [-11.0, 0.2, -22.2], 0, 0.55);
+      por('arquivo', {}, [-11.0, 0.2, -18.6], 90); por('estante', {}, [-11.15, 0.2, -13.8], 90, 0.7); por('relogio_parede', {}, [-11.75, 7.4, -18.6], 90); por('planta', {}, [-11.0, 0.2, -16.8]);
+      // interrogatório: mesa no meio, suspeito e policial frente a frente (de perfil para a câmera), luz pendente, vidro espelhado
+      por('mesa', { largura: 3.2, cor: '#7a7d85' }, [7.5, 0.2, -18.0], 90); por('cadeira', { cor: '#5a5d66' }, [5.4, 0.2, -18.0], 90); por('cadeira', { cor: '#1d3b72' }, [9.6, 0.2, -18.0], -90);
+      por('luminaria_pendente', {}, [7.5, 10.2, -18.0]); por('espelho_falso', { largura: 5 }, [7.5, 5.0, -22.75]); por('camera_seguranca', {}, [11.7, 8.6, -12.0], -135);
+      solto(grupo([caixa(1.0, 0.05, 1.3, '#ffffff', { pos: [7.2, 2.47, -18.3], rot: [0, 12, 0], sombra: false }), caixa(0.9, 0.05, 1.2, '#f5e6b8', { pos: [7.9, 2.48, -17.6], rot: [0, -8, 0], sombra: false })]));   // papéis do depoimento
+      // carceragem: 3 celas com grades de frente para a câmera
+      for (const x of [-8, 0, 8]) { por('cela', { largura: 7.8 }, [x, 0.2, -28.5]); por('banco_cela', {}, [x - 0.6, 0.2, -33.1]); por('vaso_sanitario', {}, [x + 2.6, 0.2, -33.0]); }
+      solto(grupo([caixa(0.35, 1.8, 0.2, '#f5e6b8', { pos: [-8, 5.5, -28.3] }), caixa(0.35, 1.8, 0.2, '#f5e6b8', { pos: [0, 5.5, -28.3] }), caixa(0.35, 1.8, 0.2, '#f5e6b8', { pos: [8, 5.5, -28.3] })]));   // número das celas (faixa)
+      por('mesa', { largura: 3, cor: '#5a5d66' }, [10.4, 0.2, -24.6], -90); por('cadeira', { cor: '#1d3b72' }, [8.6, 0.2, -24.6], 90); por('extintor', {}, [-11.6, 0.2, -24.0], 90);
+      por('camera_seguranca', {}, [-11.7, 8.6, -23.6], 135);
+      return {
+        recepcao: { atender: [-5.5, 0.2, -9.3, 0], fila: { inicio: [-5.5, -5.6], vira: 180, cresce: [0.3, 1] }, sentar: [7.5, 0.2, -9.8, 0] },
+        corredor: {},
+        sala_delegado: { sentar: [-7.5, 0.2, -20.1, 0], assinar: [-7.5, 0.2, -20.1, 0], atender: [-7.5, 0.2, -20.1, 0] },
+        interrogatorio: { sentar: [5.4, 0.2, -18.0, 90] },
+        carceragem: { segurar_grade: [0, 0.2, -29.5, 0], atender: [6.0, 0.2, -25.6, 0], sentar: [0, 0.2, -33.0, 0] },
+      }; } },
   bar: { tam: [16, 15, 9], w: 10, d: 10, h: 5.5, cor: '#f5cd30', faixa: '#c4281c', piso: '#8a6a4a', letreiro: { texto: 'BAR DO ZÉ', fundo: '#c4281c' }, porta: { x: -2, w: 3.4, cor: '#3a3d44' }, vitrines: [{ x: 2.8, w: 3 }],
     interior(gi) { por(gi, 'prateleira_garrafas', { largura: 8 }, [0, -1.2, -9.4]); por(gi, 'balcao', { largura: 7, cor: '#7a4a2a', tampo: '#5a3a22' }, [0, 0.2, -6.8]);
       for (let i = 0; i < 3; i++) por(gi, 'banqueta', {}, [-2.4 + i * 2.4, 0.2, -5.0]); const tv = PROPS.tv_parede({ tela: 'futebol' }); tv.position.set(3.8, 4.2, -9.6); tv.scale.setScalar(0.6); gi.add(tv);
@@ -394,7 +437,7 @@ export const LOTES_MUNDO = [
   { id: 'prefeitura', f: [-28, -FR], rot: 0 }, { id: 'igreja', f: [0, -FR], rot: 0 }, { id: 'banco', f: [26, -FR], rot: 0 },
   { id: 'escola', f: [-31, FR], rot: 180 }, { id: 'posto_saude', f: [15, FR], rot: 180 },
   { id: 'padaria', f: [-FR, -29.5], rot: 90 }, { id: 'farmacia', f: [-FR, -9.5], rot: 90 }, { id: 'loterica', f: [-FR, 10], rot: 90 }, { id: 'bar', f: [-FR, 29.5], rot: 90 },
-  { id: 'mercado', f: [FR, -24], rot: -90 }, { id: 'delegacia', f: [FR, 22], rot: -90 },
+  { id: 'mercado', f: [FR, -24], rot: -90 }, { id: 'delegacia', f: [FR, 38], rot: -90 },   // mais ao sul: o fundo (x até 86) passa ao lado do posto de gasolina
 ];
 const CASA_LOTE = { id: 'casa', f: [78 + BX, -12], rot: 0 };
 const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { f: [0, 6.5], rot: 0, recuo: 2.5, chao: 0.45 }, fonte: { f: [13.9, -13.9], rot: -45, recuo: 6.6, chao: 0.45 },
@@ -566,7 +609,7 @@ function povoar(g, n, r) {
   loja(g, 139 + BX, -9, 0, 'OFICINA', '#3a3d44', 11, n, '#cfd3da'); por(g, 'carro', { cor: '#1d3b72' }, [139 + BX, 0.2, -7.4], 90, 0.9);
   loja(g, 178 + BX, 9, 180, 'BORRACHARIA', '#f5b800', 8, n); for (let i = 0; i < 3; i++) g.add(cilindro(0.9, 0.9, 0.6, '#1b1b1b', { pos: [181.5 + BX, 0.5 + i * 0.62, 7.6], seg: 14 }));
   for (let x = 74 + BX; x <= 204 + BX; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x, 0, lado * 52], lado > 0 ? 180 : 0);
-  for (const lado of [-1, 1]) g.add(caixa(170, 0.2, 7, '#4f5361', { pos: [135 + BX, 0.11, lado * 40] }));   // ruas paralelas (longe o bastante da casa do protagonista, que é funda)
+  for (const lado of [-1, 1]) g.add(caixa(162, 0.2, 7, '#4f5361', { pos: [139 + BX, 0.11, lado * 40] }));   // ruas paralelas (longe o bastante da casa do protagonista, que é funda, e começando depois do fundo da delegacia)
   campinho(g, n, r);
   for (let i = 0; i < 10; i++) por(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(55 + BX, 200 + BX), 0, r.item([-1, 1]) * r.entre(60, 66)]);
 }
