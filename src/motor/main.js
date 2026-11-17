@@ -149,7 +149,8 @@ function criarMultidao(m, seed) {
 }
 
 function alvo(t) {
-  const { c } = atual; let atores = atual.atores.filter(a => !a.figurante);
+  const { c } = atual; if (c.alvo_xz) return new THREE.Vector3(c.alvo_xz[0], 0, c.alvo_xz[1]);
+  let atores = atual.atores.filter(a => !a.figurante);
   if (!atores.length && atual.atores.length && !atual.cen.cameraFixa) atores = atual.atores; // só multidão: mira no centro dela
   if (!atores.length || atual.cen.cameraFixa) return new THREE.Vector3(0, atual.cen.cameraFixa ? -0.2 : 0, 0);
   const foco = atores.filter(a => !c.foco || a.id === c.foco);
@@ -252,6 +253,8 @@ async function preview() {
   tocar(0);
 }
 
-window.motor = { iniciar, montar, quadro, quadros, preview, pronto: true, depurar: () => { const rc = new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(0, 0), cam); const h = rc.intersectObjects(cena.children, true).slice(0, 3);
+/** Posição na tela (pixels) de pontos do mundo [[x,y,z],...] — usado para escrever nomes no mapa. */
+function projetar(pts) { posar(0); cam.updateMatrixWorld(); return pts.map(p => { const v = new THREE.Vector3(...p).project(cam); return [(v.x + 1) / 2 * cfg.largura, (1 - v.y) / 2 * cfg.altura]; }); }
+window.motor = { iniciar, montar, quadro, quadros, preview, projetar, pronto: true, depurar: () => { const rc = new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(0, 0), cam); const h = rc.intersectObjects(cena.children, true).slice(0, 3);
   return { camera: cam.position.toArray().map(v => +v.toFixed(2)), toques: h.map(x => ({ d: +x.distance.toFixed(2), cor: x.object.material?.color?.getHexString?.(), geo: x.object.geometry?.parameters, pos: x.object.getWorldPosition(new THREE.Vector3()).toArray().map(v => +v.toFixed(1)) })) }; } };
 if (new URLSearchParams(location.search).has('preview')) preview();

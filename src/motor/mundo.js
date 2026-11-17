@@ -175,6 +175,12 @@ const CASA_LOTE = { id: 'casa', f: [78, -12], rot: 0 };
 const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { f: [0, 6.5], rot: 0, recuo: 2.5, chao: 0.45 }, fonte: { f: [0, -10], rot: 180, recuo: -5, chao: 0.45 },
   parquinho: { f: [13, 13], rot: 0, recuo: 0, chao: 0.45 }, estatua: { f: [-12, 0], rot: -90, recuo: -4, chao: 0.45 }, rua_bairro: { f: [92, 0], rot: 0, recuo: 0, chao: 0.1 },
   posto_gasolina: { f: [52, 9], rot: 180, recuo: 3, chao: 0.2 } };
+/** Centro de cada lugar no mapa (para desenhar a planta com nomes). */
+export function centrosMundo() {
+  const out = LOTES_MUNDO.map(l => { const d = PREDIOS_MUNDO[l.id].d, r = l.rot * RAD; return { id: l.id, x: l.f[0] - Math.sin(r) * d / 2, z: l.f[1] - Math.cos(r) * d / 2 }; });
+  return [...out, { id: 'casa', x: CASA_LOTE.f[0], z: CASA_LOTE.f[1] - CASA.d / 2 }, { id: 'posto_gasolina', x: 60, z: 17 }, { id: 'coreto', x: 4, z: 4 }, { id: 'fonte', x: 0, z: -16 },
+    { id: 'estatua', x: -15, z: -6 }, { id: 'parquinho', x: 15, z: 15 }, { id: 'rua_bairro', x: 130, z: 0 }];
+}
 export const LOCAIS_MUNDO = [...LOTES_MUNDO.map(l => l.id), 'casa', ...Object.keys(PONTOS), 'vista'];
 export const LOCAIS_COM_INTERIOR = [...LOTES_MUNDO.map(l => l.id), 'casa'];
 export const COMODOS_DO_MUNDO = Object.keys(COMODOS_MUNDO);

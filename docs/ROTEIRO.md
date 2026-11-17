@@ -52,6 +52,7 @@ ligados por portas) e o posto de gasolina.
 **Locais:** prefeitura, igreja, banco, escola, posto_saude, padaria, farmacia, loterica, bar, mercado, delegacia, casa (todos com `dentro: true`),
 praca, coreto, fonte, parquinho, estatua, rua_bairro, posto_gasolina, vista.
 
+- **Mapa com os nomes:** `docs/preview/mapa_mundo.jpg`. Câmera de cima para cenas: `cam: mapa` (e `alvo_xz: [x, z]` para escolher o centro).
 - **Portas abrem sozinhas** quando alguém chega perto e fecham depois. A porta fica em `x` = −3 na farmácia/padaria, 0 na lotérica/banco/posto de saúde/igreja/prefeitura, −5 no mercado, 2,5 na delegacia, −2 no bar e −6 na casa (em relação ao ponto da calçada).
 - **Paredes e tetos somem sozinhos** quando ficam entre a câmera e o ator (vista em corte), e voltam depois. Com `foco:`, só o ator em foco abre o corte.
 - Dentro da casa, os móveis dos outros cômodos ficam escondidos para não atrapalhar a câmera.

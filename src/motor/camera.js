@@ -16,6 +16,7 @@ export const ENQUADRAMENTOS = {
   alto: { dist: 13, el: 50, alt: 2.0 },
   lado: { dist: 10, el: 7, alt: 3.4, ang: 70 },
   costas: { dist: 9, el: 12, alt: 3.8, ang: 160 },
+  mapa: { dist: 120, el: 89.5, alt: 0 },            // vista de cima (planta do mapa)
 };
 export const MOVIMENTOS = ['fixo', 'zoom_in', 'zoom_out', 'zoom_rapido', 'pan', 'orbita', 'tremor', 'seguir', 'subir', 'descer'];
 export const NOMES_CAMERAS = Object.keys(ENQUADRAMENTOS);
