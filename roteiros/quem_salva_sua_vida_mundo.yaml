@@ -75,17 +75,16 @@ cenas:
     local: posto_saude
     dentro: true
     hora: dia
-    cam: aberto
-    foco: valentao                 # a maca fica no consultório, à direita da recepção
-    atores: [{ id: valentao, acao: deitar, rosto: triste }, { id: garoto, acao: chorar, x: 5.6, z: -1.2, vira: 60 }]
+    cam: geral                     # o posto de saúde inteiro: maca à direita, balcão à esquerda
+    atores: [{ id: valentao, acao: deitar, rosto: triste }, { id: garoto, acao: chorar, x: 0.5, z: -6.5, vira: 120 }]
   - fala: O garoto doou sangue e salvou a vida dele.
     cam: close
     foco: garoto
     atores: [{ id: garoto, acao: falar, rosto: triste, x: -1.4, vira: 60 }, { id: medico, acao: parado, rosto: feliz, x: 1.4, vira: -60 }]
   - fala: Foi aí que o valentão mostrou o celular dele.
-    cam: medio
-    foco: valentao
-    atores: [{ id: valentao, acao: deitar, rosto: nervoso }, { id: garoto, acao: parado, rosto: surpreso, x: 5.6, z: -1.2, vira: 60 }]
+    cam: geral
+    dist: 0.8
+    atores: [{ id: valentao, acao: deitar, rosto: nervoso }, { id: garoto, acao: parado, rosto: surpreso, x: 0.5, z: -6.5, vira: 120 }]
   - fala: Quem ia salvar a vida dele era o garoto.
     onde: celular
     tela: { tipo: notificacao, app: Destino, titulo: Quem vai salvar sua vida, texto: "O garoto que você mais maltratou" }

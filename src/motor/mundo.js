@@ -116,7 +116,7 @@ const PREDIOS_MUNDO = {
   posto_saude: { w: 14, d: 12, h: 7, cor: '#ffffff', faixa: '#1e88e5', piso: '#d6e2ea', letreiro: { texto: 'POSTO DE SAÚDE', fundo: '#1e88e5' }, porta: { x: 0, w: 2.8, vidro: true }, vitrines: [{ x: -4.5, w: 2.6 }, { x: 4.5, w: 2.6 }],
     interior(gi) { por(gi, 'balcao', { largura: 5, cor: '#1e88e5', tampo: '#f2f3f3' }, [-3.5, 0.2, -7]); por(gi, 'cadeiras_espera', { n: 3 }, [5.5, 0.2, -4], -90);
       por(gi, 'maca', {}, [4, 0.2, -9.5], 90); const cz = grupo([caixa(0.5, 1.5, 0.2, '#e53935'), caixa(1.5, 0.5, 0.2, '#e53935')]); cz.position.set(-3.5, 5, -11.6); gi.add(cz);
-      return { atender: [-3.5, 0.2, -8.8, 0], sentar: [5.2, 0.2, -4.6, -90], deitar: [4, 2.55, -7.0, 0], fila: { inicio: [-3.5, -5.2], vira: 180, cresce: [0.3, 1] } }; } },
+      return { atender: [-3.5, 0.2, -8.8, 0], sentar: [5.2, 0.2, -4.6, -90], deitar: [4, 2.55, -9.5, 90], fila: { inicio: [-3.5, -5.2], vira: 180, cresce: [0.3, 1] } }; } },
   delegacia: { w: 12, d: 12, h: 7, cor: '#e9ebef', faixa: '#1d3b72', piso: '#9aa0aa', letreiro: { texto: 'DELEGACIA', fundo: '#1d3b72' }, porta: { x: 2.5, w: 2.6, vidro: true }, vitrines: [{ x: -3, w: 2.4 }],
     interior(gi) { por(gi, 'balcao', { largura: 4, cor: '#5a5d66' }, [2.5, 0.2, -5.5]); por(gi, 'cela', { largura: 5 }, [-3.2, 0.2, -7.4]); gi.add(caixa(0.3, 7, 4.4, '#cfd3da', { pos: [-0.6, 3.6, -9.6] }));
       por(gi, 'mesa_trabalho', {}, [3.5, 0.2, -9.6], 0, 0.8);
