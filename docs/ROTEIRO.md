@@ -179,10 +179,10 @@ multidao: { n: 14, area: [-12, 12, 4, 12], olhar_z: -3, acao: [palmas, comemorar
 multidao: { n: 10, acao: [bravo, parado], prop: cartaz, prop_texto: ["FORA!", "QUEREMOS ÁGUA"] }   # protesto
 ```
 
-`modo`: `espalhado` (padrão), `grupos` (rodinhas de 2 a 4 pessoas conversando, viradas umas para as outras) ou `passantes` (andando nas calçadas, alguns no celular ou com cachorro).
+`modo`: `natural` (gente como na vida real: uns sozinhos no celular ou olhando em volta, duplas e trios conversando soltos, alguns passando e outros sentados nos bancos livres; evita os personagens da cena), `espalhado` (padrão: todos virados para a câmera, bom para plateia e protesto), `passantes` (andando nas calçadas) ou `fila`. `grupos` agora é o mesmo que `natural`.
 `personagens: todos` (ou uma lista, ex.: `[prefeito, gari, vizinha_fofoqueira]`) usa personagens do elenco na multidão; o resto é gerado.
 
-**Cenários que já vêm com multidão:** `praca_cheia` (~10 pessoas em rodinhas em volta da fonte) e `centro` (pedestres nas calçadas da avenida, com padaria, farmácia, mercado, banco… dos lados e a prefeitura no fim). Use `multidao: false` para esvaziar ou `multidao: { n: 40 }` para mudar.
+**Cenários que já vêm com multidão:** `praca_cheia` (~12 pessoas no modo natural) e `centro` (pedestres nas calçadas da avenida, com padaria, farmácia, mercado, banco… dos lados e a prefeitura no fim). Use `multidao: false` para esvaziar ou `multidao: { n: 40 }` para mudar.
 Dica: em vídeo vertical, para mostrar muita gente use `cam: alto` + `dist: 2.8` (praça) ou `cam: geral` + `altura: 4` (centro).
 
 `n` (até 40), `area: [x_min, x_max, z_min, z_max]`, `olhar_z` (todos olham para esse ponto em z), `acao` (sorteada entre as da lista), `prop`/`prop_texto`, `rosto`. Figurantes não precisam de elenco, e a câmera não os usa para enquadrar. Para mostrar a multidão inteira, use `cam: geral`.

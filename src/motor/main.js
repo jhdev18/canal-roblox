@@ -85,7 +85,9 @@ async function montar(c) {
     const pet = petTipo ? criarProp({ tipo: petTipo, cor: a.pet_cor }) : null; if (pet) raiz.add(pet);
     return { ...a, ator: p, base: bases[i], pet };
   });
-  if (c.multidao) for (const f of criarMultidao({ ...c.multidao, ancoraFila: cen.ancoras.fila }, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); atores.push(f); }
+  const usados = new Set(bases.map(b => [b.x, b.y, b.z].join()));
+  const assentosLivres = Array.isArray(cen.ancoras.sentar?.[0]) ? cen.ancoras.sentar.filter(p => !usados.has([p[0], p[1], p[2]].join())) : [];
+  if (c.multidao) for (const f of criarMultidao({ ...c.multidao, ancoraFila: cen.ancoras.fila, assentos: assentosLivres, principais: bases.map(b => [b.x, b.z]) }, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); atores.push(f); }
   const prin = atores.filter(a => !a.figurante).map(a => a.base.x);
   const xs = prin; const espalha = xs.length > 1 ? Math.max(...xs) - Math.min(...xs) : 0;
   atual = { c, raiz, atores, cen, dur: c.dur, espalha, nquadros: Math.max(1, Math.round(c.dur * cfg.fps)) };
@@ -115,19 +117,35 @@ function specAleatorio(r, i) {
 function criarMultidao(m, seed) {
   const r = rng('multidao' + seed + (m.seed || '')); const n = Math.min(m.n ?? 12, 40);
   const [x0, x1, z0, z1] = m.area || [-10, 10, -9, -4];
-  const modo = m.modo || 'espalhado', livre = m.livre ?? 0;
+  let modo = m.modo || 'espalhado'; const livre = m.livre ?? 0;
+  if (modo === 'grupos') modo = 'natural';   // rodinhas perfeitas viraram o modo natural
   const acoes = [].concat(m.acao || (modo === 'fila' ? ['esperar', 'parado', 'celular', 'esperar', 'olhar_redor', 'cocar_cabeca'] : modo === 'grupos' ? CONVERSA : modo === 'passantes' ? ['andar', 'andar', 'andar_celular', 'passear_cachorro', 'andar'] : ['parado', 'palmas', 'acenar', 'comemorar']));
   const specs = [...(m.specs || [])].sort(() => r() - 0.5);
-  const evitar = (x, z) => Math.hypot(x, z) < livre || (m.evitar || []).some(([ex, ez, er]) => Math.hypot(x - ex, z - ez) < er);
-  const ocupados = []; const minimo = m.espaco ?? (modo === 'grupos' ? 7 : 2.8);
+  const evitar = (x, z) => Math.hypot(x, z) < livre || (m.evitar || []).some(([ex, ez, er]) => Math.hypot(x - ex, z - ez) < er)
+    || (m.principais || []).some(([px, pz]) => Math.hypot(x - px, z - pz) < 3.2);   // não encosta nos personagens da cena
+  const ocupados = []; const minimo = m.espaco ?? (modo === 'natural' ? 3.2 : 2.8);
   const livreDe = (x, z) => ocupados.every(([ox, oz]) => Math.hypot(x - ox, z - oz) >= minimo);
   const ponto = () => { for (let k = 0; k < 80; k++) { const x = r.entre(x0, x1), z = r.entre(z0, z1); if (!evitar(x, z) && livreDe(x, z)) { ocupados.push([x, z]); return [x, z]; } } return null; };
   // posições conforme o modo
   const lugares = [];
-  if (modo === 'grupos') {
-    while (lugares.length < n) { const pt = ponto(); if (!pt) break; const [cx, cz] = pt; const k = Math.min(n - lugares.length, 2 + Math.floor(r() * 3)); const g0 = r() * 6.28;
-      for (let j = 0; j < k; j++) { const a = g0 + j / k * 6.28 + r.entre(-0.3, 0.3), rr = k === 2 ? 1.5 : 2.0;
-        const x = cx + Math.sin(a) * rr, z = cz + Math.cos(a) * rr; lugares.push({ x, z, vira: Math.atan2(cx - x, cz - z) * 180 / Math.PI }); } }
+  if (modo === 'natural') {   // mistura de gente sozinha, conversas soltas, quem passa e quem está sentado
+    const deg = (a) => a * 180 / Math.PI, praCamera = (v, k = 0.3) => v * (1 - k);   // puxa um pouco o rosto para a câmera (vira 0)
+    const sentados = (m.assentos || []).filter(([ax, , az]) => !evitar(ax, az)).sort(() => r() - 0.5);
+    let nSent = Math.min(sentados.length, Math.round(n * 0.12)), nPass = Math.round(n * 0.2);
+    for (const [ax, ay, az, av] of sentados.slice(0, nSent)) { ocupados.push([ax, az]); lugares.push({ x: ax, y: ay, z: az, vira: av, acao: r.item(['sentar']), sentado: true }); }
+    while (lugares.length < n) {
+      const resta = n - lugares.length, tipo = nPass > 0 && r() < 0.3 ? 'passa' : resta >= 2 && r() < 0.55 ? 'conversa' : 'sozinho';
+      const pt = ponto(); if (!pt) break; const [cx, cz] = pt;
+      if (tipo === 'passa') { nPass--; const v = r.entre(-180, 180); lugares.push({ x: cx, z: cz, vira: v, vel: r.entre(2.6, 4.2), acao: r.item(['andar', 'andar', 'andar_celular', 'passear_cachorro']) }); continue; }
+      if (tipo === 'sozinho') { lugares.push({ x: cx, z: cz, vira: praCamera(r.entre(-160, 160), 0.45), acao: r.item(['parado', 'celular', 'olhar_redor', 'esperar', 'celular', 'cocar_cabeca', 'pensar']) }); continue; }
+      const k = Math.min(resta, r() < 0.7 ? 2 : 3), eixo = r.entre(-0.6, 0.6) + (r() < 0.5 ? 0 : Math.PI);   // dupla de frente ou trio em meia-lua, nunca círculo
+      const membros = k === 2 ? [[-1, 0], [1, 0]] : [[-1.1, 0.25], [1.1, 0.25], [0.15, -1.05]];
+      const quem = Math.floor(r() * k);
+      for (const [j, [ox, oz]] of membros.entries()) { const d = r.entre(0.75, 1.05);
+        const x = cx + (Math.cos(eixo) * ox - Math.sin(eixo) * oz) * d * 1.05, z = cz + (Math.sin(eixo) * ox + Math.cos(eixo) * oz) * d * 1.05;
+        const v = deg(Math.atan2(cx - x, cz - z)) + r.entre(-18, 18);
+        lugares.push({ x, z, vira: praCamera(((v + 540) % 360) - 180, 0.22), acao: j === quem ? r.item(['falar', 'falar', 'cochichar']) : r.item(['parado', 'concordar', 'rir', 'parado', 'negar', 'celular']) }); }
+    }
   } else if (modo === 'fila') { // uma pessoa atrás da outra, cada uma olhando para a da frente
     const F = { inicio: [0, -2.2], vira: 180, cresce: [0, 1], ...(m.ancoraFila || {}), ...(m.inicio ? { inicio: m.inicio } : {}), ...(m.cresce ? { cresce: m.cresce } : {}) };
     const L = Math.hypot(...F.cresce) || 1, dx = F.cresce[0] / L, dz = F.cresce[1] / L, esp = m.espaco ?? 2.3;
@@ -147,12 +165,12 @@ function criarMultidao(m, seed) {
   }
   return lugares.slice(0, n).map((L, i) => {
     const spec = specs.length && (i < specs.length) && r() < (m.mistura ?? 0.8) ? { ...specs[i], id: 'fig' + i } : specAleatorio(r, i);
-    const ator = criarPersonagem(spec); let acao = r.item(acoes);
-    if (modo !== 'passantes' && LOCOMOCAO.has(acao)) acao = 'parado';
+    const ator = criarPersonagem(spec); let acao = m.acao ? r.item(acoes) : (L.acao || r.item(acoes));
+    if (modo !== 'passantes' && !L.vel && LOCOMOCAO.has(acao)) acao = 'parado';
     ator.setRosto(m.rosto || (spec.rosto !== 'neutro' && !ROSTO_DA_ACAO[acao] ? spec.rosto : ROSTO_DA_ACAO[acao] || r.item(['feliz', 'sorriso', 'neutro', 'rindo'])), spec.extras || []);
     const prop = m.prop || PROP_DA_ACAO[acao]; if (prop) ator.setProp(prop, { texto: r.item([].concat(m.prop_texto || 'FORA!')) });
     const pet = acao === 'passear_cachorro' ? criarProp({ tipo: 'cachorro', cor: r.item(['#c58a4a', '#7c5c46', '#f2f3f3', '#2b2b2b']) }) : null;
-    return { id: spec.id, figurante: true, spec, acao, p: { vel: L.vel }, atraso: r.entre(0, 3), ator, pet, base: { x: L.x, z: L.z, y: 0, vira: L.vira } };
+    return { id: spec.id, figurante: true, spec, acao, p: { vel: L.vel }, atraso: r.entre(0, 3), ator, pet, base: { x: L.x, z: L.z, y: L.y ?? 0, vira: L.vira } };
   });
 }
 

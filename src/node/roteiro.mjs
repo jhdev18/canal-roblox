@@ -39,7 +39,7 @@ export function resolverSpec(def, templates, pilha = []) {
 }
 
 /** Multidão que já vem com o cenário (sobrescreva com `multidao:` ou desligue com `multidao: false`). */
-export const MULTIDAO_PADRAO = { praca_cheia: { n: 10, modo: 'grupos', personagens: 'todos', area: [-12, 12, -24, 2], livre: 4, evitar: [[0, -12, 5.5]] },
+export const MULTIDAO_PADRAO = { praca_cheia: { n: 12, modo: 'natural', personagens: 'todos', area: [-12, 12, -24, 2], livre: 4, evitar: [[0, -12, 5.5]] },
       centro: { n: 8, modo: 'passantes', personagens: 'todos', area: [-11, 11, -60, 6], faixas: [[-10.5, -7], [7, 10.5]] } };
 
 const CAM_CICLO = [['medio', -18], ['close', 12], ['aberto', 0], ['medio', 22], ['baixo', -8], ['close', -15], ['lado', 0]];
@@ -84,7 +84,7 @@ export function carregarRoteiro(arquivo) {
     else if (cen.multidao && MULTIDAO_PADRAO[cen.cenario]) cen.multidao = { ...MULTIDAO_PADRAO[cen.cenario], ...(typeof cen.multidao === 'number' ? { n: cen.multidao } : cen.multidao) };
     if (cen.multidao) {
       if (typeof cen.multidao === 'number') cen.multidao = { n: cen.multidao };
-      if (cen.multidao.modo) checar('modo da multidão', cen.multidao.modo, ['espalhado', 'grupos', 'passantes', 'fila'], onde);
+      if (cen.multidao.modo) checar('modo da multidão', cen.multidao.modo, ['espalhado', 'natural', 'grupos', 'passantes', 'fila'], onde);
       const ps = cen.multidao.personagens;
       if (ps) { const nomes = ps === 'todos' ? Object.keys(templates) : [].concat(ps);
         cen.multidao.specs = nomes.map(nm => { checar('personagem (multidão)', nm, Object.keys(templates), onde); return { id: nm, ...resolverSpec(nm, templates) }; }); delete cen.multidao.personagens; }
