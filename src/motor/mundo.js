@@ -49,7 +49,7 @@ function predioOco(o, ctx) {
   dp.position.z = 0.0;
   if (o.faixa) fr.add(caixa(w + 0.06, 0.5, 0.12, o.faixa, { pos: [0, h - 1.1, 0.25] }));
   fr.add(caixa(w + 0.3, 1.2, 0.3, o.cor, { pos: [0, h + 0.6, 0.0] }));                                                   // platibanda
-  if (o.letreiro) { const p = placaTexto(o.letreiro.texto, Math.min(w - 1.2, o.letreiro.largura || w - 1.2), 1.1, { fundo: o.letreiro.fundo, corTexto: o.letreiro.cor || '#fff', emissivo: n }); p.position.set(0, h - 0.2, 0.2); fr.add(p); }
+  if (o.letreiro) { const p = placaTexto(o.letreiro.texto, Math.min(w - 1.2, o.letreiro.largura || w - 1.2), 1.1, { fundo: o.letreiro.fundo, corTexto: o.letreiro.cor || '#fff', emissivo: n }); p.position.set(0, h - 0.2, 0.42); fr.add(p); }
   g.add(unidade(fr, unidades));
   const fu = parede(w, h, o.cor, (o.janelas?.fundo || []).map(x => ({ x, w: 2.4, y0: 2.4, y1: 4.6, vidro: true })), n); fu.position.set(0, 0, -d + 0.2); g.add(unidade(fu, unidades));
   for (const [s, k] of [[-1, 'esq'], [1, 'dir']]) { const la = parede(d, h, o.cor, (o.janelas?.[k] || []).map(z => ({ x: s < 0 ? z + d / 2 : -(z + d / 2), w: 2.4, y0: 2.4, y1: 4.6, vidro: true })), n);

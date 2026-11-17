@@ -24,7 +24,7 @@ function iniciar(c) {
   R.outputColorSpace = THREE.SRGBColorSpace;
   document.getElementById('palco').appendChild(R.domElement);
   cena = new THREE.Scene();
-  cam = new THREE.PerspectiveCamera(40, cfg.largura / cfg.altura, 0.1, 1200);
+  cam = new THREE.PerspectiveCamera(40, cfg.largura / cfg.altura, 0.4, 1200);   // near maior = mais precisão de profundidade (menos z-fighting)
   hemi = new THREE.HemisphereLight(0xcfe8ff, 0x6b8a5a, 1.3); cena.add(hemi);
   sol = new THREE.DirectionalLight(0xfff4e0, 3.4); sol.castShadow = true;
   Object.assign(sol.shadow.camera, { left: -35, right: 35, top: 35, bottom: -35, near: 1, far: 220 });

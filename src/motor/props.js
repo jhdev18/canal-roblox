@@ -10,6 +10,7 @@ export function placaTexto(texto, w, h, { fundo = '#ffffff', corTexto = '#111111
   g.fillStyle = corTexto; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = `${fonte} ${Math.round(c.height * 0.55)}px "Arial Black", Arial, sans-serif`;
   g.fillText(String(texto), c.width / 2, c.height / 2 + c.height * 0.03, c.width * 0.92);
   const m = new THREE.MeshStandardMaterial({ map: texturaCanvas(c), roughness: 0.8, emissive: emissivo ? 0xffffff : 0x000000, emissiveMap: emissivo ? texturaCanvas(c) : null, emissiveIntensity: emissivo ? 0.6 : 0 });
+  m.polygonOffset = true; m.polygonOffsetFactor = -4; m.polygonOffsetUnits = -4;   // placa sempre na frente da parede (evita listras de z-fighting)
   return new THREE.Mesh(new THREE.PlaneGeometry(w, h), m);
 }
 
