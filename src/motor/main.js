@@ -338,12 +338,17 @@ function conferir() {
   const itens = []; cena.updateMatrixWorld(true);
   for (const o of atual.cen.grupo.children) { const t = o.userData.lote ? 'lote:' + o.userData.lote.id : o.userData.tipo; if (!t) continue;
     const b = new THREE.Box3().setFromObject(o); if (b.isEmpty()) continue; if (/^loja/.test(t)) b.setFromObject(o.children[0]);   // loja: só o corpo (debaixo do toldo pode)
-    itens.push({ t, b, c: CONSTR.test(t), p: [+o.position.x.toFixed(1), +o.position.z.toFixed(1)] }); }
+    itens.push({ o, t, b, c: CONSTR.test(t), p: [+o.position.x.toFixed(1), +o.position.z.toFixed(1)] }); }
   const sob = (a, b, f = 0.4) => Math.min(a.b.max.x, b.b.max.x) - Math.max(a.b.min.x, b.b.min.x) > f && Math.min(a.b.max.z, b.b.max.z) - Math.max(a.b.min.z, b.b.min.z) > f;
   const C = itens.filter(i => i.c), O = itens.filter(i => OBJ.test(i.t)), res = { construcoes: C.length, sobrepostas: [], objeto_dentro: [], baixas: [] };
   for (let i = 0; i < C.length; i++) for (let j = i + 1; j < C.length; j++) if (sob(C[i], C[j], 0.8)) res.sobrepostas.push([C[i].t, C[i].p, C[j].t, C[j].p]);
   for (const o of O) for (const c of C) { const bb = c.b.clone().expandByScalar(-0.6); if (sob({ b: bb }, o, 0.2) && o.b.min.y < bb.max.y) res.objeto_dentro.push([o.t, o.p, c.t, c.p]); }
   for (const c of C) if (!/ponto_onibus|barraca|banca/.test(c.t) && c.b.max.y - c.b.min.y < 7) res.baixas.push([c.t, c.p, +(c.b.max.y - c.b.min.y).toFixed(1)]);
+  res.janelas_baixas = [];   // vidro azulado fino na fachada com o topo abaixo da cabeça do personagem (5,2)
+  for (const c of C) { if (/ponto_onibus|banca|barraca|posto/.test(c.t)) continue; const o = itens.find(i => i === c)?.o; if (!o) continue; let k = 0;
+    o.traverse(m => { if (!m.isMesh || !m.geometry?.parameters || k) return; const { width: W, height: H, depth: D } = m.geometry.parameters; if (W === undefined || Math.min(W, D) > 0.4 || H < 1 || H > 4.5) return;
+      const cor = m.material?.color; if (!cor || !(cor.b > cor.r + 0.08)) return; let p = m, dentro = false; while (p && p !== o) { if (p.userData.interior || p.userData.movel) dentro = true; p = p.parent; } if (dentro) return;   // móvel de dentro (TV etc.) não conta
+      const bb = new THREE.Box3().setFromObject(m); if (bb.max.y - c.b.min.y < 5.5 && bb.min.y - c.b.min.y > 0.4) { k = 1; res.janelas_baixas.push([c.t, c.p, +(bb.min.y - c.b.min.y).toFixed(1), +(bb.max.y - c.b.min.y).toFixed(1)]); } }); }
   res.moveis_sobrepostos = [];   // dentro dos prédios: móvel atravessando móvel (tapete, quadro e pôster podem)
   for (const o of atual.cen.grupo.children) { if (!o.userData.lote && !o.userData.ancoras) continue;
     const gi = o.children.find(c => c.userData.interior), lista = gi ? gi.children : o.children.filter(m => m.userData.movel);

@@ -90,8 +90,8 @@ export const PROPS = {
     const p = placaTexto(o.texto || 'LOJA', w - 1, 1.2, { fundo: c, corTexto: '#ffffff', emissivo: n }); p.position.set(0, 8.4, 3.02); g.add(p);
     g.add(caixa(w - 0.4, 0.15, 5.6, '#8f939c', { pos: [0, 7.05, 0] })); g.add(caixa(w + 0.2, 0.8, 0.25, o.parede || '#f1e7c9', { pos: [0, 7.3, 2.9] }));   // laje + platibanda
     const cx = PROPS.caixa_dagua(); cx.position.set(w / 2 - 1.6, 7.1, -1.4); g.add(cx);
-    g.add(caixa(1.6, 3.4, 0.12, '#7a4b2a', { pos: [-w / 4, 1.7, -3.02] })); g.add(caixa(1.8, 1.4, 0.12, janelaMat(n), { pos: [w / 4, 4.2, -3.02] }));        // porta e janela dos fundos
-    for (const sx of [-1, 1]) g.add(caixa(0.12, 1.4, 1.8, janelaMat(n), { pos: [sx * (w / 2 + 0.02), 4.2, -0.5] }));
+    g.add(caixa(2.2, 6.2, 0.12, '#7a4b2a', { pos: [-w / 4, 3.1, -3.02] })); g.add(caixa(2.2, 2.6, 0.12, janelaMat(n), { pos: [w / 4, 4.6, -3.02] }));        // porta e janela dos fundos
+    for (const sx of [-1, 1]) g.add(caixa(0.12, 2.6, 2.2, janelaMat(n), { pos: [sx * (w / 2 + 0.02), 4.6, -0.5] }));
     return g; },
   arranha_ceu: (o = {}) => PROPS.predio({ altura: o.altura || 45, largura: o.largura || 12, cor: o.cor || '#6f8fb3', noite: o.noite }),
   fonte: () => { // bacia com borda (água abaixo da borda, sem superfícies coincidentes), coluna, tacinha, jato e cortina d'água

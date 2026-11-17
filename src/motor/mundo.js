@@ -54,7 +54,7 @@ function fachadaDetalhes(fr, o, w, h, P, n) {
   for (const s of [-1, 1]) fr.add(caixa(0.3, 6.3, 0.3, base, { pos: [P.x + s * (P.w / 2 + 0.25), 3.3, 0.25] }));
   if (o.letreiro) { const t = placaTexto(o.letreiro.texto, Math.min(mw + 1, w - 2), 0.85, { fundo: o.letreiro.fundo, corTexto: o.letreiro.cor || '#fff', emissivo: n });
     t.position.set(P.x, 7.45, 0.45); fr.add(t); }                                                                                // placa na altura do olhar (a do alto continua)
-  for (const v of o.vitrines || []) { fr.add(caixa(v.w + 0.4, 0.25, 0.5, base, { pos: [v.x, 1.1, 0.3] })); fr.add(caixa(v.w + 0.4, 0.25, 0.35, base, { pos: [v.x, 4.0, 0.25] })); }   // peitoril e verga
+  for (const v of o.vitrines || []) { fr.add(caixa(v.w + 0.4, 0.25, 0.5, base, { pos: [v.x, 0.8, 0.3] })); fr.add(caixa(v.w + 0.4, 0.25, 0.35, base, { pos: [v.x, 5.9, 0.25] })); }   // peitoril e verga
 }
 
 /**
@@ -83,7 +83,7 @@ function predioOco(o0, ctx) {
     janelas: o0.janelas && { fundo: (o0.janelas.fundo || []).map(M.x), esq: (o0.janelas.esq || []).map(M.z), dir: (o0.janelas.dir || []).map(M.z) } };
   g.add(caixa(w - 0.2, 0.2, d - 0.2, o.piso || '#d9d4c8', { pos: [0, 0.1, -d / 2] }));                                  // piso (topo em 0.2)
   const P = o.porta || { x: 0, w: 2.4 };
-  const fr = parede(w, h, o.cor, [{ x: P.x, w: P.w + 0.2, y0: 0, y1: 6.3 }, ...(o.vitrines || []).map(v => ({ x: v.x, w: v.w, y0: 1.2, y1: 3.9, vidro: true }))], n);
+  const fr = parede(w, h, o.cor, [{ x: P.x, w: P.w + 0.2, y0: 0, y1: 6.3 }, ...(o.vitrines || []).map(v => ({ x: v.x, w: v.w, y0: 0.9, y1: 5.8, vidro: true }))], n);   // vitrine: do joelho até acima da cabeça
   fr.position.set(0, 0, -0.2); const dp = porta(P.w, 6.2, P.cor || '#7a4b2a', P.vidro, portas); dp.position.set(P.x - P.w / 2, 0.2, 0); fr.add(dp);
   dp.position.z = 0.0;
   if (o.faixa) fr.add(caixa(w + 0.06, 0.5, 0.12, o.faixa, { pos: [0, h - 1.1, 0.25] }));
@@ -92,11 +92,11 @@ function predioOco(o0, ctx) {
   fachadaDetalhes(fr, o, w, h, P, n);
   g.add(unidade(fr, unidades));
   // janelas altas (basculantes) automáticas: acima dos móveis, em fundos e laterais que seriam paredes lisas
-  const altas = (len, livres) => { const out = [], y1 = h - 1.6, y0 = Math.max(5.2, y1 - 1.6); if (h < 8.5) return out;
+  const altas = (len, livres) => { const out = [], y1 = h - 1.6, y0 = Math.max(6.6, y1 - 1.6); if (y1 - y0 < 1) return out;
     for (let x = -len / 2 + 3; x <= len / 2 - 3; x += 5) if (!livres.some(v => Math.abs(v - x) < 2.8)) out.push({ x, w: 2.4, y0, y1, vidro: true }); return out; };
-  const jf = (o.janelas?.fundo || []).map(x => ({ x, w: 2.4, y0: 2.4, y1: 4.6, vidro: true }));
+  const jf = (o.janelas?.fundo || []).map(x => ({ x, w: 2.6, y0: 3.0, y1: 6.0, vidro: true }));
   const fu = parede(w, h, o.cor, [...jf, ...altas(w, jf.map(v => v.x))], n); fu.position.set(0, 0, -d + 0.2); g.add(unidade(fu, unidades));
-  for (const [s, k] of [[-1, 'esq'], [1, 'dir']]) { const jl = (o.janelas?.[k] || []).map(z => ({ x: s < 0 ? z + d / 2 : -(z + d / 2), w: 2.4, y0: 2.4, y1: 4.6, vidro: true }));
+  for (const [s, k] of [[-1, 'esq'], [1, 'dir']]) { const jl = (o.janelas?.[k] || []).map(z => ({ x: s < 0 ? z + d / 2 : -(z + d / 2), w: 2.6, y0: 3.0, y1: 6.0, vidro: true }));
     const la = parede(d, h, o.cor, [...jl, ...altas(d, jl.map(v => v.x))], n);
     la.rotation.y = Math.PI / 2; la.position.set(s * (w / 2 - 0.2), 0, -d / 2); g.add(unidade(la, unidades)); }
   const teto = grupo([caixa(w, 0.3, d, '#d8d8d8', { pos: [0, h + 0.15, -d / 2] })]);
@@ -260,11 +260,11 @@ function casaProtagonista(ctx) {
   g.add(caixa(w, 0.2, d, '#a8805a', { pos: [0, 0.1, -d / 2] }));
   for (const [x0, x1, z0, z1, c] of [[1, 13, 0, -10, '#c9c2b3'], [-4, 3, -10, -20, '#e8ece8']]) g.add(caixa(x1 - x0, 0.02, Math.abs(z1 - z0), c, { pos: [(x0 + x1) / 2, 0.21, (z0 + z1) / 2], sombra: false }));
   const ext = (len, vaos) => parede(len, h, cor, vaos, n);
-  const fr = ext(w, [{ x: -6, w: 2.4, y0: 0, y1: 6.3 }, { x: -11, w: 3, y0: 2.2, y1: 4.8, vidro: true }, { x: 7, w: 3.5, y0: 2.2, y1: 4.8, vidro: true }]); fr.position.set(0, 0, -0.2);
+  const fr = ext(w, [{ x: -6, w: 2.4, y0: 0, y1: 6.3 }, { x: -11, w: 3, y0: 3.0, y1: 6.2, vidro: true }, { x: 7, w: 3.5, y0: 3.0, y1: 6.2, vidro: true }]); fr.position.set(0, 0, -0.2);
   const pf = porta(2.4, 6.2, '#7a4b2a', false, portas); pf.position.set(-7.2, 0.2, 0); fr.add(pf); g.add(unidade(fr, unidades));
-  const fu = ext(w, [{ x: -8.5, w: 2.6, y0: 2.4, y1: 4.8, vidro: true }, { x: -0.5, w: 1.4, y0: 3.6, y1: 4.8, vidro: true }, { x: 8, w: 2.6, y0: 2.4, y1: 4.8, vidro: true }]);
+  const fu = ext(w, [{ x: -8.5, w: 2.6, y0: 3.0, y1: 6.2, vidro: true }, { x: -0.5, w: 1.4, y0: 5.0, y1: 6.4, vidro: true }, { x: 8, w: 2.6, y0: 3.0, y1: 6.2, vidro: true }]);
   fu.position.set(0, 0, -d + 0.2); g.add(unidade(fu, unidades));
-  for (const s of [-1, 1]) { const la = ext(d, [{ x: 0, w: 2.6, y0: 2.4, y1: 4.8, vidro: true }]); la.rotation.y = Math.PI / 2; la.position.set(s * (w / 2 - 0.2), 0, -d / 2); g.add(unidade(la, unidades)); }
+  for (const s of [-1, 1]) { const la = ext(d, [{ x: 0, w: 2.6, y0: 3.0, y1: 6.2, vidro: true }]); la.rotation.y = Math.PI / 2; la.position.set(s * (w / 2 - 0.2), 0, -d / 2); g.add(unidade(la, unidades)); }
   // paredes internas com portas
   const pi = (len, vaos) => parede(len, h, inte, vaos, n, 0.25);
   const meio = pi(w - 0.8, [{ x: -8.5, w: 2.4, y0: 0, y1: 6.3 }, { x: -0.5, w: 2.2, y0: 0, y1: 6.3 }, { x: 7.5, w: 2.4, y0: 0, y1: 6.3 }]); meio.position.set(0, 0, -10);
