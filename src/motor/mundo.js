@@ -238,8 +238,8 @@ const PREDIOS_MUNDO = {
       return { atender: [0, 0.2, -12.4, 0] }; } },
 };
 // casa do protagonista: térrea, 5 cômodos. Frente (z=0) olha +Z.
-const CASA = { w: 26, d: 20, h: 7.5 };
-const COMODOS_MUNDO = { sala: [-6, -5], cozinha: [7, -5], quarto: [-8.5, -15], banheiro: [-0.5, -15], quarto_pais: [8, -15] };
+const CASA = { w: 26, d: 20, h: 7.5 }, CSX = 1.3, CSZ = 1.2;   // planta desenhada em 26x20 e ampliada (paredes esticam, móveis só mudam de lugar)
+const COMODOS_MUNDO = Object.fromEntries(Object.entries({ sala: [-6, -5], cozinha: [7, -5], quarto: [-8.5, -15], banheiro: [-0.5, -15], quarto_pais: [8, -15] }).map(([k, [x, z]]) => [k, [x * CSX, z * CSZ]]));
 function casaProtagonista(ctx) {
   const { n, unidades, portas, foco } = ctx, { w, d, h } = CASA, g = new THREE.Group(), cor = '#f2c46d', inte = '#f4ecd8';
   const qual = (x, z) => z > -10 ? (x < 1 ? 'sala' : 'cozinha') : (x < -4 ? 'quarto' : x < 3 ? 'banheiro' : 'quarto_pais');
@@ -270,12 +270,15 @@ function casaProtagonista(ctx) {
   por(g, 'geladeira', {}, [12, 0.2, -1.6], -90); por(g, 'fogao', {}, [12, 0.2, -5], -90); por(g, 'pia', {}, [11.8, 0.2, -8.2], -90); por(g, 'mesa_jantar', { largura: 3.6 }, [5.5, 0.2, -5], 0);
   por(g, 'cama', { cor: '#1e88e5' }, [-11.1, 0.2, -16.3]); por(g, 'mesa', { largura: 3.6, cor: '#f2f3f3' }, [-5.0, 0.2, -14], -90); por(g, 'computador', {}, [-4.8, 0.2, -14], -90);
   por(g, 'cadeira_gamer', {}, [-7.0, 0.2, -14], 90); por(g, 'guarda_roupa', { largura: 3.6 }, [-12.2, 0.2, -11.6], 90);
-  for (const [t, c, x] of [['GAMER', '#6b32a8', -10], ['GOOOL!', '#1f9d48', -6.8]]) { const p = PROPS.poster({ texto: t, cor: c }); p.position.set(x, 5.2, -19.55); p.scale.setScalar(0.8); g.add(p); }
+  for (const [t, c, x] of [['GAMER', '#6b32a8', -10], ['GOOOL!', '#1f9d48', -6.8]]) { const p = PROPS.poster({ texto: t, cor: c }); p.userData.movel = true; p.position.set(x, 5.2, -19.55); p.scale.setScalar(0.8); g.add(p); }
   por(g, 'vaso_sanitario', {}, [-2.6, 0.2, -18.8]); por(g, 'pia_banheiro', {}, [-3.2, 0.2, -12.2], 90); por(g, 'box_chuveiro', {}, [1.0, 0.2, -18], 0);
   por(g, 'cama_casal', { cor: '#b84a5a' }, [8.2, 0.2, -16.3], 0); por(g, 'criado_mudo', {}, [4.3, 0.2, -19]); por(g, 'criado_mudo', {}, [12.1, 0.2, -19]); por(g, 'guarda_roupa', { largura: 3.6, cor: '#e9e6dc' }, [12.3, 0.2, -11.6], -90);
-  if (foco) { const [x, z] = COMODOS_MUNDO[ctx.comodo || 'sala']; luzInterna(g, x, z, h, n, 1.1); }   // só a luz do cômodo da cena (cada luz pesa no render)
-  g.userData.ancoras = { sentar: [-7.4, 0.2, -8.4, 0], cozinhar: [10.4, 0.2, -5, 90], lavar_louca: [10.4, 0.2, -8.2, 90], deitar: [-11.1, 1.65, -13.2, 0], dormir: [-11.1, 1.65, -13.2, 0],
-    jogar_pc: [-6.7, 0.7, -14, 90], deitar_pais: [6.8, 1.65, -13.4, 0] };
+  for (const c of g.children) {   // amplia a casa: estrutura estica, móvel só muda de lugar
+    c.position.x *= CSX; c.position.z *= CSZ;
+    if (!c.userData.movel) { const r90 = Math.abs(Math.abs(Math.sin(c.rotation.y)) - 1) < 1e-3; c.scale.x *= r90 ? CSZ : CSX; c.scale.z *= r90 ? CSX : CSZ; } }
+  if (foco) { const [x, z] = COMODOS_MUNDO[ctx.comodo || 'sala']; luzInterna(g, x, z, h, n, 1.2, 34); }   // só a luz do cômodo da cena (cada luz pesa no render)
+  g.userData.ancoras = Object.fromEntries(Object.entries({ sentar: [-7.4, 0.2, -8.4, 0], cozinhar: [10.4, 0.2, -5, 90], lavar_louca: [10.4, 0.2, -8.2, 90], deitar: [-11.1, 1.65, -13.2, 0], dormir: [-11.1, 1.65, -13.2, 0],
+    jogar_pc: [-6.7, 0.7, -14, 90], deitar_pais: [6.8, 1.65, -13.4, 0] }).map(([k, v]) => [k, [v[0] * CSX, v[1], v[2] * CSZ, v[3]]]));
   usarAssentos(g.userData.ancoras, assentosDe(g), -5);
   return g;
 }
@@ -295,7 +298,7 @@ const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { 
 /** Centro de cada lugar no mapa (para desenhar a planta com nomes). */
 export function centrosMundo() {
   const out = LOTES_MUNDO.map(l => { const d = PREDIOS_MUNDO[l.id].d, r = l.rot * RAD; return { id: l.id, x: l.f[0] - Math.sin(r) * d / 2, z: l.f[1] - Math.cos(r) * d / 2 }; });
-  return [...out, { id: 'casa', x: CASA_LOTE.f[0], z: CASA_LOTE.f[1] - CASA.d / 2 }, { id: 'posto_gasolina', x: 60 + BX, z: 17 }, { id: 'coreto', x: 4, z: 4 }, { id: 'fonte', x: 14, z: -14 },
+  return [...out, { id: 'casa', x: CASA_LOTE.f[0], z: CASA_LOTE.f[1] - CASA.d * CSZ / 2 }, { id: 'posto_gasolina', x: 60 + BX, z: 17 }, { id: 'coreto', x: 4, z: 4 }, { id: 'fonte', x: 14, z: -14 },
     { id: 'estatua', x: -14, z: -14 }, { id: 'parquinho', x: 15, z: 15 }, { id: 'rua_bairro', x: 125 + BX, z: 0 }, { id: 'campinho', x: 139 + BX, z: 23 }, ...EXTRAS_MAPA.map(e => ({ id: '_' + e.nome, nome: e.nome, x: e.x, z: e.z }))];
 }
 export const LOCAIS_MUNDO = [...LOTES_MUNDO.map(l => l.id), 'casa', ...Object.keys(PONTOS), 'vista'];
@@ -369,10 +372,10 @@ export function construirMundo(o, g, r) {
     t.position.set(ig.f[0] + PREDIOS_MUNDO.igreja.tam[0] / 2 + 2.5, 0.2, ig.f[1]); g.add(t); }
   // casa do protagonista + rua do bairro
   const casa = casaProtagonista({ ...ctx, foco: focoId === 'casa', comodo: o.comodo }); casa.position.set(CASA_LOTE.f[0], 0.2, CASA_LOTE.f[1]); casa.userData.lote = CASA_LOTE; g.add(casa);
-  por(g, 'muro', { largura: 30, cor: '#e9e6dc', portao_x: -6, portao_cor: '#1d3b72' }, [CASA_LOTE.f[0], 0.2, -5.6]); por(g, 'carro', { cor: '#c4281c' }, [CASA_LOTE.f[0] + 7, 0.2, -8.6], 90, 0.9);
+  por(g, 'muro', { largura: CASA.w * CSX + 4, cor: '#e9e6dc', portao_x: -6 * CSX, portao_cor: '#1d3b72' }, [CASA_LOTE.f[0], 0.2, -5.6]); por(g, 'carro', { cor: '#c4281c' }, [CASA_LOTE.f[0] + 7, 0.2, -8.6], 90, 0.9);
   const cores = ['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a'];
   const LOJAS_BAIRRO = [[100 + BX, 1], [139 + BX, -1], [178 + BX, 1]];   // [x, lado] ocupados por mercadinho, oficina e borracharia
-  for (let x = 84; x <= 210 + BX; x += 13) for (const lado of [-1, 1]) { if (lado < 0 && Math.abs(x - CASA_LOTE.f[0]) < 18) continue; if (lado > 0 && x < 60 + BX) continue;
+  for (let x = 84; x <= 210 + BX; x += 13) for (const lado of [-1, 1]) { if (lado < 0 && Math.abs(x - CASA_LOTE.f[0]) < CASA.w * CSX / 2 + 5) continue; if (lado > 0 && x < 60 + BX) continue;
     if (LOJAS_BAIRRO.some(([lx, ll]) => ll === lado && Math.abs(lx - x) < 6)) continue;
     if (lado > 0 && Math.abs(x - CAMPINHO.x) < CAMPINHO.w / 2 + 10) continue;   // campinho + folga de gramado dos dois lados
     por(g, r() < 0.3 ? 'sobrado' : 'casa_br', { cor: r.item(cores), noite: n, largura: 9 }, [x, 0, lado * 13], lado > 0 ? 180 : 0);
