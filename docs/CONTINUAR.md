@@ -37,6 +37,7 @@ Quando o usuário mandar o retorno do rascunho, ajuste **só** as cenas citadas.
 Personagem 5,2 de altura. Andar de casa 7 studs, porta 6,2, janela de 3 a 6 (vitrine de 0,9 a 5,8), prédio com andares de 6,4, toldo de loja a 6,6. Cama de solteiro 2,9×6,2, casal 4,8×6,2.
 
 ## Recursos que os roteiros já podem usar (resumo — detalhes em `docs/ROTEIRO.md`)
+- Casa do protagonista: cômodos refeitos + `sotao`; cada história nova usa uma `decoracao:` diferente (padrao, vovo, moderna, colorida, simples ou um número). `quarto` = menino, `quarto_menina` = menina.
 - Casa do protagonista ampliada (cômodos 1,6× × 1,45×, pé-direito 9) para a câmera caber dentro dos cômodos.
 - Mundo integrado: `onde: mundo` + `local:` (+ `dentro: true` / `comodo:`). Prédios grandes, móveis na escala do personagem, assentos reais (`sentar`), filas com curva, portas automáticas, corte de parede, ninguém atravessa obstáculo.
 - `sobre:` = a regra visível acima da cabeça (`zzz`, `{ texto }`, ou prop como `nuvem_cabeca`, `pedra`, `saco_pedras`, com `altura/x/z/escala/fixo`).

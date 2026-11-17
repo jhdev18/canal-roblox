@@ -1,5 +1,6 @@
 titulo: Nesse mundo o celular diz quem vai salvar sua vida
 clima: triste                      # piano emocionante (história com virada emotiva)
+decoracao: padrao   # decoração da casa do protagonista nesta história
 destaque: [valentão, salvar, vida]
 # Versão no mundo integrado: todas as cenas no mesmo mapa (rua da casa, praça, escola, posto de saúde).
 

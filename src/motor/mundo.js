@@ -251,15 +251,28 @@ const PREDIOS_MUNDO = {
 };
 // casa do protagonista: térrea, 5 cômodos. Frente (z=0) olha +Z.
 const CASA = { w: 26, d: 20, h: 9 }, CSX = 1.6, CSZ = 1.45;   // cômodos amplos e pé-direito alto: espaço para a câmera recuar dentro de casa   // planta desenhada em 26x20 e ampliada (paredes esticam, móveis só mudam de lugar)
+// Decoração da casa (cores e detalhes): uma por história, sem mexer na planta. `decoracao:` no roteiro (ou na cena).
+export const DECORACOES = {
+  padrao:   { fachada: '#f2c46d', parede: '#f4ecd8', piso: '#a8805a', piso_cozinha: '#c9c2b3', azulejo: '#cfe3ea', sofa: '#4f6f8f', poltrona: '#8a5a33', tapete: '#c76b5a', tapete2: '#e08a78', cortina: '#ffd23f', madeira: '#8a5a33', armario: '#e9e6dc', cama_pais: '#b84a5a', quadro: '#3a5a8a', simbolo: '★' },
+  vovo:     { fachada: '#e9d8b0', parede: '#efe3c8', piso: '#7c5236', piso_cozinha: '#b5533a', azulejo: '#e8e0c8', sofa: '#8a5a33', poltrona: '#6b4426', tapete: '#7b1f2b', tapete2: '#a8384a', cortina: '#e8d9b5', madeira: '#5a3a22', armario: '#a8754a', cama_pais: '#7b1f2b', quadro: '#6b4426', simbolo: '✿', relogio: true, filtro: true },
+  moderna:  { fachada: '#d8dde3', parede: '#f2f3f3', piso: '#c8c2b8', piso_cozinha: '#9aa0aa', azulejo: '#ffffff', sofa: '#5a5d66', poltrona: '#e8c25a', tapete: '#d8d4cc', tapete2: '#eceae4', cortina: '#9aa0aa', madeira: '#2b2d33', armario: '#2b2d33', cama_pais: '#3a5a8a', quadro: '#1e88e5', simbolo: '◆' },
+  colorida: { fachada: '#8fc1e3', parede: '#fff3c4', piso: '#b98b5e', piso_cozinha: '#f28b5b', azulejo: '#ffe08a', sofa: '#e53935', poltrona: '#1e88e5', tapete: '#43a047', tapete2: '#7fd35a', cortina: '#1e88e5', madeira: '#a8754a', armario: '#43a047', cama_pais: '#8e24aa', quadro: '#fb8c00', simbolo: '☀' },
+  simples:  { fachada: '#d9cdb0', parede: '#e6dfcc', piso: '#9aa0aa', piso_cozinha: '#8c8f99', azulejo: '#d8d4cc', sofa: '#7c5c46', poltrona: '#5a5d66', tapete: '#6f727b', tapete2: '#8c8f99', cortina: '#c9b2e8', madeira: '#7c5c46', armario: '#c9a36b', cama_pais: '#4f6f8f', quadro: '#5a7fb0', simbolo: '♥', pouco: true, filtro: true },
+};
+/** Nome de DECORACOES, ou qualquer outro texto/número = mistura sorteada (sempre a mesma para o mesmo valor). */
+function decoracao(v) { if (v === undefined || v === null || v === '') return DECORACOES.padrao; if (DECORACOES[v]) return DECORACOES[v];
+  const r = rng(String(v)), nomes = Object.keys(DECORACOES), out = {}; for (const k of Object.keys(DECORACOES.padrao)) out[k] = DECORACOES[r.item(nomes)][k]; out.relogio = r() < 0.5; out.filtro = r() < 0.4; return out; }
+const QUARTA_PAREDE = 3, CW = CASA.w * CSX, CD = CASA.d * CSZ, TELHADO = 8.5, SOTAO = CASA.h + 0.31;   // casa ampliada (41,6 x 29); cumeeira 8,5 acima do forro: dá para ficar de pé no sótão
 const COMODOS_MUNDO = Object.fromEntries(Object.entries({ sala: [-6, -5], cozinha: [7, -5], quarto: [-8.5, -15], quarto_menina: [-8.5, -15], banheiro: [-0.5, -15], quarto_pais: [8, -15] }).map(([k, [x, z]]) => [k, [x * CSX, z * CSZ]]));
+COMODOS_MUNDO.sotao = [-3, -CD / 2];
 function casaProtagonista(ctx) {
-  const { n, unidades, portas, foco } = ctx, { w, d, h } = CASA, g = new THREE.Group(), cor = '#f2c46d', inte = '#f4ecd8';
+  const { n, unidades, portas, foco } = ctx, { w, d, h } = CASA, g = new THREE.Group(), D = decoracao(ctx.decoracao), cor = D.fachada, inte = D.parede;
   const qual = (x, z) => z > -10 ? (x < 1 ? 'sala' : 'cozinha') : (x < -4 ? 'quarto' : x < 3 ? 'banheiro' : 'quarto_pais');
   const menina = ctx.comodo === 'quarto_menina', cm = menina ? 'quarto' : ctx.comodo;   // quarto_menina = o mesmo quarto, decorado para uma protagonista
   const por = (gg, tipo, o, pos, vira = 0, esc) => { const p = PROPS[tipo](o); p.userData.tipo = tipo; p.position.set(...pos); p.rotation.y = vira * RAD; if (esc) p.scale.setScalar(esc); gg.add(p);
     p.userData.movel = true; p.userData.comodo = qual(pos[0], pos[2]); unidade(p, unidades); if (cm && p.userData.comodo !== cm) p.userData.oculto = true; return p; };
-  g.add(caixa(w, 0.2, d, '#a8805a', { pos: [0, 0.1, -d / 2] }));
-  for (const [x0, x1, z0, z1, c] of [[1, 13, 0, -10, '#c9c2b3'], [-4, 3, -10, -20, '#e8ece8']]) g.add(caixa(x1 - x0, 0.02, Math.abs(z1 - z0), c, { pos: [(x0 + x1) / 2, 0.21, (z0 + z1) / 2], sombra: false }));
+  g.add(caixa(w, 0.2, d, D.piso, { pos: [0, 0.1, -d / 2] }));
+  for (const [x0, x1, z0, z1, c] of [[1, 13, 0, -10, D.piso_cozinha], [-4, 3, -10, -20, '#e8ece8']]) g.add(caixa(x1 - x0, 0.02, Math.abs(z1 - z0), c, { pos: [(x0 + x1) / 2, 0.21, (z0 + z1) / 2], sombra: false }));
   const ext = (len, vaos) => parede(len, h, cor, vaos, n);
   const fr = ext(w, [{ x: -6, w: 2.4, y0: 0, y1: 6.3 }, { x: -11, w: 3, y0: 3.0, y1: 6.2, vidro: true }, { x: 7, w: 3.5, y0: 3.0, y1: 6.2, vidro: true }]); fr.position.set(0, 0, -0.2);
   const pf = porta(2.4, 6.2, '#7a4b2a', false, portas); pf.position.set(-7.2, 0.2, 0); fr.add(pf); g.add(unidade(fr, unidades));
@@ -273,14 +286,6 @@ function casaProtagonista(ctx) {
   g.add(unidade(meio, unidades));
   const sc = pi(10, [{ x: 0, w: 3.2, y0: 0, y1: 5 }]); sc.rotation.y = Math.PI / 2; sc.position.set(1, 0, -5); g.add(unidade(sc, unidades));
   for (const x of [-4, 3]) { const pq = pi(10, []); pq.rotation.y = Math.PI / 2; pq.position.set(x, 0, -15); g.add(unidade(pq, unidades)); }
-  // forro + telhado de telha
-  g.add(unidade(grupo([caixa(w, 0.25, d, '#f4f4f4', { pos: [0, h + 0.12, -d / 2] })]), unidades));
-  const tel = grupo([]); for (const sx of [-1, 1]) tel.add(caixa(w + 1.4, 0.4, d / 2 / Math.cos(24 * RAD) + 1, '#c8643b', { pos: [0, h + 0.25 + Math.tan(24 * RAD) * d / 4, -d / 2 + sx * d / 4], rot: [sx * 24, 0, 0] }));
-  tel.add(caixa(w + 1.4, 0.3, 0.6, '#9a4a2b', { pos: [0, h + 0.3 + Math.tan(24 * RAD) * d / 2, -d / 2] })); g.add(unidade(tel, unidades));
-  // móveis
-  por(g, 'sofa', { cor: '#4f6f8f' }, [-6.5, 0.2, -8.8], 0); por(g, 'mesa_centro', {}, [-6.5, 0.2, -5.8]); por(g, 'tapete', { cor: '#c76b5a', largura: 7, prof: 4.5 }, [-6.5, 0.2, -6]);
-  por(g, 'tv', {}, [-12.4, 0.2, -5], 90); por(g, 'poltrona', { cor: '#8a5a33' }, [-2.5, 0.2, -3], -120); por(g, 'planta', {}, [-12, 0.2, -1.2]);
-  por(g, 'geladeira', {}, [12, 0.2, -1.6], -90); por(g, 'fogao', {}, [12, 0.2, -5], -90); por(g, 'pia', {}, [11.8, 0.2, -8.2], -90); por(g, 'mesa_jantar', { largura: 3.6 }, [5.5, 0.2, -5], 0);
   if (menina) {   // quarto da menina: cama rosa, ursinho, penteadeira com banqueta, tapete rosa, guarda-roupa lilás, pôsteres de estrela e coração
     por(g, 'cama', { cor: '#f06292', lencol: '#fff0f6' }, [-11.1, 0.2, -16.3]); por(g, 'ursinho', {}, [-9.0, 0.2, -18.8], -30, 0.9);
     por(g, 'penteadeira', {}, [-5.2, 0.2, -14], -90); por(g, 'guarda_roupa', { largura: 3.6, cor: '#d9c2ea', cor2: '#eadcf5' }, [-12.2, 0.2, -11.6], 90);
@@ -296,19 +301,71 @@ function casaProtagonista(ctx) {
   }
   for (const [t, c, x] of menina ? [['estrela', '#7e57c2', -10], ['coracao', '#fce4ec', -6.8]] : [['controle', '#6b32a8', -10], ['bola', '#1f9d48', -6.8]]) {
     const p = PROPS.poster({ icone: t, cor: c }); p.userData.movel = true; p.userData.tipo = 'poster'; p.position.set(x, 5.6, -19.55); p.scale.setScalar(0.9); g.add(p); }
-  por(g, 'vaso_sanitario', {}, [-2.6, 0.2, -18.8]); por(g, 'pia_banheiro', {}, [-3.2, 0.2, -12.2], 90); por(g, 'box_chuveiro', {}, [1.0, 0.2, -18], 0);
-  por(g, 'cama_casal', { cor: '#b84a5a' }, [8.2, 0.2, -16.3], 0); por(g, 'criado_mudo', {}, [4.3, 0.2, -19]); por(g, 'criado_mudo', {}, [12.1, 0.2, -19]); por(g, 'guarda_roupa', { largura: 3.6, cor: '#e9e6dc' }, [12.3, 0.2, -11.6], -90);
   for (const c of g.children) {   // amplia a casa: estrutura estica, móvel só muda de lugar
     c.position.x *= CSX; c.position.z *= CSZ;
     if (!c.userData.movel) { const r90 = Math.abs(Math.abs(Math.sin(c.rotation.y)) - 1) < 1e-3; c.scale.x *= r90 ? CSZ : CSX; c.scale.z *= r90 ? CSX : CSZ; } }
-  if (foco) { const [x, z] = COMODOS_MUNDO[ctx.comodo || 'sala']; luzInterna(g, x, z, h, n, 1.2, 34); }   // só a luz do cômodo da cena (cada luz pesa no render)
-  // cada âncora segue o móvel dela: o móvel muda de lugar com a ampliação, o deslocamento até ele não
-  const M = { sofa: [-6.5, -8.8], fogao: [12, -5], pia: [11.8, -8.2], cama: [-11.1, -16.3], pc: [-7.0, -14], casal: [8.2, -16.3] };
-  g.userData.ancoras = Object.fromEntries(Object.entries({ sentar: [-7.4, 0.2, -8.4, 0, 'sofa'], cozinhar: [10.4, 0.2, -5, 90, 'fogao'], lavar_louca: [10.4, 0.2, -8.2, 90, 'pia'],
-    deitar: [-11.1, 1.65, -13.6, 0, 'cama'], dormir: [-11.1, 1.65, -13.6, 0, 'cama'], jogar_pc: [-6.7, 0.7, -14, 90, 'pc'], deitar_pais: [7.0, 1.65, -13.6, 0, 'casal'] })
-    .map(([k, [x, y, z, r, m]]) => [k, [x + M[m][0] * (CSX - 1), y, z + M[m][1] * (CSZ - 1), r]]));
+  comodosNovos(g, ctx, D, cm, unidades);   // sala, cozinha, banheiro, quarto dos pais, forro, telhado e sótão (já no tamanho real)
+  if (foco && cm === 'sotao') { const l = new THREE.PointLight(0xffe6b8, n ? 60 : 38, 34, 1.4); l.position.set(0, SOTAO + TELHADO - 3.2, -CD / 2); g.add(l); }
+  else if (foco) { const [x, z] = COMODOS_MUNDO[ctx.comodo || 'sala']; luzInterna(g, x, z, h, n, 1.2, 34); }   // só a luz do cômodo da cena (cada luz pesa no render)
+  // âncoras: quarto (móveis ampliados) + cômodos novos (coordenadas reais)
+  const M = { cama: [-11.1, -16.3], pc: [-7.0, -14] }, A = (x, y, z, r, m) => [x + M[m][0] * (CSX - 1), y, z + M[m][1] * (CSZ - 1), r];
+  g.userData.ancoras = { deitar: A(-11.1, 1.65, -13.6, 0, 'cama'), dormir: A(-11.1, 1.65, -13.6, 0, 'cama'), jogar_pc: A(-6.7, 0.7, -14, 90, 'pc'),
+    cozinhar: [17.3, 0.2, -6.7, 90], lavar_louca: [17.3, 0.2, -11.4, 90], deitar_pais: [11.6, 1.65, -22.4, 0], sentar: [-7.6, 0.2, -12.4, 0] };
   usarAssentos(g.userData.ancoras, assentosDe(g), -5);
   return g;
+}
+
+/** Cômodos da casa do protagonista em coordenadas reais (x −20,8..20,8 · z 0..−29; frente em z 0). */
+function comodosNovos(g, ctx, D, cm, unidades) {
+  const { n } = ctx, h = CASA.h, Y = 0.2;
+  const qualR = (x, y, z) => y > h ? 'sotao' : z > -14.5 ? (x < 1.6 ? 'sala' : 'cozinha') : (x < -6.4 ? 'quarto' : x < 4.8 ? 'banheiro' : 'quarto_pais');
+  const P = (tipo, o, pos, vira = 0, esc) => { const p = PROPS[tipo](o); p.userData.tipo = tipo; p.position.set(...pos); p.rotation.y = vira * RAD; if (esc) p.scale.setScalar(esc); g.add(p);
+    p.userData.movel = true; p.userData.comodo = qualR(...pos); unidade(p, unidades); if (cm && p.userData.comodo !== cm) p.userData.oculto = true; return p; };
+  const fixo = (m) => { g.add(unidade(m, unidades)); return m; };   // estrutura (azulejo, forro, telhado): some junto com a parede quando tapa a câmera
+  // ---------- SALA (x −20,8..1,6 · z 0..−14,5): sofá de frente para a TV, estante, poltrona, luminária, quadro, cortina ----------
+  P('sofa', { cor: D.sofa }, [-6.8, Y, -13.1]); P('mesa_centro', {}, [-6.8, Y, -9.4]); P('tapete', { cor: D.tapete, cor2: D.tapete2, largura: 8, prof: 5.4 }, [-6.8, Y, -9.6]);
+  P('tv', {}, [-6.8, Y, -1.0], 180); P('poltrona', { cor: D.poltrona }, [-13.6, Y, -8.2], 40); P('luminaria', {}, [-10.9, Y, -13.6]);
+  P('quadro_parede', { texto: D.simbolo, cor: D.quadro }, [-6.8, 6.1, -14.2]); P('cortina', { cor: D.cortina, largura: 5.4 }, [-17.6, 6.7, -0.75], 180);
+  if (!D.pouco) { P('estante', {}, [-20.0, Y, -8.4], 90, 0.8); P('planta', {}, [-19.4, Y, -1.6]); P('ventilador_teto', {}, [-6.8, h, -8]); }
+  if (D.relogio) P('relogio_parede', {}, [-20.55, 6.6, -3.4], 90);
+  P('porta_retrato', { cor: D.quadro }, [-4.6, Y + 1.55, -1.1], 180);
+  // ---------- COZINHA (x 1,6..20,8 · z 0..−14,5): bancada em L na parede direita, armários aéreos, mesa de 4 lugares ----------
+  P('geladeira', {}, [19.3, Y, -1.6], -90); P('bancada', { largura: 3, cor: D.armario }, [19.4, Y, -4.1], -90); P('fogao', {}, [19.3, Y, -6.7], -90);
+  P('bancada', { largura: 1.6, cor: D.armario }, [19.4, Y, -8.6], -90); P('pia', {}, [19.3, Y, -11.4], -90);
+  P('armario', { largura: 7, cor: D.armario, cor2: D.armario }, [19.9, 6.4, -5.8], -90); P('microondas', {}, [19.4, Y + 2.8, -4.6], -90); P('cafeteira', {}, [19.4, Y + 2.8, -3.0], -90);
+  if (D.filtro) P('filtro_barro', {}, [19.4, Y + 2.8, -8.6], -90);
+  fixo(caixa(0.05, 2.3, 12.2, D.azulejo, { pos: [20.16, Y + 4.05, -7.0], sombra: false }));   // azulejo atrás da bancada
+  P('mesa_jantar', { largura: 5, cor: D.madeira }, [9.6, Y, -7.4]); P('fruteira', {}, [9.6, Y + 2.65, -7.4]); P('lampada_pendurada', { fio: 2.2 }, [9.6, h, -7.4]);
+  if (D.relogio || !D.pouco) P('relogio_parede', {}, [6.0, 6.8, -14.2]);
+  // ---------- BANHEIRO (x −6,4..4,8 · z −14,5..−29): azulejo até a meia parede, box, vaso, pia com espelho, toalha ----------
+  for (const [w2, d2, x, z] of [[0.05, 13.8, -6.22, -21.7], [0.05, 13.8, 4.62, -21.7], [10.8, 0.05, -0.8, -28.45]]) fixo(caixa(w2, 4.2, d2, D.azulejo, { pos: [x, Y + 2.1, z], sombra: false }));
+  P('box_chuveiro', {}, [2.5, Y, -26.3]); P('vaso_sanitario', {}, [-4.6, Y, -27.4]); P('pia_banheiro', {}, [-5.4, Y, -21.0], 90); P('espelho', {}, [-6.1, 5.2, -21.0], 90);
+  P('toalheiro', { cor: D.cortina }, [4.5, 4.6, -19.0], -90); P('tapete', { cor: D.tapete2, cor2: D.tapete, largura: 2.8, prof: 1.8 }, [-3.0, Y, -21.0]); P('cesto_roupa', {}, [3.4, Y, -16.2]);
+  // ---------- QUARTO DOS PAIS (x 4,8..20,8 · z −14,5..−29): cama de casal com criados e abajures, cômoda, guarda-roupa ----------
+  P('cama_casal', { cor: D.cama_pais }, [12.8, Y, -25.3]); for (const x of [9.3, 16.3]) { P('criado_mudo', { cor: D.madeira }, [x, Y, -27.6]); P('abajur', {}, [x, Y + 1.8, -27.6]); }
+  P('guarda_roupa', { largura: 5, cor: D.armario }, [19.1, Y, -22.5], -90); P('comoda', { cor: D.madeira }, [5.9, Y, -21.5], 90); P('porta_retrato', { cor: D.quadro }, [5.9, Y + 3.2, -20.4], 90);
+  P('quadro_parede', { texto: D.simbolo, cor: D.quadro }, [5.05, 6.4, -21.5], 90); P('tapete', { cor: D.tapete, cor2: D.tapete2, largura: 5, prof: 3 }, [12.8, Y, -20.4]); P('cortina', { cor: D.cortina, largura: 5 }, [12.8, 6.7, -28.2]);
+  // ---------- FORRO, TELHADO (cumeeira alta) E OITÕES COM JANELA REDONDA ----------
+  fixo(caixa(CW, 0.25, CD, '#f4f4f4', { pos: [0, h + 0.12, -CD / 2] }));
+  const a = Math.atan(TELHADO / (CD / 2)), L = Math.hypot(CD / 2, TELHADO) + 1.4, tel = grupo([]);
+  for (const s of [-1, 1]) { const zc = -CD / 2 + s * (CD / 4 + 0.35 * Math.cos(a)), yc = h + 0.25 + TELHADO / 2 - 0.35 * Math.sin(a);
+    tel.add(caixa(CW + 1.4, 0.4, L, '#c8643b', { pos: [0, yc + 0.22, zc], rot: [s * a / RAD, 0, 0] }));
+    tel.add(caixa(CW - 0.6, 0.1, L - 1.6, '#a07a52', { pos: [0, yc - 0.06, -CD / 2 + s * CD / 4], rot: [s * a / RAD, 0, 0], sombra: false })); }   // forro de madeira (por dentro)
+  tel.add(caixa(CW + 1.4, 0.35, 0.9, '#9a4a2b', { pos: [0, h + 0.25 + TELHADO + 0.3, -CD / 2] })); fixo(tel);
+  for (const s of [-1, 1]) { const sh = new THREE.Shape([new THREE.Vector2(-CD / 2, 0), new THREE.Vector2(CD / 2, 0), new THREE.Vector2(0, TELHADO)]);
+    const buraco = new THREE.Path(); buraco.absarc(0, TELHADO * 0.42, 1.3, 0, Math.PI * 2, false); sh.holes.push(buraco);
+    const ot = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.4, bevelEnabled: false }), mat(D.fachada)); ot.castShadow = ot.receiveShadow = true;
+    ot.rotation.y = Math.PI / 2; ot.position.set(s < 0 ? -CW / 2 + 0.05 : CW / 2 - 0.45, h + 0.25, -CD / 2); fixo(ot);
+    fixo(cilindro(1.3, 1.3, 0.08, mat(n ? '#ffe3a3' : '#a8dcff', n ? { emissive: '#ffd27a', emissiveIntensity: 0.8 } : { rough: 0.15 }), { pos: [s * (CW / 2 - 0.25), h + 0.25 + TELHADO * 0.42, -CD / 2], rot: [0, 0, 90], seg: 20, sombra: false }));
+    fixo(cilindro(1.5, 1.5, 0.5, '#ffffff', { pos: [s * (CW / 2 - 0.25), h + 0.25 + TELHADO * 0.42, -CD / 2], rot: [0, 0, 90], seg: 20 })).scale.set(1, 1, 1); }
+  // ---------- SÓTÃO (em cima do forro, sob o telhado): tábuas, caixas, baú, móveis cobertos, cadeira de balanço, alçapão ----------
+  fixo(caixa(CW - 1, 0.06, CD - 1.2, '#9c7448', { pos: [0, SOTAO - 0.03, -CD / 2], sombra: false }));
+  for (let z = -2.5; z > -CD + 1; z -= 1.8) fixo(caixa(CW - 1.2, 0.02, 0.06, '#7a5636', { pos: [0, SOTAO + 0.005, z], sombra: false }));
+  P('pilha_caixas', { n: 3, seed: 1 }, [-13.5, SOTAO, -10.5]); P('pilha_caixas', { n: 2, seed: 4 }, [-15.5, SOTAO, -17.5], 20); P('pilha_caixas', { n: 3, seed: 7 }, [11.5, SOTAO, -18.5], -15);
+  P('bau', {}, [-6.5, SOTAO, -19.2]); P('cadeira_balanco', {}, [6.0, SOTAO, -12.0], -30); P('movel_coberto', { largura: 3.6, altura: 3.4 }, [14.5, SOTAO, -11.5], -10);
+  P('movel_coberto', { largura: 2.2, altura: 2.4, prof: 1.6 }, [1.5, SOTAO, -19.0], 15); P('espelho_grande', { cor: '#8a6a3a', largura: 2.6, altura: 4.2 }, [-16.0, SOTAO, -13.5], 65);
+  const q = P('quadro_parede', { texto: D.simbolo, cor: D.quadro }, [8.5, SOTAO + 2.1, -19.4], -5); q.rotation.x = -0.2;
+  P('alcapao', {}, [-8.5, SOTAO, -11.0]); P('lampada_pendurada', { fio: 1.6, cor: '#5a5d66' }, [-3, SOTAO + TELHADO - 0.3, -CD / 2]);
 }
 
 // ---------------- layout do mapa ----------------
@@ -403,7 +460,7 @@ export function construirMundo(o, g, r) {
       caixa(0.3, 2.2, 0.3, '#e8c25a', { pos: [0, 23.5, -2] }), caixa(1.3, 0.3, 0.3, '#e8c25a', { pos: [0, 23.9, -2] }), caixa(1.8, 2.2, 0.2, '#5a3a22', { pos: [0, 15, 0.05] })]);
     t.position.set(ig.f[0] + PREDIOS_MUNDO.igreja.tam[0] / 2 + 2.5, 0.2, ig.f[1]); g.add(t); }
   // casa do protagonista + rua do bairro
-  const casa = casaProtagonista({ ...ctx, foco: focoId === 'casa', comodo: o.comodo }); casa.position.set(CASA_LOTE.f[0], 0.2, CASA_LOTE.f[1]); casa.userData.lote = CASA_LOTE; g.add(casa);
+  const casa = casaProtagonista({ ...ctx, foco: focoId === 'casa', comodo: o.comodo, decoracao: o.decoracao }); casa.position.set(CASA_LOTE.f[0], 0.2, CASA_LOTE.f[1]); casa.userData.lote = CASA_LOTE; g.add(casa);
   por(g, 'muro', { largura: CASA.w * CSX + 4, cor: '#e9e6dc', portao_x: -6 * CSX, portao_cor: '#1d3b72' }, [CASA_LOTE.f[0], 0.2, -5.6]); por(g, 'carro', { cor: '#c4281c' }, [CASA_LOTE.f[0] + 7, 0.2, -8.6], 90, 0.9);
   const cores = ['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a'];
   const LOJAS_BAIRRO = [[100 + BX, 1], [139 + BX, -1], [178 + BX, 1]];   // [x, lado] ocupados por mercadinho, oficina e borracharia
@@ -526,7 +583,7 @@ export function enquadrarMundo(g, { local, dentro, comodo }) {
     ref = g.children.find(c => c.userData?.lote === lote);
     const rb = lote.rot * RAD; r = lote.rot;
     let lp = [ref?.userData.portaX || 0, 2.6]; chao = 0.2;   // fora: na calçada, em frente à porta
-    if (local === 'casa' && (comodo || dentro)) { const cz = COMODOS_MUNDO[comodo || 'sala']; lp = [cz[0], cz[1]]; chao = 0.4; }
+    if (local === 'casa' && (comodo || dentro)) { const cz = COMODOS_MUNDO[comodo || 'sala']; lp = [cz[0], cz[1]]; chao = comodo === 'sotao' ? 0.2 + SOTAO : 0.4; }
     else if (dentro) { lp = [0, -(ref?.userData.d || 12) * 0.42]; chao = 0.4; }
     const [dx, dz] = rot(lp[0], lp[1], rb); S = [lote.f[0] + dx, lote.f[1] + dz];
     if (dentro || comodo) ancLocal = ref?.userData.ancoras || {};
@@ -542,11 +599,12 @@ export function enquadrarMundo(g, { local, dentro, comodo }) {
   if (lote && (dentro || comodo)) {
     let R;   // retângulo do ambiente em coordenadas do lote [x0, x1, z0, z1]
     if (local === 'casa') { const C = { sala: [-13, 1, -10, 0], cozinha: [1, 13, -10, 0], quarto: [-13, -4, -20, -10], quarto_menina: [-13, -4, -20, -10], banheiro: [-4, 3, -20, -10], quarto_pais: [3, 13, -20, -10] }[comodo || 'sala'];
-      if (C) R = [C[0] * CSX, C[1] * CSX, C[2] * CSZ, C[3] * CSZ]; }
+      if (comodo === "sotao") R = [-CW / 2 + 1.5, CW / 2 - 1.5, -CD / 2 - 8.5, -CD / 2 + 8.5];
+      else if (C) R = [C[0] * CSX, C[1] * CSX, C[2] * CSZ, C[3] * CSZ + QUARTA_PAREDE]; }   // a câmera pode recuar além da parede da frente do cômodo (ela some no corte), como num set
     else if (ref) R = [-ref.userData.w / 2, ref.userData.w / 2, -ref.userData.d, 0];
     if (R) { const pts = [[R[0], R[2]], [R[1], R[2]], [R[0], R[3]], [R[1], R[3]]].map(([lx, lz]) => { const [ax, az] = rot(lx, lz, lote.rot * RAD); return rot(lote.f[0] + ax - S[0], lote.f[1] + az - S[1], th); });
       const m = 0.7, xs = pts.map(p => p[0]), zs = pts.map(p => p[1]);
-      limites = { x0: Math.min(...xs) + m, x1: Math.max(...xs) - m, z0: Math.min(...zs) + m, z1: Math.max(...zs) - m, y: (local === 'casa' ? CASA.h : ref?.userData.h || 9) - 1.2 }; }
+      limites = { x0: Math.min(...xs) + m, x1: Math.max(...xs) - m, z0: Math.min(...zs) + m, z1: Math.max(...zs) - m, y: comodo === "sotao" ? 3.0 : (local === 'casa' ? CASA.h : ref?.userData.h || 9) - 1.2 }; }
   }
   if (lote) for (const [k, v] of Object.entries(ancLocal)) {
     if (k === 'fila') { const [ix, iz] = rot(v.inicio[0], v.inicio[1], lote.rot * RAD); const [mx, mz] = [lote.f[0] + ix - S[0], lote.f[1] + iz - S[1]]; const [fx, fz] = rot(mx, mz, th);

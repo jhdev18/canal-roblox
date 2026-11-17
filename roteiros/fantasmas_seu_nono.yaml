@@ -1,5 +1,6 @@
 titulo: Nesse mundo toda casa velha tem um fantasma
 clima: engracado
+decoracao: vovo   # decoração da casa do protagonista nesta história
 destaque: [fantasma, assustar, ronco]
 # História original (docs/HISTORIAS.md · curta 3) — comédia em lista, ~40 s, na casa do protagonista do mundo integrado.
 
@@ -41,7 +42,7 @@ cenas:
 
   # --- 1º fantasma ---
   - fala: O primeiro fantasma arrasta correntes no sótão.
-    comodo: quarto_pais
+    comodo: sotao
     hora: noite
     cam: aberto
     angulo: 20
@@ -84,9 +85,8 @@ cenas:
   - fala: Hoje os três tomam café com ele toda manhã
     comodo: cozinha
     hora: dia
-    cam: alto
-    angulo: 180
-    dist: 1.25
+    cam: medio
+    angulo: 90
     atores: [{ id: nono, acao: sentar, rosto: feliz }, { id: f1, acao: sentar, rosto: feliz }, { id: f2, acao: sentar, rosto: rindo }, { id: f3, acao: sentar, rosto: feliz }]
   - fala: e assistem novela juntos.
     comodo: sala

@@ -7,7 +7,7 @@ const m = await abrirMotor({ largura: 360, altura: 640, fps: 30, ao: true, sombr
 const logs = []; m.page.on('console', msg => { if (msg.text().includes('[motor]')) logs.push(msg.text()); });
 const out = [];
 for (const i of ids) { const c = rot.cenas[i - 1];
-  const v = { cenario: c.cenario, local: c.local, comodo: c.comodo, dentro: c.dentro, hora: c.hora, tela: c.tela, camera: c.camera, mov: c.mov, angulo: c.angulo, dist: c.dist, altura: c.altura, foco: c.foco, props: c.props, dur: 3, multidao: c.multidao, alcance: c.alcance, alvo_xz: c.alvo_xz,
+  const v = { cenario: c.cenario, local: c.local, comodo: c.comodo, decoracao: c.decoracao, dentro: c.dentro, hora: c.hora, tela: c.tela, camera: c.camera, mov: c.mov, angulo: c.angulo, dist: c.dist, altura: c.altura, foco: c.foco, props: c.props, dur: 3, multidao: c.multidao, alcance: c.alcance, alvo_xz: c.alvo_xz,
     atores: c.atores.map(x => ({ ...x, spec: { ...x.spec } })) };
   await m.page.evaluate(c => window.motor.montar(c), v);
   for (const q of [1, 45, 89]) out.push([`${i}. ${c.fala.slice(0, 22)} · ${(q / 30).toFixed(1)}s`, await m.page.evaluate(q => window.motor.quadro(q), q)]); }

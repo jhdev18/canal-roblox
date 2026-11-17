@@ -1,5 +1,6 @@
 titulo: Nesse mundo quem boceja dorme
 clima: engracado
+decoracao: simples   # decoração da casa do protagonista nesta história
 destaque: [bocejo, dorme, pão]
 # História original (docs/HISTORIAS.md · longa 1) — comédia em cadeia, ~2 min, no mundo integrado.
 
@@ -187,9 +188,9 @@ cenas:
     onde: mundo
     local: casa
     comodo: cozinha
-    cam: medio
-    angulo: 30
-    atores: [{ id: nina, acao: cozinhar }, { id: tiao, acao: espreguicar, x: -2.6, z: 2.4, vira: 30 }]
+    cam: aberto
+    angulo: -70
+    atores: [{ id: nina, acao: cozinhar }, { id: tiao, acao: espreguicar, x: 3.6, z: -3.2, vira: -120 }]
   - fala: Cheiro de pão quente acorda quem dorme por bocejo.
     onde: mundo
     local: padaria

@@ -1,5 +1,6 @@
 titulo: Nesse mundo a tristeza vira nuvem de chuva
 clima: triste
+decoracao: colorida   # decoração da casa do protagonista nesta história
 destaque: [nuvem, chuva, guarda-chuva]
 # História original (docs/HISTORIAS.md · curta 2) — terror que vira emoção, ~40 s.
 # A nuvem é o indicador da regra: sobre: { tipo: nuvem_cabeca } (maior = mais triste).

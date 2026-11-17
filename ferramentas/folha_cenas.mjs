@@ -7,7 +7,7 @@ const m = await abrirMotor({ largura: 360, altura: 640, fps: 30, ao: true, sombr
 const out = [];
 const sel = new Set((process.argv[4] || "1-99").split(",").flatMap(p => { const [a, b] = p.split("-").map(Number); return Array.from({ length: (b || a) - a + 1 }, (_, k) => a + k); }));
 for (const [i, c] of rot.cenas.entries()) { if (!sel.has(i + 1)) continue;
-  const v = { cenario: c.cenario, local: c.local, comodo: c.comodo, dentro: c.dentro, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, camera: c.camera, mov: c.mov,
+  const v = { cenario: c.cenario, local: c.local, comodo: c.comodo, decoracao: c.decoracao, dentro: c.dentro, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, camera: c.camera, mov: c.mov,
     angulo: c.angulo, dist: c.dist, altura: c.altura, inclinar: c.inclinar, foco: c.foco, props: c.props, alvo_xz: c.alvo_xz, dur: 2, multidao: c.multidao, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque, alcance: c.alcance,
     atores: c.atores.map(x => ({ ...x, spec: { ...x.spec } })) };
   await m.page.evaluate(c => window.motor.montar(c), v); out.push([`${i + 1}. ${c.fala}`, await m.page.evaluate(() => window.motor.quadro(30))]); }

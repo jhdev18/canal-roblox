@@ -1,5 +1,6 @@
 titulo: Nesse mundo toda promessa vira uma pedra
 clima: triste
+decoracao: padrao   # decoração da casa do protagonista nesta história
 destaque: [promessa, pedra, volto]
 # História original (docs/HISTORIAS.md · longa 2) — aventura emocionante, ~2 min.
 # Pedra no bolso: sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true } · mochila de pedras: sobre: { tipo: saco_pedras, altura: 3.4, x: 0, z: -1.0, fixo: true }
@@ -207,17 +208,17 @@ cenas:
     local: casa
     hora: tarde
     cam: aberto
-    altura: 5
+    altura: 7.5
     alvo_xz: [0, -2]
     props: [{ tipo: chuva, largura: 30, prof: 30 }, { tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: clara, acao: implorar, rosto: chorando, x: 0, y: 10.1, z: -4.5 }]
+    atores: [{ id: clara, acao: implorar, rosto: chorando, x: 0, y: 10.8, z: -4.5 }]
   - fala: presa no telhado da casa.
     hora: tarde
     cam: medio
-    altura: 3
+    altura: 8.5
     alvo_xz: [0, -4.5]
     props: [{ tipo: chuva, largura: 30, prof: 30 }, { tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: clara, acao: chorar, x: 0, y: 10.1, z: -4.5 }]
+    atores: [{ id: clara, acao: chorar, x: 0, y: 10.8, z: -4.5 }]
   - fala: O barco não chegava lá.
     hora: tarde
     cam: aberto
@@ -251,10 +252,10 @@ cenas:
   - fala: Chegou no telhado e abraçou a Clara.
     hora: tarde
     cam: aberto
-    altura: 5
+    altura: 7.5
     alvo_xz: [0, -2]
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: leo, acao: abracar, rosto: chorando, x: -0.7, y: 10.1, z: -4.5, vira: 70 }, { id: clara, acao: abracar, rosto: chorando, x: 0.6, y: 10.1, z: -4.5, vira: -70 }]
+    atores: [{ id: leo, acao: abracar, rosto: chorando, x: -0.7, y: 10.8, z: -4.5, vira: 70 }, { id: clara, acao: abracar, rosto: chorando, x: 0.6, y: 10.8, z: -4.5, vira: -70 }]
   - fala: E nadou de volta.
     hora: tarde
     cam: medio

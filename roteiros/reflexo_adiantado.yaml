@@ -1,5 +1,6 @@
 titulo: Nesse mundo todo reflexo é atrasado
 clima: suspense
+decoracao: moderna   # decoração da casa do protagonista nesta história
 destaque: [reflexo, antes, aprendendo]
 # História original (docs/HISTORIAS.md · curta 1) — terror, ~35 s. Reflexo = cópia translúcida atrás do vidro (spec reflexo: true)
 # com `atraso`: −1 = um segundo atrasado, +1 = um segundo adiantado. Um vidro na calçada da padaria (x ≈ 8); o reflexo fica logo atrás dele.

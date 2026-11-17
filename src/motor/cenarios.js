@@ -8,7 +8,7 @@ import { construirCidade, enquadrarLocal } from './cidade.js';
 import { INTERIORES } from './interiores.js';
 import { construirCasa, enquadrarComodo } from './casa.js';
 import { construirMundo, enquadrarMundo, recortarMundo } from './mundo.js';
-export { LOCAIS_MUNDO, LOCAIS_COM_INTERIOR, COMODOS_DO_MUNDO } from './mundo.js';
+export { LOCAIS_MUNDO, LOCAIS_COM_INTERIOR, COMODOS_DO_MUNDO, DECORACOES } from './mundo.js';
 export { COMODOS_CASA } from './casa.js';
 export { INTERIOR_DO_LOCAL } from './interiores.js';
 

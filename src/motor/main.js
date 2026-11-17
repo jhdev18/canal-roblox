@@ -70,7 +70,7 @@ function posNoTempo(a, t) { // posição da raiz do ator no tempo t (sem tocar n
 async function montar(c) {
   if (atual) { cena.remove(atual.raiz); }
   const raiz = new THREE.Group(); cena.add(raiz);
-  const cen = construirCenario(c.cenario, { local: c.local, comodo: c.comodo, dentro: c.dentro, alcance: c.alcance, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque });
+  const cen = construirCenario(c.cenario, { local: c.local, comodo: c.comodo, decoracao: c.decoracao, dentro: c.dentro, alcance: c.alcance, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque });
   raiz.add(cen.grupo);
   cena.background = cor(cen.ceu); cena.fog = new THREE.Fog(cor(cen.ceu), cen.nevoa[0], cen.nevoa[1]);
   const sr = cen.sombra || 35; Object.assign(sol.shadow.camera, { left: -sr, right: sr, top: sr, bottom: -sr, far: 120 + sr * 2 }); sol.shadow.camera.updateProjectionMatrix();
@@ -260,7 +260,7 @@ function portasECortes() {
     pt.piv.rotation.y = THREE.MathUtils.degToRad(85) * Math.min(1, Math.max(0, (4.6 - dmin) / 2.0));
   }
   if (!atual.unidades.length) return;
-  for (const u of atual.unidades) u.visible = !u.userData.oculto;
+  for (const u of atual.unidades) u.visible = !u.userData.oculto && !(u.userData.movel && u.userData.caixa && u.userData.caixa.distanceToPoint(cam.position) < 3.2);   // móvel colado na lente (TV de costas etc.) some
   const foco = atual.c.foco; // com foco, só o ator em foco abre o corte (quem está do outro lado não apaga a fachada)
   for (const a of atual.atores) { if (a.figurante || (foco && a.id !== foco)) continue; a.ator.raiz.getWorldPosition(_v);
     for (const dy of [4.4, 2.6, 0.9]) { const p = _v.clone(); p.y += dy; const dir = p.sub(cam.position); const dist = dir.length(); _rc.set(cam.position, dir.normalize()); _rc.far = dist - 0.25;
@@ -332,7 +332,7 @@ async function preview() {
 /** Posição na tela (pixels) de pontos do mundo [[x,y,z],...] — usado para escrever nomes no mapa. */
 function projetar(pts) { posar(0); cam.updateMatrixWorld(); return pts.map(p => { const v = new THREE.Vector3(...p).project(cam); return [(v.x + 1) / 2 * cfg.largura, (1 - v.y) / 2 * cfg.altura]; }); }
 /** Conferência do cenário montado: construções que se sobrepõem, objetos dentro de construções e construções baixas demais para o personagem (5,2). */
-const PAR_OK = [[/^mesa/, /cadeira|computador|banqueta/], [/carrinho/, /carrinho/], [/altar/, /vaso/], [/balcao|estufa/, /caixa_registradora|cafeteira|cesto|balanca/], [/criado_mudo|mesa/, /abajur|console/]];   // encaixes de propósito
+const PAR_OK = [[/^mesa/, /cadeira|computador|banqueta/], [/carrinho/, /carrinho/], [/altar/, /vaso/], [/balcao|estufa/, /caixa_registradora|cafeteira|cesto|balanca/], [/criado_mudo|mesa/, /abajur|console/], [/tv|comoda|mesa/, /porta_retrato|fruteira/]];   // encaixes de propósito
 function conferir() {
   const CONSTR = /^(casa_br|sobrado|casa|loja|predio|posto_gasolina|banca_jornal|barraca|ponto_onibus|lote:|casa_prot)/, OBJ = /^(arvore|poste|poste_fios|carro|taxi|onibus|banco|lixeira|bicicletario|placa_rua|orelhao)$/;
   const itens = []; cena.updateMatrixWorld(true);
@@ -346,7 +346,7 @@ function conferir() {
   for (const c of C) if (!/ponto_onibus|barraca|banca/.test(c.t) && c.b.max.y - c.b.min.y < 7) res.baixas.push([c.t, c.p, +(c.b.max.y - c.b.min.y).toFixed(1)]);
   res.janelas_baixas = [];   // vidro azulado fino na fachada com o topo abaixo da cabeça do personagem (5,2)
   for (const c of C) { if (/ponto_onibus|banca|barraca|posto/.test(c.t)) continue; const o = itens.find(i => i === c)?.o; if (!o) continue; let k = 0;
-    o.traverse(m => { if (!m.isMesh || !m.geometry?.parameters || k) return; const { width: W, height: H, depth: D } = m.geometry.parameters; if (W === undefined || Math.min(W, D) > 0.4 || H < 1 || H > 4.5) return;
+    o.traverse(m => { if (!m.isMesh || !m.geometry?.parameters || k) return; const { width: W, height: H, depth: D } = m.geometry.parameters; if (W === undefined || Math.min(W, D) > 0.4 || Math.max(W, D) > 7 || H < 1 || H > 4.5) return;   // faixa de azulejo não é janela
       const cor = m.material?.color; if (!cor || !(cor.b > cor.r + 0.08)) return; let p = m, dentro = false; while (p && p !== o) { if (p.userData.interior || p.userData.movel) dentro = true; p = p.parent; } if (dentro) return;   // móvel de dentro (TV etc.) não conta
       const bb = new THREE.Box3().setFromObject(m); if (bb.max.y - c.b.min.y < 5.5 && bb.min.y - c.b.min.y > 0.4) { k = 1; res.janelas_baixas.push([c.t, c.p, +(bb.min.y - c.b.min.y).toFixed(1), +(bb.max.y - c.b.min.y).toFixed(1)]); } }); }
   res.moveis_sobrepostos = [];   // dentro dos prédios: móvel atravessando móvel (tapete, quadro e pôster podem)

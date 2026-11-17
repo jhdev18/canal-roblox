@@ -72,6 +72,29 @@ export const MOVEIS_CASA = {
   luminaria: () => grupo([cilindro(0.5, 0.5, 0.1, '#333', { pos: [0, 0.05, 0] }), cilindro(0.06, 0.06, 5, '#333', { pos: [0, 2.5, 0] }),
     cilindro(0.5, 0.9, 1.0, mat('#fff3d6', { emissive: '#ffd27a', emissiveIntensity: 0.7 }), { pos: [0, 5.2, 0], sombra: false })]),
   poster: (o = {}) => { if (o.icone) return posterIcone(o); const p = placaTexto(o.texto || 'GAMER', 2.4, 3.2, { fundo: o.cor || '#6b32a8', corTexto: o.cor_texto || '#ffd23f' }); return grupo([p]); },
+  // cozinha
+  bancada: (o = {}) => { const w = o.largura || 3, c = o.cor || '#e9e6dc', g = grupo([caixa(w, 2.6, 1.6, c, { pos: [0, 1.3, 0] }), caixa(w + 0.1, 0.18, 1.75, o.tampo || '#8c8f99', { pos: [0, 2.72, 0.05] }),
+      caixa(w, 0.3, 0.1, '#5a5d66', { pos: [0, 0.15, 0.81] })]);
+    for (let x = -w / 2 + 0.75; x < w / 2; x += 1.5) { g.add(caixa(1.35, 2.0, 0.05, o.cor2 || '#f6f4ee', { pos: [x, 1.35, 0.82] })); g.add(caixa(0.08, 0.5, 0.08, '#555', { pos: [x + 0.5, 1.6, 0.87] })); } return g; },
+  microondas: () => grupo([caixa(1.6, 0.9, 1.0, '#f2f3f3', { pos: [0, 0.45, 0], round: 0.06 }), caixa(1.0, 0.65, 0.05, '#1b1b1b', { pos: [-0.2, 0.45, 0.51] }), caixa(0.25, 0.65, 0.05, '#5a5d66', { pos: [0.58, 0.45, 0.51] })]),
+  fruteira: () => { const g = grupo([cilindro(0.75, 0.4, 0.35, '#c9a24a', { pos: [0, 0.18, 0], seg: 14 })]);
+    for (const [x, z, c] of [[-0.3, 0, '#e53935'], [0.25, 0.15, '#fdd835'], [0.05, -0.3, '#ff8c1a'], [0, 0.05, '#7fd35a']]) g.add(esfera(0.25, c, { pos: [x, 0.5, z] })); return g; },
+  filtro_barro: () => grupo([cilindro(0.55, 0.5, 1.1, '#b5653b', { pos: [0, 0.55, 0], seg: 16 }), cilindro(0.5, 0.55, 1.0, '#b5653b', { pos: [0, 1.6, 0], seg: 16 }),
+    cilindro(0.3, 0.3, 0.12, '#9a4a2b', { pos: [0, 2.16, 0], seg: 12 }), cilindro(0.04, 0.04, 0.3, '#d8d4cc', { pos: [0, 0.5, 0.6], rot: [90, 0, 0], seg: 6 })]),
+  lampada_pendurada: (o = {}) => { const fio = o.fio || 1.6; return grupo([cilindro(0.03, 0.03, fio, '#222', { pos: [0, -fio / 2, 0], seg: 5 }),   // pendurada pelo teto (pos = ponto no teto)
+    cilindro(0.15, 0.6, 0.5, o.cor || '#2b2d33', { pos: [0, -fio - 0.2, 0], seg: 14 }), esfera(0.22, mat('#fff6d8', { emissive: '#ffe2a0', emissiveIntensity: 1.2 }), { pos: [0, -fio - 0.45, 0], sombra: false })]); },
+  // banheiro
+  toalheiro: (o = {}) => grupo([caixa(2.0, 0.08, 0.08, '#c0c4cc', { pos: [0, 0, 0.25] }), caixa(1.6, 1.8, 0.12, o.cor || '#4f9fd1', { pos: [0, -0.85, 0.3], round: 0.04 })]),   // na parede (pos = barra)
+  cesto_roupa: (o = {}) => grupo([cilindro(0.65, 0.55, 1.6, o.cor || '#d9c9a3', { pos: [0, 0.8, 0], seg: 14 }), cilindro(0.7, 0.7, 0.12, '#bfae86', { pos: [0, 1.66, 0], seg: 14 })]),
+  // sótão
+  bau: (o = {}) => grupo([caixa(3.2, 1.6, 1.8, o.cor || '#6b4426', { pos: [0, 0.8, 0] }), caixa(3.3, 0.5, 1.9, '#5a3a22', { pos: [0, 1.85, 0], round: 0.2 }),
+    ...[-1.1, 1.1].map(x => caixa(0.25, 2.1, 1.95, '#c9a24a', { pos: [x, 1.05, 0] })), caixa(0.4, 0.45, 0.1, '#c9a24a', { pos: [0, 1.55, 0.95] })]),
+  cadeira_balanco: (o = {}) => { const c = o.cor || '#7c5c46', g = grupo([caixa(2.0, 0.25, 1.8, c, { pos: [0, 1.7, 0] }), caixa(2.0, 2.6, 0.2, c, { pos: [0, 3.0, -0.95], rot: [-12, 0, 0] })]);
+    for (const x of [-0.95, 0.95]) { g.add(caixa(0.15, 0.15, 3.0, c, { pos: [x, 0.35, 0], rot: [0, 0, 0] })); g.add(caixa(0.15, 1.4, 0.15, c, { pos: [x, 1.0, 0.7] })); g.add(caixa(0.15, 1.4, 0.15, c, { pos: [x, 1.0, -0.7] }));
+      g.add(caixa(0.15, 0.15, 1.6, c, { pos: [x, 2.5, 0.1] })); } return g; },
+  movel_coberto: (o = {}) => { const w = o.largura || 3.5, h = o.altura || 3.2; return grupo([caixa(w, h, o.prof || 2, '#eeeae0', { pos: [0, h / 2, 0], round: 0.35 }), caixa(w + 0.3, 0.3, (o.prof || 2) + 0.3, '#e2ddd0', { pos: [0, 0.15, 0], round: 0.12 })]); },   // lençol sobre um móvel velho
+  alcapao: () => grupo([caixa(3.2, 0.1, 3.2, '#5a3a22', { pos: [0, 0.05, 0] }), caixa(2.6, 0.12, 2.6, '#140e08', { pos: [0, 0.06, 0], sombra: false }),
+    ...[-0.9, 0.9].map(x => caixa(0.15, 1.6, 0.15, '#a8754a', { pos: [x, 0.8, -1.0] })), caixa(1.95, 0.12, 0.12, '#a8754a', { pos: [0, 1.4, -1.0] })]),   // abertura no piso com o topo da escada
   // quarto de menino (detalhes)
   abajur: (o = {}) => grupo([cilindro(0.35, 0.4, 0.15, '#333', { pos: [0, 0.08, 0], seg: 12 }), cilindro(0.06, 0.06, 0.9, '#333', { pos: [0, 0.6, 0], seg: 6 }),
     cilindro(0.3, 0.55, 0.6, mat(o.cor || '#fff3d6', { emissive: '#ffe2a0', emissiveIntensity: 0.35 }), { pos: [0, 1.25, 0], seg: 14 })]),

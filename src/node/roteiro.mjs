@@ -4,7 +4,7 @@ import YAML from 'yaml';
 import { p, sugerir } from './util.mjs';
 import { NOMES_ACOES } from '../motor/acoes.js';
 import { NOMES_CAMERAS, MOVIMENTOS } from '../motor/camera.js';
-import { NOMES_CENARIOS, INTERIOR_DO_LOCAL, COMODOS_CASA, LOCAIS_MUNDO, LOCAIS_COM_INTERIOR, COMODOS_DO_MUNDO } from '../motor/cenarios.js';
+import { NOMES_CENARIOS, INTERIOR_DO_LOCAL, COMODOS_CASA, LOCAIS_MUNDO, LOCAIS_COM_INTERIOR, COMODOS_DO_MUNDO, DECORACOES } from '../motor/cenarios.js';
 import { LOCAIS } from '../motor/cidade.js';
 import { NOMES_PROPS } from '../motor/props.js';
 import { NOMES_ACESSORIOS, NOMES_ROUPAS, NOMES_PROPS_MAO } from '../motor/personagem.js';
@@ -69,6 +69,7 @@ export function carregarRoteiro(arquivo) {
       idx: i, fala: c.fala ? String(c.fala) : '', dur: c.dur, som: c.som, audio: c.audio,
       cenario: c.onde ?? c.cenario ?? ant.cenario ?? 'rua', local: c.local ?? (c.onde === undefined && c.cenario === undefined ? ant.local : undefined),
       comodo: c.comodo ?? (c.onde === undefined && c.cenario === undefined && c.local === undefined && c.dentro === undefined ? ant.comodo : undefined),
+      decoracao: c.decoracao ?? r.decoracao ?? ant.decoracao,
       dentro: c.dentro ?? (c.onde === undefined && c.cenario === undefined && c.local === undefined ? ant.dentro : undefined), hora: c.hora ?? ant.hora ?? 'dia', seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela,
       camera: c.cam ?? c.camera ?? CAM_CICLO[i % CAM_CICLO.length][0], mov: c.mov, angulo: c.angulo ?? (c.cam || c.camera ? undefined : CAM_CICLO[i % CAM_CICLO.length][1]),
       dist: c.dist, altura: c.altura, inclinar: c.inclinar, foco: c.foco, props: c.props || [],
@@ -112,6 +113,7 @@ export function carregarRoteiro(arquivo) {
       if (cen.comodo && !cen.local) cen.local = 'casa';
       cen.local ??= 'praca'; checar('local do mundo', cen.local, LOCAIS_MUNDO, onde);
       if (cen.dentro && !LOCAIS_COM_INTERIOR.includes(cen.local)) throw new Error(`${onde}: "${cen.local}" não tem interior. Com interior: ${LOCAIS_COM_INTERIOR.join(', ')}`);
+      if (cen.decoracao !== undefined && typeof cen.decoracao !== 'number') checar('decoração', cen.decoracao, Object.keys(DECORACOES), onde);
       if (cen.comodo) { if (cen.local !== 'casa') throw new Error(`${onde}: \`comodo\` é da casa do protagonista (local: casa)`); checar('cômodo', cen.comodo, COMODOS_DO_MUNDO, onde); }
       if (cen.local === 'casa' && cen.dentro && !cen.comodo) cen.comodo = 'sala';
     } else if (c.dentro) { // dentro do prédio: troca o local da cidade pelo cenário interior correspondente
