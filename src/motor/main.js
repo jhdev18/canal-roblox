@@ -190,11 +190,12 @@ function portasECortes() {
   if (!atual.unidades.length) return;
   for (const u of atual.unidades) u.visible = !u.userData.oculto;
   const foco = atual.c.foco; // com foco, só o ator em foco abre o corte (quem está do outro lado não apaga a fachada)
+  const pos = atual.atores.filter(a => !a.figurante).map(a => a.ator.raiz.getWorldPosition(new THREE.Vector3()));
   for (const a of atual.atores) { if (a.figurante || (foco && a.id !== foco)) continue; a.ator.raiz.getWorldPosition(_v);
     cam.updateMatrixWorld(); _lado.setFromMatrixColumn(cam.matrixWorld, 0).setY(0).normalize();   // também ao lado do ator: parede que tapa meia tela some (ex.: câmera de lado num cômodo estreito)
     for (const [dy, dl] of [[4.4, 0], [2.6, 0], [0.9, 0], [2.6, -2.2], [2.6, 2.2]]) { const p = _v.clone().addScaledVector(_lado, dl); p.y += dy; const dir = p.sub(cam.position); const dist = dir.length(); _rc.set(cam.position, dir.normalize()); _rc.far = dist - 0.25;
       for (const h of _rc.intersectObjects(atual.corteMeshes, false)) { const u = h.object.userData.unidade; if (!u) continue;
-        if (u.userData.movel && u.userData.caixa.distanceToPoint(_v) < 2.6) continue;   // móvel colado no ator (cadeira, cama): fica
+        if (u.userData.movel && pos.some(q => u.userData.caixa.distanceToPoint(q) < 2.6)) continue;   // móvel colado em qualquer ator (cadeira, carteira, cama): fica
         u.visible = false; } } }
 }
 

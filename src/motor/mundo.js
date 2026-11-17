@@ -264,8 +264,8 @@ const PREDIOS_MUNDO = {
       // biblioteca
       por('estante_livros', { largura: 5, seed: 7 }, [6.0, 0.2, -39.1]); por('estante_livros', { largura: 5, seed: 11 }, [11.6, 0.2, -39.1]); por('estante_livros', { largura: 4.5, seed: 4 }, [3.75, 0.2, -34], 90);
       por('placa_suspensa', { texto: 'SILÊNCIO', cor: '#6b32a8', largura: 3 }, [9, 7.8, -37.5]);
-      por('mesa', { largura: 5, cor: '#8a5a33' }, [9.5, 0.2, -33.5]); for (const x of [8.2, 10.8]) { por('cadeira', { cor: '#6b32a8' }, [x, 0.2, -35.2]); por('cadeira', { cor: '#6b32a8' }, [x, 0.2, -31.8], 180); }
-      por('globo', {}, [11.2, 2.45, -33.6]); solto(grupo([caixa(1.0, 0.25, 0.8, '#43a047', { pos: [8.4, 2.55, -33.4], rot: [0, 15, 0] }), caixa(1.0, 0.25, 0.8, '#e8862f', { pos: [8.5, 2.8, -33.4], rot: [0, -8, 0] })]));
+      por('mesa', { largura: 5, cor: '#8a5a33' }, [9.5, 0.2, -33.5]); for (const x of [8.2, 10.8]) por('cadeira', { cor: '#6b32a8' }, [x, 0.2, -35.2]); por('cadeira', { cor: '#6b32a8' }, [6.0, 0.2, -33.5], 90); por('cadeira', { cor: '#6b32a8' }, [13.0, 0.2, -33.5], -90);
+      solto(grupo([caixa(1.0, 0.25, 0.8, '#43a047', { pos: [8.4, 2.55, -33.4], rot: [0, 15, 0] }), caixa(1.0, 0.25, 0.8, '#e8862f', { pos: [8.5, 2.8, -33.4], rot: [0, -8, 0] })]));
       por('poltrona', { cor: '#c4281c' }, [13.3, 0.2, -26.3], -120); por('luminaria', {}, [14.0, 0.2, -24.2]); por('tapete', { cor: '#6b32a8', cor2: '#8e5bd0', largura: 5, prof: 3.5 }, [9, 0.2, -28.5]);
       por('poster', { texto: 'LEIA!', cor: '#e8862f', cor_texto: '#ffffff' }, [14.75, 5.5, -36], -90, 0.7); por('planta', {}, [4.0, 0.2, -24.0]);
       return {
