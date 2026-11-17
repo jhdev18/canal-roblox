@@ -33,6 +33,7 @@ Leia este arquivo primeiro. Ele resume o que já existe, as regras de trabalho c
 Quando o usuário mandar o retorno do rascunho, ajuste **só** as cenas citadas.
 
 ## Recursos que os roteiros já podem usar (resumo — detalhes em `docs/ROTEIRO.md`)
+- Casa do protagonista ampliada (cômodos 1,6× × 1,45×, pé-direito 9) para a câmera caber dentro dos cômodos.
 - Mundo integrado: `onde: mundo` + `local:` (+ `dentro: true` / `comodo:`). Prédios grandes, móveis na escala do personagem, assentos reais (`sentar`), filas com curva, portas automáticas, corte de parede, ninguém atravessa obstáculo.
 - `sobre:` = a regra visível acima da cabeça (`zzz`, `{ texto }`, ou prop como `nuvem_cabeca`, `pedra`, `saco_pedras`, com `altura/x/z/escala/fixo`).
 - `spec:` no ator (ajuste só na cena), `alvo_xz:` na cena (para onde a câmera mira), `hora: vermelho` (céu em chamas).

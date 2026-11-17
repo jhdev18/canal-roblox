@@ -250,7 +250,7 @@ const PREDIOS_MUNDO = {
       return { atender: [0, 0.2, -12.4, 0] }; } },
 };
 // casa do protagonista: térrea, 5 cômodos. Frente (z=0) olha +Z.
-const CASA = { w: 26, d: 20, h: 7.5 }, CSX = 1.3, CSZ = 1.2;   // planta desenhada em 26x20 e ampliada (paredes esticam, móveis só mudam de lugar)
+const CASA = { w: 26, d: 20, h: 9 }, CSX = 1.6, CSZ = 1.45;   // cômodos amplos e pé-direito alto: espaço para a câmera recuar dentro de casa   // planta desenhada em 26x20 e ampliada (paredes esticam, móveis só mudam de lugar)
 const COMODOS_MUNDO = Object.fromEntries(Object.entries({ sala: [-6, -5], cozinha: [7, -5], quarto: [-8.5, -15], banheiro: [-0.5, -15], quarto_pais: [8, -15] }).map(([k, [x, z]]) => [k, [x * CSX, z * CSZ]]));
 function casaProtagonista(ctx) {
   const { n, unidades, portas, foco } = ctx, { w, d, h } = CASA, g = new THREE.Group(), cor = '#f2c46d', inte = '#f4ecd8';
@@ -476,10 +476,10 @@ function povoar(g, n, r) {
   loja(g, 100 + BX, 9, 180, 'MERCADINHO', '#43a047', 9, n);
   loja(g, 139 + BX, -9, 0, 'OFICINA', '#3a3d44', 11, n, '#cfd3da'); por(g, 'carro', { cor: '#1d3b72' }, [139 + BX, 0.2, -7.4], 90, 0.9);
   loja(g, 178 + BX, 9, 180, 'BORRACHARIA', '#f5b800', 8, n); for (let i = 0; i < 3; i++) g.add(cilindro(0.9, 0.9, 0.6, '#1b1b1b', { pos: [181.5 + BX, 0.5 + i * 0.62, 7.6], seg: 14 }));
-  for (let x = 74 + BX; x <= 204 + BX; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x, 0, lado * 52], lado > 0 ? 180 : 0);
-  for (const lado of [-1, 1]) g.add(caixa(170, 0.2, 7, '#4f5361', { pos: [135 + BX, 0.11, lado * 40] }));   // ruas paralelas (longe o bastante da casa do protagonista, que é funda)
+  for (let x = 74 + BX; x <= 204 + BX; x += 13) for (const lado of [-1, 1]) if (r() < 0.8) por(g, r() < 0.35 ? 'sobrado' : 'casa_br', { cor: r.item(['#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a']), noite: n, largura: 8.5 }, [x, 0, lado * 59], lado > 0 ? 180 : 0);
+  for (const lado of [-1, 1]) g.add(caixa(170, 0.2, 7, '#4f5361', { pos: [135 + BX, 0.11, lado * 47] }));   // ruas paralelas (longe o bastante da casa do protagonista, que é funda)
   campinho(g, n, r);
-  for (let i = 0; i < 10; i++) por(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(55 + BX, 200 + BX), 0, r.item([-1, 1]) * r.entre(60, 66)]);
+  for (let i = 0; i < 10; i++) por(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [r.entre(55 + BX, 200 + BX), 0, r.item([-1, 1]) * r.entre(66, 72)]);
 }
 
 /**

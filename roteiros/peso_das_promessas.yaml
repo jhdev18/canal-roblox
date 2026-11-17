@@ -72,11 +72,11 @@ cenas:
     local: casa
     hora: tarde
     cam: medio
-    atores: [{ id: pai, acao: acenar, rosto: sorriso, x: -7.6, z: 0.6, vira: 30 }, { id: clara, acao: acenar, x: -3.2, z: 3, vira: -40 }, { id: leo, acao: parado, x: -4.6, z: 2.6, vira: -60 }]
+    atores: [{ id: pai, acao: acenar, rosto: sorriso, x: -10.6, z: 0.8, vira: 30 }, { id: clara, acao: acenar, x: -6.2, z: 3.2, vira: -40 }, { id: leo, acao: parado, x: -7.6, z: 2.8, vira: -60 }]
   - fala: e nunca voltou.
     hora: tarde
     cam: medio
-    atores: [{ id: leo, acao: triste, x: -4.6, z: 2.6 }]
+    atores: [{ id: leo, acao: triste, x: -7.6, z: 2.8 }]
   - fala: O vizinho, Seu Bento, é o contrário. Carrega uma mochila de pedras nas costas.
     onde: mundo
     local: rua_bairro
@@ -210,14 +210,14 @@ cenas:
     altura: 5
     alvo_xz: [0, -2]
     props: [{ tipo: chuva, largura: 30, prof: 30 }, { tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: clara, acao: implorar, rosto: chorando, x: 0, y: 8.6, z: -4.5 }]
+    atores: [{ id: clara, acao: implorar, rosto: chorando, x: 0, y: 10.1, z: -4.5 }]
   - fala: presa no telhado da casa.
     hora: tarde
     cam: medio
     altura: 3
     alvo_xz: [0, -4.5]
     props: [{ tipo: chuva, largura: 30, prof: 30 }, { tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: clara, acao: chorar, x: 0, y: 8.6, z: -4.5 }]
+    atores: [{ id: clara, acao: chorar, x: 0, y: 10.1, z: -4.5 }]
   - fala: O barco não chegava lá.
     hora: tarde
     cam: aberto
@@ -254,7 +254,7 @@ cenas:
     altura: 5
     alvo_xz: [0, -2]
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
-    atores: [{ id: leo, acao: abracar, rosto: chorando, x: -0.7, y: 8.6, z: -4.5, vira: 70 }, { id: clara, acao: abracar, rosto: chorando, x: 0.6, y: 8.6, z: -4.5, vira: -70 }]
+    atores: [{ id: leo, acao: abracar, rosto: chorando, x: -0.7, y: 10.1, z: -4.5, vira: 70 }, { id: clara, acao: abracar, rosto: chorando, x: 0.6, y: 10.1, z: -4.5, vira: -70 }]
   - fala: E nadou de volta.
     hora: tarde
     cam: medio
@@ -271,21 +271,21 @@ cenas:
     som: drama
     hora: dia
     cam: aberto
-    atores: [{ id: pai, acao: parado, rosto: triste, x: -7.6, z: 0.6, vira: 20, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 3 } }]
+    atores: [{ id: pai, acao: parado, rosto: triste, x: -10.6, z: 0.8, vira: 20, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 3 } }]
   - fala: todo molhado, com uma pedra enorme no bolso, há anos.
     cam: close
     foco: pai
-    atores: [{ id: pai, acao: triste, x: -7.6, z: 0.6, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 3 } }]
+    atores: [{ id: pai, acao: triste, x: -10.6, z: 0.8, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 3 } }]
   - fala: Era o pai do Léo.
     cam: medio
-    atores: [{ id: leo, acao: parado, rosto: surpreso, x: -4.6, z: 2.6, vira: -60 }, { id: pai, acao: parado, rosto: triste, x: -7.6, z: 0.6, vira: 60, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 3 } }]
+    atores: [{ id: leo, acao: parado, rosto: surpreso, x: -7.6, z: 2.8, vira: -60 }, { id: pai, acao: parado, rosto: triste, x: -10.6, z: 0.8, vira: 60, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 3 } }]
   - fala: "\"Eu prometi que voltava\", ele disse."
     cam: close
     foco: pai
-    atores: [{ id: pai, acao: falar, rosto: chorando, x: -7.6, z: 0.6, vira: 30, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 3 } }]
+    atores: [{ id: pai, acao: falar, rosto: chorando, x: -10.6, z: 0.8, vira: 30, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 3 } }]
   - fala: E a pedra dele, finalmente, sumiu.
     cam: medio
-    atores: [{ id: pai, acao: abracar, rosto: chorando, x: -6.6, z: 1.4, vira: 70 }, { id: leo, acao: abracar, rosto: chorando, x: -5.2, z: 1.6, vira: -70 }, { id: clara, acao: comemorar, x: -3.4, z: 2.8, vira: -30 }]
+    atores: [{ id: pai, acao: abracar, rosto: chorando, x: -9.6, z: 1.6, vira: 70 }, { id: leo, acao: abracar, rosto: chorando, x: -8.2, z: 1.8, vira: -70 }, { id: clara, acao: comemorar, x: -6.4, z: 3, vira: -30 }]
   - fala: No dia seguinte, na escola, ninguém mais chamou o Léo de Pena.
     onde: mundo
     local: escola
