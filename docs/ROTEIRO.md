@@ -86,7 +86,7 @@ arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, ca
 
 ## Música
 
-`musica:` escolhe a trilha (arquivo em assets/musicas). Combine o clima: suspense (revelação), triste (perda), alegre (final feliz), engracado (comédia), epico (virada), curioso (infância/sonho), lofi (calmo), perseguicao (fuga). Sem `musica` = `audio.musica_padrao` do config.
+`musica:` escolhe a trilha (arquivo em assets/musicas). Combine o clima: suspense (revelação), triste (perda), alegre (final feliz), engracado (comédia), epico (virada), curioso (infância/sonho), lofi (calmo), perseguicao (fuga). Sem `musica` = `audio.musica_padrao` do config. Virais (após `node ferramentas/baixar_musicas.mjs`): sneaky_snitch, monkeys_spinning_monkeys, fluffing_a_duck, scheming_weasel, pixel_peeker_polka, run_amok, amazing_plan, investigations, hitman, cipher, volatile_reaction, heartbreaking, wallpaper, local_forecast, carefree (CC BY: crédito gerado em saida/<video>_descricao.txt). Lista instalada: `node gerar.mjs --musicas`.
 
 ## Dicas de estilo (o que funciona nesse formato)
 

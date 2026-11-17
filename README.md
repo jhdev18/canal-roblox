@@ -52,6 +52,7 @@ node gerar.mjs roteiros/exemplo_inimigo.yaml
 8 trilhas **originais, compostas por código e em domínio público (CC0)** já vêm em `assets/musicas/`:
 `suspense, triste, alegre, engracado, epico, curioso, lofi, perseguicao`. Use `musica: triste` no roteiro
 (padrão: `suspense`; `musica: nenhuma` desliga). A música abaixa sozinha enquanto a voz fala (ducking).
+Para **músicas virais gratuitas** (Sneaky Snitch, Monkeys Spinning Monkeys, Investigations… de Kevin MacLeod) rode `node ferramentas/baixar_musicas.mjs`: o crédito obrigatório sai pronto em `saida/<video>_descricao.txt`.
 Detalhes, como gerar variações e outras fontes gratuitas: [`assets/musicas/LICENCA.md`](assets/musicas/LICENCA.md).
 
 ## GPU (importante)
