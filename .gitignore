@@ -7,3 +7,5 @@ assets/vozes/*.onnx
 assets/vozes/*.onnx.json
 .env
 musicas_referencia/
+audios/*
+!audios/.gitkeep

@@ -45,6 +45,9 @@ Personagem 5,2 de altura. Andar de casa 7 studs, porta 6,2, janela de 3 a 6 (vit
 - Multidão `modo: natural` (sozinhos, conversas soltas, quem passa, quem senta).
 - Personagens especiais: `fantasma: true`, `reflexo: true`. Ações novas: `bocejar`, `cochilar`, `nadar`.
 
+## Narração pelo site do ElevenLabs (plano grátis)
+A API do plano grátis não aceita vozes da biblioteca. Fluxo: `node gerar.mjs roteiros/x.yaml --texto-site` → `audios/x.txt` (falas separadas por `<break time="1.2s" />`) → o usuário cola no site (modelo **Eleven Multilingual v2**), baixa o MP3 e salva como `audios/x.mp3` → `node gerar.mjs roteiros/x.yaml` (rascunho) e `--final`: o áudio é cortado nas pausas (uma parte por cena) e a legenda segue a duração de cada parte. Código: `src/node/narracao_site.mjs`. A pasta `audios/` não vai para o git.
+
 ## Música
 - Trilha embutida só com faixas livres (originais CC0 em `assets/musicas/`, Biblioteca de áudio do YouTube, Pixabay, NCS). Lançamentos comerciais (ex.: "pickled chicken", DistroKid, ℗ bigfrozenballs) **não** entram no vídeo: o usuário adiciona pelo editor de Shorts do app, e só em Shorts de até 1 min.
 - `--sem-musica` gera `_sem_musica.mp4`; `--duas-versoes` gera os dois.
