@@ -1,11 +1,12 @@
 // Gera pranchas de catálogo (docs/preview/*.jpg) fotografando cada asset com o próprio motor.
 // Rode de novo sempre que criar um asset:   node ferramentas/preview_assets.mjs [categoria...] [--gpu nao]
-// Categorias: personagens rostos extras acessorios roupas acoes cenarios telas props
+// Categorias: personagens rostos extras acessorios roupas acoes cenarios locais telas props
 import fs from 'node:fs';
 import path from 'node:path';
 import { abrirMotor } from '../src/node/render.mjs';
 import { carregarPersonagens, resolverSpec, catalogo, MULTIDAO_PADRAO } from '../src/node/roteiro.mjs';
 import { p, garantirDir } from '../src/node/util.mjs';
+import { LOCAIS } from '../src/motor/cidade.js';
 
 const args = process.argv.slice(2);
 const gpu = args.includes('--gpu') ? args[args.indexOf('--gpu') + 1] : 'auto';
@@ -16,7 +17,7 @@ const NOOB = (extra = {}) => ({ ...spec('noob'), ...extra });
 const FUNDO = { cenario: 'vazio', cor: '#eef1f6', chao: '#d5d9e2', mov: 'fixo', dur: 1.2 };
 const ator = (s, acao = 'parado', o = {}) => ({ id: 'a', spec: s, acao, p: {}, ...o });
 const COM_MULTIDAO = (n) => MULTIDAO_PADRAO[n] ? { multidao: { ...MULTIDAO_PADRAO[n], specs: Object.keys(tpl).map(k => ({ id: k, ...resolverSpec(k, tpl) })) } } : {};
-const CENAS_EXEMPLO = { praca_cheia: 'acenar', centro: 'parado', bairro: 'passear_cachorro', quintal: 'sentar', cozinha: 'lavar_louca', campinho: 'chutar', cidade: 'andar_confiante', praca: 'acenar', prefeitura: 'discursar', gabinete: 'sentar', sala: 'sentar', quarto: 'celular', escola: 'falar', hospital: 'deitar', casamento: 'acenar', parque: 'acenar', fachada: 'parado', rua: 'andar' };
+const CENAS_EXEMPLO = { cidade_pequena: null, praca_cheia: 'acenar', centro: 'parado', bairro: 'passear_cachorro', quintal: 'sentar', cozinha: 'lavar_louca', campinho: 'chutar', cidade: 'andar_confiante', praca: 'acenar', prefeitura: 'discursar', gabinete: 'sentar', sala: 'sentar', quarto: 'celular', escola: 'falar', hospital: 'deitar', casamento: 'acenar', parque: 'acenar', fachada: 'parado', rua: 'andar' };
 const T_ACAO = { cair: 1.0, pular: 0.28, comemorar: 0.26, empurrar: 0.5, andar: 0.15, correr: 0.1, acenar: 0.13, socar: 0.1, palmas: 0.2, dancar: 0.15 };
 const COSTAS = ['mochila', 'capa', 'asas', 'rabo_de_cavalo', 'cabelo_longo', 'coque'];
 const TORSO = ['gravata', 'mochila', 'capa', 'asas'];
@@ -31,10 +32,13 @@ const CATEGORIAS = {
     atores: [ator(NOOB({ roupa: n, camisa: { terno: 'preto', jaleco: 'branco', vestido: 'rosa', uniforme: 'azul', listrada: 'vermelho', regata: 'laranja' }[n] }))] } })),
   acoes: () => cat.acoes.map(n => ({ nome: n, t: T_ACAO[n] ?? 0.5, cena: { ...FUNDO, camera: 'aberto', angulo: 30, atores: [ator(NOOB(), n)] } })),
   cenarios: () => cat.cenarios.filter(n => n !== 'celular').flatMap(n => [{ nome: n, cena: { cenario: n, mov: 'fixo', dur: 1.2, ...COM_MULTIDAO(n),
-    camera: { praca_cheia: 'alto', centro: 'geral' }[n] || 'aberto', dist: { praca_cheia: 2.8 }[n], altura: { centro: 4 }[n], angulo: 10,
-    atores: n === 'vazio' ? [] : [ator(NOOB(), CENAS_EXEMPLO[n] || 'parado')] } }]).concat(
+    camera: { praca_cheia: 'alto', centro: 'geral', cidade_pequena: 'alto' }[n] || 'aberto', dist: { praca_cheia: 2.8, cidade_pequena: 6 }[n], altura: { centro: 4 }[n], angulo: n === 'cidade_pequena' ? 25 : 10,
+    local: n === 'cidade_pequena' ? 'vista' : undefined,
+    atores: n === 'vazio' || n === 'cidade_pequena' ? [] : [ator(NOOB(), CENAS_EXEMPLO[n] || 'parado')] } }]).concat(
     ['rua', 'bairro', 'quarto'].map(n => ({ nome: n + ' · noite', cena: { cenario: n, hora: 'noite', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10, atores: [ator(NOOB(), 'parado')] } })),
     [{ nome: 'rua · tarde', cena: { cenario: 'rua', hora: 'tarde', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10, atores: [ator(NOOB(), 'parado')] } }]),
+  locais: () => LOCAIS.filter(l => l !== 'vista').map(l => ({ nome: 'onde: ' + l, cena: { cenario: 'cidade_pequena', local: l, mov: 'fixo', dur: 1.2, camera: 'aberto', dist: 1.3, altura: 2, angulo: 15,
+    atores: [ator(NOOB(), 'acenar')] } })),
   telas: () => [
     { tipo: 'mensagem', de: 'Mãe', mensagens: [{ texto: 'Cadê você?' }, { texto: 'Tô chegando!', eu: true }] },
     { tipo: 'notificacao', app: 'Destino', titulo: 'Seu inimigo', texto: 'PAI' },
@@ -59,7 +63,7 @@ function pagina(titulo, itens, colunas) {
 }
 
 const TITULOS = { personagens: 'Personagens (assets/personagens.yaml)', rostos: 'Rostos (rosto:)', extras: 'Extras de rosto (extras:)', acessorios: 'Acessórios (acessorios:)',
-  roupas: 'Roupas (roupa:)', acoes: 'Ações (acao:)', cenarios: 'Cenários (onde: + hora:)', telas: 'Telas de celular (onde: celular + tela:)', props: 'Props de cenário (props:)' };
+  roupas: 'Roupas (roupa:)', locais: 'Locais da cidade pequena (onde: <local>)', acoes: 'Ações (acao:)', cenarios: 'Cenários (onde: + hora:)', telas: 'Telas de celular (onde: celular + tela:)', props: 'Props de cenário (props:)' };
 
 const motor = await abrirMotor({ largura: 360, altura: 640, fps: 30, ao: true, sombra: 2048, gpu });
 console.log('GPU:', motor.gpuInfo);

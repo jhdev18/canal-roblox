@@ -5,6 +5,7 @@ import { p, sugerir } from './util.mjs';
 import { NOMES_ACOES } from '../motor/acoes.js';
 import { NOMES_CAMERAS, MOVIMENTOS } from '../motor/camera.js';
 import { NOMES_CENARIOS } from '../motor/cenarios.js';
+import { LOCAIS } from '../motor/cidade.js';
 import { NOMES_PROPS } from '../motor/props.js';
 import { NOMES_ACESSORIOS, NOMES_ROUPAS, NOMES_PROPS_MAO } from '../motor/personagem.js';
 import { EXPRESSOES, EXTRAS_ROSTO } from '../motor/rostos.js';
@@ -18,7 +19,7 @@ function rostosValidos() {
 export function catalogo() {
   return { cenarios: NOMES_CENARIOS, acoes: NOMES_ACOES, rostos: rostosValidos(), extras_rosto: Object.keys(EXTRAS_ROSTO), acessorios: NOMES_ACESSORIOS,
     roupas: NOMES_ROUPAS, props: NOMES_PROPS, props_mao: NOMES_PROPS_MAO, cameras: NOMES_CAMERAS, movimentos: MOVIMENTOS,
-    personagens: Object.keys(carregarPersonagens()), horas: ['dia', 'tarde', 'noite'], telas: ['mensagem', 'notificacao', 'alarme', 'ligacao'] };
+    personagens: Object.keys(carregarPersonagens()), locais: LOCAIS, horas: ['dia', 'tarde', 'noite'], telas: ['mensagem', 'notificacao', 'alarme', 'ligacao'] };
 }
 
 function checar(tipo, nome, lista, onde) {
@@ -38,8 +39,8 @@ export function resolverSpec(def, templates, pilha = []) {
 }
 
 /** Multidão que já vem com o cenário (sobrescreva com `multidao:` ou desligue com `multidao: false`). */
-export const MULTIDAO_PADRAO = { praca_cheia: { n: 32, modo: 'grupos', personagens: 'todos', area: [-11, 11, -24, 5], livre: 3.5, evitar: [[0, -12, 5.5]] },
-      centro: { n: 18, modo: 'passantes', personagens: 'todos', area: [-11, 11, -60, 6], faixas: [[-10.5, -7], [7, 10.5]] } };
+export const MULTIDAO_PADRAO = { praca_cheia: { n: 10, modo: 'grupos', personagens: 'todos', area: [-12, 12, -24, 2], livre: 4, evitar: [[0, -12, 5.5]] },
+      centro: { n: 8, modo: 'passantes', personagens: 'todos', area: [-11, 11, -60, 6], faixas: [[-10.5, -7], [7, 10.5]] } };
 
 const CAM_CICLO = [['medio', -18], ['close', 12], ['aberto', 0], ['medio', 22], ['baixo', -8], ['close', -15], ['lado', 0]];
 
@@ -66,7 +67,7 @@ export function carregarRoteiro(arquivo) {
     const c = { ...padrao, ...(typeof c0 === 'string' ? { fala: c0 } : c0) };
     const cen = {
       idx: i, fala: c.fala ? String(c.fala) : '', dur: c.dur, som: c.som, audio: c.audio,
-      cenario: c.onde ?? c.cenario ?? ant.cenario ?? 'rua', hora: c.hora ?? ant.hora ?? 'dia', seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela,
+      cenario: c.onde ?? c.cenario ?? ant.cenario ?? 'rua', local: c.local ?? (c.onde === undefined && c.cenario === undefined ? ant.local : undefined), hora: c.hora ?? ant.hora ?? 'dia', seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela,
       camera: c.cam ?? c.camera ?? CAM_CICLO[i % CAM_CICLO.length][0], mov: c.mov, angulo: c.angulo ?? (c.cam || c.camera ? undefined : CAM_CICLO[i % CAM_CICLO.length][1]),
       dist: c.dist, altura: c.altura, inclinar: c.inclinar, foco: c.foco, props: c.props || [],
       multidao: c.multidao,
@@ -99,6 +100,9 @@ export function carregarRoteiro(arquivo) {
       if (ator.prop) checar('prop de mão', ator.prop, cat.props_mao, onde);
       return ator;
     });
+    // atalho: `onde: farmacia` = cidade_pequena em frente à farmácia (nomes que não são cenários próprios)
+    if (!cat.cenarios.includes(cen.cenario) && LOCAIS.includes(cen.cenario)) { cen.local = cen.cenario; cen.cenario = 'cidade_pequena'; }
+    if (cen.local !== undefined) { if (cen.cenario !== 'cidade_pequena') throw new Error(`${onde}: \`local\` só vale com onde: cidade_pequena`); checar('local', cen.local, LOCAIS, onde); }
     checar('cenário', cen.cenario, cat.cenarios, onde); checar('câmera', cen.camera, cat.cameras, onde); checar('movimento', cen.mov, cat.movimentos, onde);
     checar('hora', cen.hora, cat.horas, onde);
     for (const pr of cen.props) checar('prop', pr.tipo, cat.props, onde);

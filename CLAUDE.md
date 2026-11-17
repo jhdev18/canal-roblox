@@ -11,7 +11,7 @@ Pipeline: roteiro YAML → voz (ElevenLabs via .env; Piper/espeak como alternati
 - Personagem: só YAML em `assets/personagens.yaml` (herança com `base:`).
 - Rosto: função em `src/motor/rostos.js` (EXPRESSOES) ou PNG em `assets/rostos/`.
 - Ação: função em `src/motor/acoes.js` (pura, sem three.js). Acessório: `src/motor/personagem.js` (ACESSORIOS).
-- Cenário: `src/motor/cenarios.js` (CENARIOS). Prop: `src/motor/props.js`. Câmera: `src/motor/camera.js`.
+- Cenário: `src/motor/cenarios.js` (CENARIOS). Cidade pequena (prédios, LOTES, LOCAIS): `src/motor/cidade.js`. Prop: `src/motor/props.js`. Câmera: `src/motor/camera.js`.
 - Depois de criar/alterar assets: `node ferramentas/preview_assets.mjs [categoria]` atualiza `docs/preview/*.jpg`.
 - Os catálogos/validação são gerados a partir desses objetos — não há lista duplicada para manter. Atualize `docs/ROTEIRO.md`.
 

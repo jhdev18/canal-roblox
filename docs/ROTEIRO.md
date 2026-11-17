@@ -26,12 +26,32 @@ cenas:                     # 1 cena = 1 corte (~1–2 s, 3–7 palavras)
 
 > Se a fala tiver `:` ou começar com aspas, coloque a fala entre aspas: `fala: "Ele disse: corre!"`
 
+## Cidade pequena (recomendado: tudo acontece na mesma cidade)
+
+`cidade_pequena` é um modelo de cidade de interior com praça e coreto no centro, igreja matriz e prefeitura de frente para a praça,
+comércio em volta, ruas de saída, casas e posto de gasolina. Cada cena escolhe **onde** dentro dessa cidade:
+
+```yaml
+- onde: farmacia            # atalho = onde: cidade_pequena + local: farmacia
+  atores: [idosa acenar]
+- onde: cidade_pequena
+  local: vista              # a cidade inteira vista de cima
+  cam: alto
+  dist: 6
+  mov: orbita
+```
+
+**Locais:** prefeitura, igreja, banco, escola, posto_saude, padaria, farmacia, loterica, bar, mercado, delegacia, posto_gasolina, praca_central, coreto, vista
+(`prefeitura` e `escola` sozinhos continuam sendo os cenários grandes antigos; para a versão da cidade pequena use `onde: cidade_pequena` + `local: prefeitura`).
+O ator fica na calçada, em frente à fachada, e a câmera de frente para o prédio. Cenas seguidas sem `onde:` continuam no mesmo local.
+O motor esconde sozinho o que ficar entre a câmera e os atores (postes, árvores, figurantes); use `liberar_visao: false` para desligar.
+
 ## Campos da cena
 
 | campo | valores | padrão |
 |---|---|---|
 | `fala` | texto narrado e legendado | — (sem fala = só imagem, use `dur`) |
-| `onde` | rua, parque, fachada, sala, quarto, escola, hospital, casamento, cidade, praca, **praca_cheia**, prefeitura, gabinete, **centro**, bairro, quintal, cozinha, campinho, celular, vazio | cena anterior / rua |
+| `onde` | rua, parque, fachada, sala, quarto, escola, hospital, casamento, **cidade_pequena** (+ `local`), cidade, praca, praca_cheia, prefeitura, gabinete, centro, bairro, quintal, cozinha, campinho, celular, vazio | cena anterior / rua |
 | `hora` | dia, tarde, noite | cena anterior / dia |
 | `cam` | detalhe, close, medio, aberto, geral, baixo, alto, lado, costas | alterna |
 | `mov` | fixo, zoom_in, zoom_out, zoom_rapido, pan, orbita, tremor, seguir, subir, descer | zoom_in |
@@ -80,7 +100,7 @@ multidao: { n: 10, acao: [bravo, parado], prop: cartaz, prop_texto: ["FORA!", "Q
 `modo`: `espalhado` (padrão), `grupos` (rodinhas de 2 a 4 pessoas conversando, viradas umas para as outras) ou `passantes` (andando nas calçadas, alguns no celular ou com cachorro).
 `personagens: todos` (ou uma lista, ex.: `[prefeito, gari, vizinha_fofoqueira]`) usa personagens do elenco na multidão; o resto é gerado.
 
-**Cenários que já vêm com multidão:** `praca_cheia` (~32 pessoas em rodinhas em volta da fonte) e `centro` (pedestres nas calçadas da avenida, com padaria, farmácia, mercado, banco… dos lados e a prefeitura no fim). Use `multidao: false` para esvaziar ou `multidao: { n: 40 }` para mudar.
+**Cenários que já vêm com multidão:** `praca_cheia` (~10 pessoas em rodinhas em volta da fonte) e `centro` (pedestres nas calçadas da avenida, com padaria, farmácia, mercado, banco… dos lados e a prefeitura no fim). Use `multidao: false` para esvaziar ou `multidao: { n: 40 }` para mudar.
 Dica: em vídeo vertical, para mostrar muita gente use `cam: alto` + `dist: 2.8` (praça) ou `cam: geral` + `altura: 4` (centro).
 
 `n` (até 40), `area: [x_min, x_max, z_min, z_max]`, `olhar_z` (todos olham para esse ponto em z), `acao` (sorteada entre as da lista), `prop`/`prop_texto`, `rosto`. Figurantes não precisam de elenco, e a câmera não os usa para enquadrar. Para mostrar a multidão inteira, use `cam: geral`.
@@ -128,6 +148,7 @@ Campos: `pele, camisa, calca, rosto, extras, acessorios, roupa, cabelo_cor, esca
 
 arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, cadeira, cama, sofa, tv, computador, planta, presente, caixa_correio, cerca, porta, caixao, bolo,
 semaforo (`luz: verde`), onibus (`texto`), taxi, viatura, hidrante, lixeira, faixa_pedestre, loja (`texto`, `cor`), arranha_ceu, fonte, estatua (`texto`), bandeira (`cores`), palanque (`texto`), barraca, outdoor (`texto`), mesa_escritorio, poltrona, estante, quadro_parede (`texto`),
+**prédios da cidade pequena (fachada em z=0):** farmacia, loterica, padaria, mercado, agencia_bancaria, prefeitura, igreja, escola, posto_saude, delegacia, bar, posto_gasolina, coreto (todos aceitam `texto` para trocar o letreiro),
 casa_br / sobrado (`cor`, `telhado`, `grade: false`, `caixa_dagua: false`), muro (`largura`, `cor`, `portao_x`, `portao: false`), portao, cerca_viva, caixa_dagua, poste_fios, churrasqueira, piscina, varal, casinha_cachorro, cachorro / gato (`cor`), bicicleta, moto (`bau: true`), balanco, escorregador, trave, bola, geladeira, fogao, pia, armario, mesa_jantar, cadeira_plastico, saco_lixo, vaso_flor, lombada
 
 ## Música

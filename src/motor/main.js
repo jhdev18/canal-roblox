@@ -65,9 +65,10 @@ function posNoTempo(a, t) { // posição da raiz do ator no tempo t (sem tocar n
 async function montar(c) {
   if (atual) { cena.remove(atual.raiz); }
   const raiz = new THREE.Group(); cena.add(raiz);
-  const cen = construirCenario(c.cenario, { hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque });
+  const cen = construirCenario(c.cenario, { local: c.local, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque });
   raiz.add(cen.grupo);
   cena.background = cor(cen.ceu); cena.fog = new THREE.Fog(cor(cen.ceu), cen.nevoa[0], cen.nevoa[1]);
+  const sr = cen.sombra || 35; Object.assign(sol.shadow.camera, { left: -sr, right: sr, top: sr, bottom: -sr, far: 120 + sr * 2 }); sol.shadow.camera.updateProjectionMatrix();
   sol.color = cor(cen.sol.cor); sol.intensity = cen.sol.forca; hemi.color = cor(cen.hemi[0]); hemi.groundColor = cor(cen.hemi[1]); hemi.intensity = cen.hemi[2];
   for (const p of c.props || []) { const o = criarProp(p); if (o) raiz.add(o); }
   await carregarRostosPersonalizados((c.atores || []).flatMap(a => [a.rosto, a.spec?.rosto]).filter(Boolean));
@@ -84,6 +85,7 @@ async function montar(c) {
   const prin = atores.filter(a => !a.figurante).map(a => a.base.x);
   const xs = prin; const espalha = xs.length > 1 ? Math.max(...xs) - Math.min(...xs) : 0;
   atual = { c, raiz, atores, cen, dur: c.dur, espalha, nquadros: Math.max(1, Math.round(c.dur * cfg.fps)) };
+  liberarVisao();
   posar(0); // garante shaders compilados antes do 1º quadro
   R.compile(cena, cam);
   return atual.nquadros;
@@ -109,18 +111,22 @@ function criarMultidao(m, seed) {
   const acoes = [].concat(m.acao || (modo === 'grupos' ? CONVERSA : modo === 'passantes' ? ['andar', 'andar', 'andar_celular', 'passear_cachorro', 'andar'] : ['parado', 'palmas', 'acenar', 'comemorar']));
   const specs = [...(m.specs || [])].sort(() => r() - 0.5);
   const evitar = (x, z) => Math.hypot(x, z) < livre || (m.evitar || []).some(([ex, ez, er]) => Math.hypot(x - ex, z - ez) < er);
-  const ponto = () => { for (let k = 0; k < 40; k++) { const x = r.entre(x0, x1), z = r.entre(z0, z1); if (!evitar(x, z)) return [x, z]; } return [r.entre(x0, x1), r.entre(z0, z1)]; };
+  const ocupados = []; const minimo = m.espaco ?? (modo === 'grupos' ? 7 : 2.8);
+  const livreDe = (x, z) => ocupados.every(([ox, oz]) => Math.hypot(x - ox, z - oz) >= minimo);
+  const ponto = () => { for (let k = 0; k < 80; k++) { const x = r.entre(x0, x1), z = r.entre(z0, z1); if (!evitar(x, z) && livreDe(x, z)) { ocupados.push([x, z]); return [x, z]; } } return null; };
   // posições conforme o modo
   const lugares = [];
   if (modo === 'grupos') {
-    while (lugares.length < n) { const [cx, cz] = ponto(); const k = Math.min(n - lugares.length, 2 + Math.floor(r() * 3)); const g0 = r() * 6.28;
+    while (lugares.length < n) { const pt = ponto(); if (!pt) break; const [cx, cz] = pt; const k = Math.min(n - lugares.length, 2 + Math.floor(r() * 3)); const g0 = r() * 6.28;
       for (let j = 0; j < k; j++) { const a = g0 + j / k * 6.28 + r.entre(-0.3, 0.3), rr = k === 2 ? 1.5 : 2.0;
         const x = cx + Math.sin(a) * rr, z = cz + Math.cos(a) * rr; lugares.push({ x, z, vira: Math.atan2(cx - x, cz - z) * 180 / Math.PI }); } }
   } else if (modo === 'passantes') {
     for (let i = 0; i < n; i++) { const lado = r() < 0.5 ? -1 : 1, faixa = m.faixas || [[x0, x0 + 2.5], [x1 - 2.5, x1]];
-      const fx = faixa[lado < 0 ? 0 : 1]; lugares.push({ x: r.entre(fx[0], fx[1]), z: r.entre(z0, z1), vira: r() < 0.5 ? 0 : 180, vel: r.entre(3, 5.5) }); }
+      const fx = faixa[lado < 0 ? 0 : 1]; let ok = null;
+      for (let k = 0; k < 40 && !ok; k++) { const x = r.entre(fx[0], fx[1]), z = r.entre(z0, z1); if (livreDe(x, z)) { ok = [x, z]; ocupados.push(ok); } }
+      if (ok) lugares.push({ x: ok[0], z: ok[1], vira: r() < 0.5 ? 0 : 180, vel: r.entre(3, 5.5) }); }
   } else {
-    for (let i = 0; i < n; i++) { const [x, z] = ponto(); lugares.push({ x, z, vira: m.vira ?? (Math.atan2(-x, (m.olhar_z ?? 0) - z) * 180 / Math.PI) + r.entre(-10, 10) }); }
+    for (let i = 0; i < n; i++) { const pt = ponto(); if (!pt) break; const [x, z] = pt; lugares.push({ x, z, vira: m.vira ?? (Math.atan2(-x, (m.olhar_z ?? 0) - z) * 180 / Math.PI) + r.entre(-10, 10) }); }
   }
   return lugares.slice(0, n).map((L, i) => {
     const spec = specs.length && (i < specs.length) && r() < (m.mistura ?? 0.8) ? { ...specs[i], id: 'fig' + i } : specAleatorio(r, i);
@@ -154,7 +160,38 @@ function posar(t) {
   const camC = atual.cen.cameraFixa ? { camera: 'detalhe', mov: c.mov || 'zoom_in', angulo: 0, dist: c.dist || 3.1 } : c;
   posicionarCamera(cam, camC, t, dur, alvo, atores.length && !c.foco ? atual.espalha : 0);
   const foco = alvo(t); const d = new THREE.Vector3(...atual.cen.sol.dir).normalize();
-  sol.target.position.copy(foco); sol.position.copy(foco).addScaledVector(d, 80); sol.target.updateMatrixWorld();
+  sol.target.position.copy(foco); sol.position.copy(foco).addScaledVector(d, 60 + (atual.cen.sombra || 35)); sol.target.updateMatrixWorld();
+}
+
+/**
+ * Esconde objetos do cenário que ficariam entre a câmera e os atores (árvores, postes, caixas d'água, paredes de prédio...).
+ * Testa alguns instantes da cena e vários pontos de cada ator. Chão, ruas e paredes de salas (objetos enormes) nunca são escondidos.
+ */
+function liberarVisao() {
+  const alvos = atual.atores.filter(a => !a.figurante); if (!alvos.length || atual.cen.cameraFixa || atual.c.liberar_visao === false) return;
+  const raizCen = atual.cen.grupo, rc = new THREE.Raycaster(), caixa = new THREE.Box3(), tam = new THREE.Vector3(), escondidos = new Set();
+  const topo = (o) => { while (o.parent && o.parent !== raizCen) o = o.parent; return o.parent === raizCen ? o : null; };
+  for (const t of [0, atual.dur * 0.5, atual.dur]) {
+    posar(t); cena.updateMatrixWorld(true);
+    for (const o of raizCen.children) { // objetos colados na lente (copas de árvore, postes) também saem
+      if (escondidos.has(o)) continue; caixa.setFromObject(o).getSize(tam);
+      if (Math.max(tam.x, tam.z) <= 45 && caixa.distanceToPoint(cam.position) < 3.5) { o.visible = false; escondidos.add(o); }
+    }
+    for (const a of alvos) {
+      a.ator.raiz.updateMatrixWorld(true); const base = a.ator.raiz.getWorldPosition(new THREE.Vector3());
+      for (const [dx, dy] of [[0, 4.6], [0, 3], [0, 1], [-1.2, 3], [1.2, 3]]) {
+        const p = base.clone().add(new THREE.Vector3(dx, dy, 0)), dir = p.clone().sub(cam.position), dist = dir.length();
+        rc.set(cam.position, dir.normalize()); rc.far = dist - 0.6;
+        for (const f of atual.atores) if (f.figurante && f.ator.raiz.visible && rc.intersectObject(f.ator.raiz, true).length) { f.ator.raiz.visible = false; if (f.pet) f.pet.visible = false; } // figurante na frente do ator principal
+        for (const h of rc.intersectObject(raizCen, true)) {
+          const o = topo(h.object); if (!o || escondidos.has(o)) continue;
+          caixa.setFromObject(o).getSize(tam); if (Math.max(tam.x, tam.z) > 45) continue;   // chão/rua/parede gigante: mantém
+          if (caixa.containsPoint(base)) continue;                                          // o ator está dentro (ex.: sala, palco)
+          o.visible = false; escondidos.add(o);
+        }
+      }
+    }
+  }
 }
 
 function quadro(f, formato = 'image/jpeg', q = 0.93) {
@@ -185,5 +222,6 @@ async function preview() {
   tocar(0);
 }
 
-window.motor = { iniciar, montar, quadro, quadros, preview, pronto: true };
+window.motor = { iniciar, montar, quadro, quadros, preview, pronto: true, depurar: () => { const rc = new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(0, 0), cam); const h = rc.intersectObjects(cena.children, true).slice(0, 3);
+  return { camera: cam.position.toArray().map(v => +v.toFixed(2)), toques: h.map(x => ({ d: +x.distance.toFixed(2), cor: x.object.material?.color?.getHexString?.(), geo: x.object.geometry?.parameters, pos: x.object.getWorldPosition(new THREE.Vector3()).toArray().map(v => +v.toFixed(1)) })) }; } };
 if (new URLSearchParams(location.search).has('preview')) preview();

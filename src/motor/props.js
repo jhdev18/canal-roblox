@@ -197,6 +197,10 @@ export const PROPS = {
   lombada: () => grupo([caixa(8, 0.25, 1.6, '#f5cd30', { pos: [0, 0.1, 0], round: 0.1 })]),
 };
 export const NOMES_PROPS = Object.keys(PROPS);
+/** Outros módulos (ex.: cidade.js) registram props aqui; a lista de nomes acompanha. */
+export function registrarProps(obj) {
+  for (const k of Object.keys(obj)) if (PROPS[k]) throw new Error(`prop "${k}" já existe: escolha outro nome`);
+  Object.assign(PROPS, obj); NOMES_PROPS.splice(0, NOMES_PROPS.length, ...Object.keys(PROPS)); }
 
 /** Casa brasileira: telhado de telha em duas águas, grade na janela, caixa d'água opcional. andares = 1 ou 2. */
 function casaBR(o, andares) {

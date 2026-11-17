@@ -1,0 +1,34 @@
+titulo: Um dia na cidade pequena
+cenas:
+  - fala: Essa é a nossa cidade.
+    onde: cidade_pequena
+    local: vista
+    cam: alto
+    dist: 6
+    angulo: 25
+    mov: orbita
+  - fala: De manhã, todo mundo passa na padaria.
+    onde: padaria
+    cam: aberto
+    mov: seguir
+    foco: vovo
+    atores: [{ id: vovo, acao: carregar, prop: sacola, x: -4, ate: [3, 1] }]
+  - fala: A dona Maria vai na farmácia,
+    onde: farmacia
+    cam: medio
+    atores: [idosa acenar]
+  - fala: e o seu Zé joga na lotérica.
+    onde: loterica
+    cam: medio
+    atores: [vizinho celular]
+  - fala: Na praça, o prefeito conversa com o povo.
+    onde: coreto
+    cam: aberto
+    atores: [{ id: prefeito, acao: discursar, x: 0 }]
+    multidao: { n: 5, modo: grupos, personagens: [vizinha_fofoqueira, gari, crianca, cidada, padre], area: [-11, 11, -3, 2], livre: 3.5 }
+  - fala: E no fim do dia, a igreja toca o sino.
+    onde: igreja
+    hora: tarde
+    cam: aberto
+    altura: 3
+    atores: [padre acenar]

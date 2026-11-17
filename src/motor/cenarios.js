@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import { caixa, cilindro, esfera, plano, grupo, mat, cor, rng, canvas, texturaCanvas } from './util.js';
 import { PROPS, placaTexto } from './props.js';
+import { construirCidade, enquadrarLocal } from './cidade.js';
 
 const CEU = { dia: '#8ec9ff', tarde: '#ffb27a', noite: '#0e1a3a' };
 function ambiente(hora, interno = false) {
@@ -223,6 +224,7 @@ export const CENARIOS = {
     add(g, 'semaforo', { luz: 'verde' }, [-6.8, 0, 5.5]);
     if (!n) nuvens(g, r); else lua(g);
   },
+  cidade_pequena(o, g, r) { construirCidade(o, g, r); },   // modelo da cidade inteira (use `local:` para escolher onde a cena acontece)
   gabinete(o, g, r) { // escritório do prefeito
     const n = o.hora === 'noite'; sala(g, { parede: o.parede || '#e9dcc4', chao: o.chao || '#7a5236' });
     g.add(caixa(10, 0.05, 7, '#7b1f2b', { pos: [0, 0.03, -3], sombra: false }));
@@ -312,9 +314,11 @@ export function construirCenario(nome, o = {}) {
   const fn = CENARIOS[nome] || CENARIOS.vazio;
   const g = new THREE.Group(); const r = rng(o.seed ?? nome);
   fn(o, g, r);
+  if (nome === 'cidade_pequena') enquadrarLocal(g, o.local);
   g.traverse(m => { if (m.isMesh) { m.receiveShadow = true; if (m.castShadow === undefined) m.castShadow = true; } });
   const amb = ambiente(o.hora || 'dia', INTERNOS.has(nome));
   if (nome === 'celular') { amb.ceu = o.cor || '#6b7a99'; amb.nevoa = [200, 400]; }
   if (nome === 'vazio') { amb.ceu = o.cor || '#eef1f6'; amb.nevoa = [60, 140]; }
+  if (nome === 'cidade_pequena') { amb.nevoa = [120, 520]; amb.sombra = (!o.local || o.local === 'vista') ? 120 : 50; }
   return { grupo: g, ...amb, ancoras: g.userData.ancoras || {}, interno: INTERNOS.has(nome), cameraFixa: nome === 'celular' };
 }
