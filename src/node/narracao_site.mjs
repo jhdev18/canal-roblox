@@ -13,6 +13,9 @@ const EXT = ['mp3', 'wav', 'm4a', 'ogg', 'flac'];
 /** Arquivo de narração do site para este roteiro (audios/<nome>.mp3 etc.), ou null. */
 export function acharNarracaoSite(nome) {
   for (const e of EXT) { const f = p('audios', `${nome}.${e}`); if (fs.existsSync(f)) return f; }
+  // tolera o erro comum do Windows (extensão escondida): nuvem_da_bia.mp3.mp3, nuvem_da_bia.MP3 etc.
+  if (fs.existsSync(p('audios'))) for (const f of fs.readdirSync(p('audios'))) {
+    const low = f.toLowerCase(); if (low.startsWith(nome.toLowerCase() + '.') && EXT.some(e => low.endsWith('.' + e))) return p('audios', f); }
   return null;
 }
 
