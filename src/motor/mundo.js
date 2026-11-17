@@ -43,6 +43,20 @@ function usarAssentos(anc, lista, zc) {
     anc[k] = lista.slice().sort((a, b) => Math.hypot(a[0] - ref[0], a[2] - ref[2]) - Math.hypot(b[0] - ref[0], b[2] - ref[2])); }
 }
 
+/** Detalhes da fachada para os closes na calçada: marquise e placa logo acima da porta, colunas nos cantos, rodapé e molduras das vitrines. */
+function fachadaDetalhes(fr, o, w, h, P, n) {
+  const esc = (c) => '#' + new THREE.Color(c).multiplyScalar(0.78).getHexString(), base = esc(o.cor), destaque = o.faixa || o.letreiro?.fundo || base;
+  fr.add(caixa(w + 0.12, 0.9, 0.16, base, { pos: [0, 0.65, 0.26] }));                                                           // rodapé
+  for (const s of [-1, 1]) fr.add(caixa(0.7, h + 1.2, 0.5, base, { pos: [s * (w / 2 - 0.35), (h + 1.2) / 2, 0.2] }));          // colunas dos cantos
+  const mw = P.w + 2.4; fr.add(caixa(mw, 0.3, 1.8, destaque, { pos: [P.x, 6.75, 1.0] }));                                     // marquise sobre a porta
+  for (const s of [-1, 1]) fr.add(caixa(0.12, 0.12, 1.8, '#5a5d66', { pos: [P.x + s * (mw / 2 - 0.2), 6.55, 1.0] }));
+  fr.add(caixa(P.w + 0.5, 0.3, 0.3, base, { pos: [P.x, 6.45, 0.25] }));                                                         // moldura da porta
+  for (const s of [-1, 1]) fr.add(caixa(0.3, 6.3, 0.3, base, { pos: [P.x + s * (P.w / 2 + 0.25), 3.3, 0.25] }));
+  if (o.letreiro) { const t = placaTexto(o.letreiro.texto, Math.min(mw + 1, w - 2), 0.85, { fundo: o.letreiro.fundo, corTexto: o.letreiro.cor || '#fff', emissivo: n });
+    t.position.set(P.x, 7.45, 0.45); fr.add(t); }                                                                                // placa na altura do olhar (a do alto continua)
+  for (const v of o.vitrines || []) { fr.add(caixa(v.w + 0.4, 0.25, 0.5, base, { pos: [v.x, 1.1, 0.3] })); fr.add(caixa(v.w + 0.4, 0.25, 0.35, base, { pos: [v.x, 4.0, 0.25] })); }   // peitoril e verga
+}
+
 /**
  * Interiores foram desenhados num tamanho menor (w0,d0,h0); aqui vão para o tamanho novo (w,d,h) sem esticar os móveis:
  * o que está encostado numa parede continua encostado nela, o resto se espalha proporcionalmente, e o que fica no teto sobe junto.
@@ -75,6 +89,7 @@ function predioOco(o0, ctx) {
   if (o.faixa) fr.add(caixa(w + 0.06, 0.5, 0.12, o.faixa, { pos: [0, h - 1.1, 0.25] }));
   fr.add(caixa(w + 0.3, 1.2, 0.3, o.cor, { pos: [0, h + 0.6, 0.0] }));                                                   // platibanda
   if (o.letreiro) { const p = placaTexto(o.letreiro.texto, Math.min(w - 1.2, o.letreiro.largura || w - 1.2), 1.1, { fundo: o.letreiro.fundo, corTexto: o.letreiro.cor || '#fff', emissivo: n }); p.position.set(0, h - 0.2, 0.42); fr.add(p); }
+  fachadaDetalhes(fr, o, w, h, P, n);
   g.add(unidade(fr, unidades));
   const fu = parede(w, h, o.cor, (o.janelas?.fundo || []).map(x => ({ x, w: 2.4, y0: 2.4, y1: 4.6, vidro: true })), n); fu.position.set(0, 0, -d + 0.2); g.add(unidade(fu, unidades));
   for (const [s, k] of [[-1, 'esq'], [1, 'dir']]) { const la = parede(d, h, o.cor, (o.janelas?.[k] || []).map(z => ({ x: s < 0 ? z + d / 2 : -(z + d / 2), w: 2.4, y0: 2.4, y1: 4.6, vidro: true })), n);
@@ -90,7 +105,7 @@ function predioOco(o0, ctx) {
   usarAssentos(g.userData.ancoras, assentosDe(gi), -d / 2);
   if (foco) { const grande = Math.max(w, d) > 26; luzInterna(gi, 0, -d / 2, h, n, (o.luz || 1) * (grande ? 1.1 : 1.25), Math.max(30, Math.max(w, d) * 1.3));
     if (grande) luzInterna(gi, 0, -d * (w > d ? 0.5 : 0.22), h, n, 0.8, Math.max(w, d)); }
-  g.userData.d = d; g.userData.w = w; g.userData.h = h; return g;
+  g.userData.d = d; g.userData.w = w; g.userData.h = h; g.userData.portaX = o.porta?.x || 0; return g;
 }
 
 // ---------------- prédios do mundo (interiores compactos, coordenadas locais do prédio) ----------------
@@ -162,7 +177,7 @@ const PREDIOS_MUNDO = {
       por(gi, 'placa_suspensa', { texto: 'PROTOCOLO', largura: 3 }, [-5, 7.6, -6]); por(gi, 'lixeira', { cor: '#5a5d66' }, [3.0, 0.2, -10.6], 0, 0.7);
       por(gi, 'ventilador_teto', {}, [-5, 9.2, -9]); por(gi, 'ventilador_teto', {}, [6, 9.2, -4]); por(gi, 'computador', {}, [-6.3, 1.2, -6.2], 180);
       return { atender: [-5, 0.2, -7.7, 0], sentar: [6, 0.2, -12.3, 0], assinar: [6, 0.2, -12.0, 0], discursar: [0, 0.2, 2.5, 0] }; } },
-  igreja: { tam: [20, 32, 15], w: 14, d: 26, h: 11, cor: '#f6f2e6', piso: '#b5895a', telhado: '#b5533a', porta: { x: 0, w: 3.4, cor: '#6b4426' }, janelas: { esq: [-6, -12, -18], dir: [-6, -12, -18] },
+  igreja: { tam: [20, 32, 15], w: 14, d: 26, h: 11, cor: '#f6f2e6', piso: '#b5895a', telhado: '#b5533a', letreiro: { texto: 'IGREJA MATRIZ', fundo: '#6b4426', cor: '#f5e6b8', largura: 8 }, porta: { x: 0, w: 3.4, cor: '#6b4426' }, janelas: { esq: [-6, -12, -18], dir: [-6, -12, -18] },
     interior(gi, { d }) { gi.add(caixa(3, 0.05, d - 2, '#7b1f2b', { pos: [0, 0.23, -d / 2], sombra: false }));
       for (let z = -18; z <= -4; z += 3) for (const s of [-1, 1]) por(gi, 'banco_igreja', { largura: 4.4 }, [s * 3.6, 0.2, z]);
       por(gi, 'altar', {}, [0, 0.2, -23], 0); const cr = PROPS.cruz_parede({ cor: '#c9a24a' }); cr.position.set(0, 7.5, -25.6); gi.add(cr);
@@ -261,8 +276,8 @@ export const LOTES_MUNDO = [
   { id: 'mercado', f: [FR, -24], rot: -90 }, { id: 'delegacia', f: [FR, 22], rot: -90 },
 ];
 const CASA_LOTE = { id: 'casa', f: [78 + BX, -12], rot: 0 };
-const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { f: [0, 6.5], rot: 0, recuo: 2.5, chao: 0.45 }, fonte: { f: [13.9, -13.9], rot: -45, recuo: 6.6, chao: 0.45 },
-  parquinho: { f: [11.5, 15.5], rot: 0, recuo: 0, chao: 0.45 }, estatua: { f: [-13.9, -13.9], rot: 45, recuo: 5.0, chao: 0.45 }, rua_bairro: { f: [92 + BX, 0], rot: 90, recuo: 0, chao: 0.1 },
+const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { f: [0, 6.5], rot: 0, recuo: 2.5, chao: 0.45 }, fonte: { f: [13.9, -13.9], rot: -12, recuo: 6.4, chao: 0.45 },
+  parquinho: { f: [11.5, 15.5], rot: 0, recuo: 0, chao: 0.45 }, estatua: { f: [-13.9, -13.9], rot: 12, recuo: 5.0, chao: 0.45 }, rua_bairro: { f: [92 + BX, 0], rot: 90, recuo: 0, chao: 0.1 },
   posto_gasolina: { f: [52 + BX, 9], rot: 180, recuo: 3, chao: 0.2 }, campinho: { f: [139 + BX, 22.5], rot: 90, recuo: 0, chao: 0.2 } };
 /** Centro de cada lugar no mapa (para desenhar a planta com nomes). */
 export function centrosMundo() {
@@ -372,7 +387,8 @@ export const CAMPINHO = { x: 139 + 30, z: 22.5, w: 38, d: 21 };   // entre o mer
 function campinho(g, n, r) {
   const { x, z, w, d } = CAMPINHO, L = '#f2f3f3';
   g.add(caixa(w + 4, 0.16, d + 4, '#3fae3a', { pos: [x, 0.08, z] })); g.add(caixa(w, 0.18, d, '#58b947', { pos: [x, 0.09, z] }));
-  for (let i = 0; i < 26; i++) g.add(caixa(r.entre(1.2, 3.5), 0.03, r.entre(1, 3), '#a08a62', { pos: [x + r.entre(-w / 2 + 2, w / 2 - 2), 0.19, z + r.entre(-d / 2 + 2, d / 2 - 2)], sombra: false }));   // terra batida
+  for (let i = 0; i < 22; i++) { const m = cilindro(1, 1, 0.03, '#a08a62', { pos: [x + r.entre(-w / 2 + 2, w / 2 - 2), 0.19, z + r.entre(-d / 2 + 2, d / 2 - 2)], seg: 9, sombra: false }); m.scale.set(r.entre(0.6, 1.8), 1, r.entre(0.5, 1.3)); m.rotation.y = r.entre(0, 3); g.add(m); }   // terra batida (manchas irregulares)
+    for (const sx of [-1, 1]) { const m = cilindro(1, 1, 0.031, '#9a7f55', { pos: [x + sx * (w / 2 - 2.5), 0.19, z], seg: 10, sombra: false }); m.scale.set(2.2, 1, 3); g.add(m); }   // gramado gasto na frente dos gols
   for (const [lw, ld, dx, dz] of [[w, 0.25, 0, -d / 2], [w, 0.25, 0, d / 2], [0.25, d, -w / 2, 0], [0.25, d, w / 2, 0], [0.25, d, 0, 0],
     [0.25, 8, -w / 2 + 5, 0], [5, 0.25, -w / 2 + 2.5, -4], [5, 0.25, -w / 2 + 2.5, 4], [0.25, 8, w / 2 - 5, 0], [5, 0.25, w / 2 - 2.5, -4], [5, 0.25, w / 2 - 2.5, 4]])
     g.add(caixa(lw, 0.03, ld, L, { pos: [x + dx, 0.2, z + dz], sombra: false }));
@@ -460,7 +476,7 @@ export function enquadrarMundo(g, { local, dentro, comodo }) {
   if (lote) {
     ref = g.children.find(c => c.userData?.lote === lote);
     const rb = lote.rot * RAD; r = lote.rot;
-    let lp = [0, 2.6]; chao = 0.2;   // fora: na calçada, em frente à fachada
+    let lp = [ref?.userData.portaX || 0, 2.6]; chao = 0.2;   // fora: na calçada, em frente à porta
     if (local === 'casa' && (comodo || dentro)) { const cz = COMODOS_MUNDO[comodo || 'sala']; lp = [cz[0], cz[1]]; chao = 0.4; }
     else if (dentro) { lp = [0, -(ref?.userData.d || 12) * 0.42]; chao = 0.4; }
     const [dx, dz] = rot(lp[0], lp[1], rb); S = [lote.f[0] + dx, lote.f[1] + dz];

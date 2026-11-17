@@ -57,7 +57,7 @@ praca, coreto, fonte, parquinho, estatua, rua_bairro, campinho (campo de futebol
 - **Mapa com os nomes:** `docs/preview/mapa_mundo.jpg`. Interiores de todos os prédios: `docs/preview/interiores_mundo.jpg`. Câmera de cima para cenas: `cam: mapa` (e `alvo_xz: [x, z]` para escolher o centro).
 - **Só o local gravado existe na cena:** o resto do mundo é removido ao montar cada cena (mais leve para a GPU).
   Alcance padrão: 80 na calçada, 45 dentro de prédio, só a casa num cômodo, mapa inteiro na `vista`. Mude com `alcance: 120` na cena.
-- **Portas abrem sozinhas** quando alguém chega perto e fecham depois. A porta fica em `x` = −4,8 na farmácia/padaria, 0 na lotérica/banco/posto de saúde/igreja/prefeitura, −8,6 no mercado, 4 na delegacia, −3,5 no bar e −6 na casa (em relação ao ponto da calçada).
+- **Portas abrem sozinhas** quando alguém chega perto e fecham depois. O ponto da calçada fica bem na frente da porta de cada prédio (porta em `x` = 0); na casa a porta fica em `x` = −6.
 - **Paredes e tetos somem sozinhos** quando ficam entre a câmera e o ator (vista em corte), e voltam depois. Com `foco:`, só o ator em foco abre o corte.
 - Dentro da casa, os móveis dos outros cômodos ficam escondidos para não atrapalhar a câmera.
 - Todas as âncoras continuam funcionando (`atender`, `fila: N`, `rezar`, `segurar_grade`, `sentar`, `deitar`, `jogar_pc`, `cozinhar`…).
