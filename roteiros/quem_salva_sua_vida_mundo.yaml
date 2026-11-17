@@ -18,6 +18,7 @@ cenas:
     cam: medio
     mov: seguir
     foco: garoto
+    multidao: { n: 4, modo: natural, area: [-14, 14, -6, 6] }
     atores: [{ id: garoto, acao: andar, rosto: feliz, x: -5, vira: 90 }]
   - fala: o celular diz quem vai salvar a sua vida.
     onde: celular
@@ -26,6 +27,7 @@ cenas:
     onde: mundo
     local: coreto
     cam: aberto
+    multidao: { n: 10, modo: natural, area: [-16, 16, -14, 8] }   # praça movimentada
     atores: [menina comemorar, amigo comemorar]
 
   # --- problema ---
@@ -97,4 +99,5 @@ cenas:
     hora: tarde
     cam: aberto
     mov: orbita
+    multidao: { n: 8, modo: natural, area: [-18, 18, -16, 10] }
     atores: [{ id: garoto, acao: abracar, rosto: feliz, x: -1.3, vira: 60 }, { id: valentao, acao: abracar, rosto: feliz, x: 1.3, vira: -60 }]
