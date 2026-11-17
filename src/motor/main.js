@@ -331,6 +331,27 @@ async function preview() {
 
 /** Posição na tela (pixels) de pontos do mundo [[x,y,z],...] — usado para escrever nomes no mapa. */
 function projetar(pts) { posar(0); cam.updateMatrixWorld(); return pts.map(p => { const v = new THREE.Vector3(...p).project(cam); return [(v.x + 1) / 2 * cfg.largura, (1 - v.y) / 2 * cfg.altura]; }); }
-window.motor = { iniciar, montar, quadro, quadros, preview, projetar, pronto: true, depurar: () => { const nObj = (() => { let k = 0; atual.cen.grupo.traverse(o => { if (o.isMesh) k++; }); return k; })(); const nLuz = (() => { let k = 0; cena.traverse(o => { if (o.isLight) k++; }); return k; })(); const rc = new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(0, 0), cam); const h = rc.intersectObjects(cena.children, true).slice(0, 3);
+/** Conferência do cenário montado: construções que se sobrepõem, objetos dentro de construções e construções baixas demais para o personagem (5,2). */
+const PAR_OK = [[/^mesa/, /cadeira|computador|banqueta/], [/carrinho/, /carrinho/], [/altar/, /vaso/], [/balcao|estufa/, /caixa_registradora|cafeteira|cesto|balanca/]];   // encaixes de propósito
+function conferir() {
+  const CONSTR = /^(casa_br|sobrado|casa|loja|predio|posto_gasolina|banca_jornal|barraca|ponto_onibus|lote:|casa_prot)/, OBJ = /^(arvore|poste|poste_fios|carro|taxi|onibus|banco|lixeira|bicicletario|placa_rua|orelhao)$/;
+  const itens = []; cena.updateMatrixWorld(true);
+  for (const o of atual.cen.grupo.children) { const t = o.userData.lote ? 'lote:' + o.userData.lote.id : o.userData.tipo; if (!t) continue;
+    const b = new THREE.Box3().setFromObject(o); if (b.isEmpty()) continue; if (/^loja/.test(t)) b.setFromObject(o.children[0]);   // loja: só o corpo (debaixo do toldo pode)
+    itens.push({ t, b, c: CONSTR.test(t), p: [+o.position.x.toFixed(1), +o.position.z.toFixed(1)] }); }
+  const sob = (a, b, f = 0.4) => Math.min(a.b.max.x, b.b.max.x) - Math.max(a.b.min.x, b.b.min.x) > f && Math.min(a.b.max.z, b.b.max.z) - Math.max(a.b.min.z, b.b.min.z) > f;
+  const C = itens.filter(i => i.c), O = itens.filter(i => OBJ.test(i.t)), res = { construcoes: C.length, sobrepostas: [], objeto_dentro: [], baixas: [] };
+  for (let i = 0; i < C.length; i++) for (let j = i + 1; j < C.length; j++) if (sob(C[i], C[j], 0.8)) res.sobrepostas.push([C[i].t, C[i].p, C[j].t, C[j].p]);
+  for (const o of O) for (const c of C) { const bb = c.b.clone().expandByScalar(-0.6); if (sob({ b: bb }, o, 0.2) && o.b.min.y < bb.max.y) res.objeto_dentro.push([o.t, o.p, c.t, c.p]); }
+  for (const c of C) if (!/ponto_onibus|barraca|banca/.test(c.t) && c.b.max.y - c.b.min.y < 7) res.baixas.push([c.t, c.p, +(c.b.max.y - c.b.min.y).toFixed(1)]);
+  res.moveis_sobrepostos = [];   // dentro dos prédios: móvel atravessando móvel (tapete, quadro e pôster podem)
+  for (const o of atual.cen.grupo.children) { if (!o.userData.lote && !o.userData.ancoras) continue;
+    const gi = o.children.find(c => c.userData.interior), lista = gi ? gi.children : o.children.filter(m => m.userData.movel);
+    const M = lista.filter(m => !/tapete|poster|quadro|placa|relogio|ventilador|luminaria|extintor/.test(m.userData.tipo || '')).map(m => ({ t: m.userData.tipo || '?', b: new THREE.Box3().setFromObject(m), p: [+m.position.x.toFixed(1), +m.position.z.toFixed(1)] }));
+    for (let i = 0; i < M.length; i++) for (let j = i + 1; j < M.length; j++) if (sob(M[i], M[j], 0.35) && Math.min(M[i].b.max.y, M[j].b.max.y) - Math.max(M[i].b.min.y, M[j].b.min.y) > 0.3)
+      if (!PAR_OK.some(([a, b]) => (a.test(M[i].t) && b.test(M[j].t)) || (a.test(M[j].t) && b.test(M[i].t)))) res.moveis_sobrepostos.push([o.userData.lote?.id || 'casa', M[i].t, M[i].p, M[j].t, M[j].p]); }
+  return res;
+}
+window.motor = { iniciar, montar, quadro, quadros, preview, projetar, pronto: true, conferir, depurar: () => { const nObj = (() => { let k = 0; atual.cen.grupo.traverse(o => { if (o.isMesh) k++; }); return k; })(); const nLuz = (() => { let k = 0; cena.traverse(o => { if (o.isLight) k++; }); return k; })(); const rc = new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(0, 0), cam); const h = rc.intersectObjects(cena.children, true).slice(0, 3);
   return { malhas: nObj, luzes: nLuz, camera: cam.position.toArray().map(v => +v.toFixed(2)), toques: h.map(x => ({ d: +x.distance.toFixed(2), cor: x.object.material?.color?.getHexString?.(), geo: x.object.geometry?.parameters, pos: x.object.getWorldPosition(new THREE.Vector3()).toArray().map(v => +v.toFixed(1)) })) }; } };
 if (new URLSearchParams(location.search).has('preview')) preview();

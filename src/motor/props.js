@@ -24,14 +24,13 @@ export const PROPS = {
   pinheiro: (o = {}) => grupo([cilindro(0.35, 0.4, 2, '#6b4426', { pos: [0, 1, 0] }), cilindro(0, 2.4, 3.2, o.cor || '#22803a', { pos: [0, 3.2, 0], seg: 10 }),
     cilindro(0, 1.8, 2.6, o.cor || '#2a9443', { pos: [0, 4.6, 0], seg: 10 })]),
   arbusto: (o = {}) => grupo([esfera(1.1, o.cor || '#2f9e3a', { pos: [0, 0.7, 0] }), esfera(0.8, o.cor || '#38ad42', { pos: [0.9, 0.5, 0.2] })]),
-  casa: (o = {}) => { const w = o.largura || 10, h = o.altura || 8, d = 8, n = o.noite;
+  casa: (o = {}) => { const w = o.largura || 10, h = Math.max(9, o.altura || 9), d = 8, n = o.noite;
     const g = grupo([caixa(w, h, d, o.cor || '#e9e6dc', { pos: [0, h / 2, 0] }), caixa(w + 1, 1.2, d + 1, o.telhado || '#3d8f3d', { pos: [0, h + 0.6, 0] }),
-      caixa(2, 3.6, 0.15, o.porta || '#7a4b2a', { pos: [-w / 4, 1.8, d / 2 + 0.05] })]);
-    for (const x of [w / 5, w / 2.6]) g.add(caixa(1.8, 1.8, 0.15, janelaMat(n), { pos: [x, h * 0.55, d / 2 + 0.05] }));
-    g.add(caixa(1.8, 1.8, 0.15, janelaMat(n), { pos: [-w / 4, h * 0.78, d / 2 + 0.05] })); return g; },
+      caixa(2.3, 6.2, 0.15, o.porta || '#7a4b2a', { pos: [-w / 4, 3.1, d / 2 + 0.05] })]);
+    for (const x of [w / 6, w / 2.8]) g.add(caixa(2.2, 2.4, 0.15, janelaMat(n), { pos: [x, 4.4, d / 2 + 0.05] })); return g; },
   predio: (o = {}) => { const w = o.largura || 10, h = o.altura || 22, n = o.noite; const g = grupo([caixa(w, h, 8, o.cor || '#9fb3c8', { pos: [0, h / 2, 0] })]);
-    for (let y = 3; y < h - 1; y += 3.2) for (let x = -w / 2 + 1.6; x < w / 2 - 1; x += 2.4) for (const zz of [4.05, -4.05]) g.add(caixa(1.4, 1.8, 0.1, janelaMat(n && ((x * 7 + y + zz) % 3 > 1)), { pos: [x, y, zz], sombra: false }));
-    for (let y = 3; y < h - 1; y += 3.2) for (const zz of [-1.6, 1.6]) for (const sx of [-1, 1]) g.add(caixa(0.1, 1.8, 1.4, janelaMat(n && ((zz * 5 + y) % 3 > 1)), { pos: [sx * (w / 2 + 0.05), y, zz], sombra: false }));
+    for (let y = 4.4; y < h - 2; y += 6.4) for (let x = -w / 2 + 1.8; x < w / 2 - 1.2; x += 3.2) for (const zz of [4.05, -4.05]) g.add(caixa(2, 2.6, 0.1, janelaMat(n && ((x * 7 + y + zz) % 3 > 1)), { pos: [x, y, zz], sombra: false }));
+    for (let y = 4.4; y < h - 2; y += 6.4) for (const zz of [-1.8, 1.8]) for (const sx of [-1, 1]) g.add(caixa(0.1, 2.6, 2, janelaMat(n && ((zz * 5 + y) % 3 > 1)), { pos: [sx * (w / 2 + 0.05), y, zz], sombra: false }));
     g.add(caixa(w - 0.4, 0.2, 7.6, '#8f939c', { pos: [0, h + 0.1, 0] }));
     return g; },
   poste: (o = {}) => { const g = grupo([cilindro(0.15, 0.2, 9, '#5a5d66', { pos: [0, 4.5, 0] }), caixa(2.2, 0.2, 0.2, '#5a5d66', { pos: [0.9, 8.9, 0] }),
@@ -84,11 +83,11 @@ export const PROPS = {
   hidrante: () => grupo([cilindro(0.35, 0.4, 1.3, '#c4281c', { pos: [0, 0.65, 0] }), esfera(0.36, '#c4281c', { pos: [0, 1.3, 0] }), cilindro(0.15, 0.15, 1.0, '#c4281c', { pos: [0, 0.9, 0], rot: [0, 0, 90] })]),
   lixeira: (o = {}) => grupo([cilindro(0.55, 0.45, 1.6, o.cor || '#2e7d32', { pos: [0, 0.8, 0] }), cilindro(0.6, 0.6, 0.12, '#1b5e20', { pos: [0, 1.65, 0] })]),
   faixa_pedestre: (o = {}) => { const g = grupo([]); for (let i = 0; i < 7; i++) g.add(caixa(1.0, 0.03, o.comprimento || 8, '#f2f3f3', { pos: [i * 1.8 - 5.4, 0.09, 0], sombra: false })); return g; },
-  loja: (o = {}) => { const w = o.largura || 9, c = o.cor || '#e85d5d', n = o.noite; const g = grupo([caixa(w, 7, 6, o.parede || '#f1e7c9', { pos: [0, 3.5, 0] }),
-    caixa(w - 2, 3.4, 0.2, mat(n ? '#ffe3a3' : '#bfe6ff', { emissive: n ? '#ffd27a' : '#bfe6ff', emissiveIntensity: n ? 1.1 : 0.35, rough: 0.1 }), { pos: [0, 2.2, 3.02] }),
-    caixa(w, 0.4, 2.2, c, { pos: [0, 4.4, 4.0], rot: [-18, 0, 0] })]);
-    for (let i = 0; i < Math.floor(w / 1.5); i++) g.add(caixa(0.75, 0.42, 2.25, '#ffffff', { pos: [-w / 2 + 0.375 + i * 1.5, 4.41, 4.01], rot: [-18, 0, 0], sombra: false }));
-    const p = placaTexto(o.texto || 'LOJA', w - 1, 1.2, { fundo: c, corTexto: '#ffffff', emissivo: n }); p.position.set(0, 5.9, 3.02); g.add(p);
+  loja: (o = {}) => { const w = o.largura || 9, c = o.cor || '#e85d5d', n = o.noite; const g = grupo([caixa(w, 10, 6, o.parede || '#f1e7c9', { pos: [0, 5, 0] }),
+    caixa(w - 2, 5.4, 0.2, mat(n ? '#ffe3a3' : '#bfe6ff', { emissive: n ? '#ffd27a' : '#bfe6ff', emissiveIntensity: n ? 1.1 : 0.35, rough: 0.1 }), { pos: [0, 3.2, 3.02] }),
+    caixa(w, 0.4, 2.2, c, { pos: [0, 6.6, 4.0], rot: [-18, 0, 0] })]);
+    for (let i = 0; i < Math.floor(w / 1.5); i++) g.add(caixa(0.75, 0.42, 2.25, '#ffffff', { pos: [-w / 2 + 0.375 + i * 1.5, 6.61, 4.01], rot: [-18, 0, 0], sombra: false }));
+    const p = placaTexto(o.texto || 'LOJA', w - 1, 1.2, { fundo: c, corTexto: '#ffffff', emissivo: n }); p.position.set(0, 8.4, 3.02); g.add(p);
     g.add(caixa(w - 0.4, 0.15, 5.6, '#8f939c', { pos: [0, 7.05, 0] })); g.add(caixa(w + 0.2, 0.8, 0.25, o.parede || '#f1e7c9', { pos: [0, 7.3, 2.9] }));   // laje + platibanda
     const cx = PROPS.caixa_dagua(); cx.position.set(w / 2 - 1.6, 7.1, -1.4); g.add(cx);
     g.add(caixa(1.6, 3.4, 0.12, '#7a4b2a', { pos: [-w / 4, 1.7, -3.02] })); g.add(caixa(1.8, 1.4, 0.12, janelaMat(n), { pos: [w / 4, 4.2, -3.02] }));        // porta e janela dos fundos
@@ -128,8 +127,8 @@ export const PROPS = {
   palanque: (o = {}) => { const g = grupo([caixa(10, 1.4, 6, '#7a1f2b', { pos: [0, 0.7, 0] }), caixa(10.2, 0.15, 6.2, '#c9a24a', { pos: [0, 1.45, 0] }),
     caixa(1.8, 2.4, 1.2, '#5a3a22', { pos: [0, 2.6, 1.6] }), cilindro(0.04, 0.04, 1.0, '#222', { pos: [0, 4.2, 1.9], rot: [-30, 0, 0] }), esfera(0.12, '#333', { pos: [0, 4.65, 2.2] })]);
     const p = placaTexto(o.texto || 'PREFEITURA', 1.7, 0.45, { fundo: '#1d3b72', corTexto: '#ffffff' }); p.position.set(0, 2.9, 2.21); g.add(p); return g; },
-  barraca: (o = {}) => { const c = o.cor || '#e8862f'; const g = grupo([caixa(5, 2.2, 2.4, '#b8875a', { pos: [0, 1.1, 0] }), caixa(5.4, 0.3, 3, c, { pos: [0, 4.6, 0.3] })]);
-    for (const x of [-2.4, 2.4]) g.add(cilindro(0.1, 0.1, 4.5, '#ddd', { pos: [x, 2.3, 1.4] }));
+  barraca: (o = {}) => { const c = o.cor || '#e8862f'; const g = grupo([caixa(5, 2.2, 2.4, '#b8875a', { pos: [0, 1.1, 0] }), caixa(5.4, 0.3, 3, c, { pos: [0, 6.4, 0.3] })]);
+    for (const x of [-2.4, 2.4]) g.add(cilindro(0.1, 0.1, 6.3, '#ddd', { pos: [x, 3.2, 1.4] }));
     for (let i = 0; i < 8; i++) g.add(esfera(0.3, ['#e53935', '#ffd23f', '#7fd35a', '#ff8c1a'][i % 4], { pos: [-1.9 + i * 0.55, 2.45, 0.4] })); return g; },
   outdoor: (o = {}) => { const g = grupo([cilindro(0.25, 0.25, 7, '#5a5d66', { pos: [-3, 3.5, 0] }), cilindro(0.25, 0.25, 7, '#5a5d66', { pos: [3, 3.5, 0] }), caixa(11, 5, 0.3, '#333', { pos: [0, 9, 0] })]);
     const p = placaTexto(o.texto || 'VOTE 10', 10.4, 4.4, { fundo: o.cor || '#1d3b72', corTexto: '#ffd23f', emissivo: o.noite }); p.position.set(0, 9, 0.17); g.add(p); return g; },
@@ -272,10 +271,10 @@ export const PROPS = {
   placa_rua: (o = {}) => { const g = grupo([cilindro(0.1, 0.1, 7.2, '#5a5d66', { pos: [0, 3.6, 0], seg: 8 })]);
     for (const v of [0, Math.PI]) { const p = placaTexto(o.texto || 'RUA DA MATRIZ', 3.6, 0.7, { fundo: '#1d6fd9', corTexto: '#ffffff' }); p.position.set(1.9 * Math.cos(v), 6.8, 0.06 * (v ? -1 : 1)); p.rotation.y = v; g.add(p); }
     return g; },
-  banca_jornal: (o = {}) => { const g = grupo([caixa(4.4, 5, 3, '#1f7a3a', { pos: [0, 2.5, -0.2] }), caixa(5, 0.25, 4, '#17602d', { pos: [0, 5.1, 0.1] }), caixa(3.6, 3.0, 0.1, '#0f3d1c', { pos: [0, 2.6, 1.31] })]);
+  banca_jornal: (o = {}) => { const g = grupo([caixa(4.4, 6.4, 3, '#1f7a3a', { pos: [0, 3.2, -0.2] }), caixa(5, 0.25, 4, '#17602d', { pos: [0, 6.5, 0.1] }), caixa(3.6, 3.0, 0.1, '#0f3d1c', { pos: [0, 2.6, 1.31] })]);
     const cs = ['#e53935', '#1e88e5', '#fdd835', '#8e24aa', '#43a047', '#fb8c00'];
     for (let i = 0; i < 12; i++) g.add(caixa(0.55, 0.75, 0.05, cs[i % 6], { pos: [-1.5 + (i % 6) * 0.6, 1.8 + Math.floor(i / 6) * 1.1, 1.37], sombra: false }));   // revistas
-    const pl = placaTexto(o.texto || 'BANCA', 3.4, 0.8, { fundo: '#ffd23f', corTexto: '#1f7a3a' }); pl.position.set(0, 4.5, 1.32); g.add(pl); return g; },
+    const pl = placaTexto(o.texto || 'BANCA', 3.4, 0.8, { fundo: '#ffd23f', corTexto: '#1f7a3a' }); pl.position.set(0, 5.6, 1.32); g.add(pl); return g; },
   bicicletario: () => { const g = grupo([caixa(5, 0.1, 0.3, '#5a5d66', { pos: [0, 0.05, 0] })]);
     for (let i = 0; i < 4; i++) { const x = -1.8 + i * 1.2; g.add(caixa(0.1, 1.6, 0.1, '#9aa0aa', { pos: [x, 0.8, -0.35] })); g.add(caixa(0.1, 1.6, 0.1, '#9aa0aa', { pos: [x, 0.8, 0.35] })); g.add(caixa(0.1, 0.1, 0.8, '#9aa0aa', { pos: [x, 1.6, 0] })); }
     for (const x of [-1.2, 1.2]) { const b = PROPS.bicicleta(); b.position.set(x, 0, 0); b.rotation.y = Math.PI / 2; g.add(b); } return g; },
@@ -317,23 +316,25 @@ export function assentosDe(raiz) {
 
 /** Casa brasileira: telhado de telha em duas águas, grade na janela, caixa d'água opcional. andares = 1 ou 2. */
 function casaBR(o, andares) {
-  const w = o.largura || 9, d = 8, hA = 4.2, h = hA * andares, c = o.cor || '#f0b446', n = o.noite;
-  const g = grupo([caixa(w, h, d, c, { pos: [0, h / 2, 0] }), caixa(w + 0.1, 0.5, d + 0.1, o.barrado || '#d8d4cc', { pos: [0, 0.25, 0] })]);
+  // escala do personagem (5,2 de altura): andar de 7, porta de 6,2, peitoril na cintura (~3). A frente fica em z = +4 como antes; a casa cresce para trás.
+  const w = o.largura || 9, d = 11, hA = 7, h = hA * andares, c = o.cor || '#f0b446', n = o.noite, z0 = 4 - d / 2;
+  const g = grupo([caixa(w, h, d, c, { pos: [0, h / 2, z0] }), caixa(w + 0.1, 0.6, d + 0.1, o.barrado || '#d8d4cc', { pos: [0, 0.3, z0] })]);
   const telha = o.telhado || '#c8643b', inc = 26, meio = d / 2 + 0.7, comp = meio / Math.cos(inc * Math.PI / 180);
-  for (const s of [-1, 1]) g.add(caixa(w + 1.2, 0.35, comp, telha, { pos: [0, h + Math.tan(inc * Math.PI / 180) * meio / 2, s * meio / 2], rot: [s * inc, 0, 0] }));
+  for (const s of [-1, 1]) g.add(caixa(w + 1.2, 0.35, comp, telha, { pos: [0, h + Math.tan(inc * Math.PI / 180) * meio / 2, z0 + s * meio / 2], rot: [s * inc, 0, 0] }));
   { // oitão (triângulo das laterais) sob as duas águas do telhado
     const sub = Math.tan(inc * Math.PI / 180) * (d / 2), sh = new THREE.Shape([new THREE.Vector2(-d / 2, 0), new THREE.Vector2(d / 2, 0), new THREE.Vector2(0, sub)]);
-    const ot = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: w - 0.02, bevelEnabled: false }), mat(c)); ot.rotation.y = Math.PI / 2; ot.position.set(-w / 2 + 0.01, h, 0);
+    const ot = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: w - 0.02, bevelEnabled: false }), mat(c)); ot.rotation.y = Math.PI / 2; ot.position.set(-w / 2 + 0.01, h, z0);
     ot.castShadow = ot.receiveShadow = true; g.add(ot); }
   const vid = () => mat(n ? '#ffe3a3' : '#a8dcff', n ? { emissive: '#ffd27a', emissiveIntensity: 1.1 } : { rough: 0.15, metal: 0.1 });
-  const janela = (x, y) => { g.add(caixa(2.2, 1.9, 0.15, '#ffffff', { pos: [x, y, d / 2 + 0.04] })); g.add(caixa(1.9, 1.6, 0.16, vid(), { pos: [x, y, d / 2 + 0.06], sombra: false }));
-    if (o.grade !== false) for (let k = -0.8; k <= 0.81; k += 0.4) g.add(caixa(0.06, 1.7, 0.06, '#2b2b2b', { pos: [x + k, y, d / 2 + 0.2] })); };
-  g.add(caixa(1.8, 3.4, 0.15, o.porta || '#7a4b2a', { pos: [-w / 4, 1.95, d / 2 + 0.05] })); g.add(esfera(0.1, '#e0b040', { pos: [-w / 4 + 0.6, 1.9, d / 2 + 0.15] }));
-  janela(w / 5, 2.4); if (andares === 2) { janela(-w / 4, hA + 2.2); janela(w / 5, hA + 2.2);
-    g.add(caixa(w * 0.55, 0.25, 1.4, '#d8d4cc', { pos: [w / 5 - 0.3, hA + 0.4, d / 2 + 0.7] }));
-    for (let x = -w * 0.25; x <= w * 0.25; x += 0.45) g.add(caixa(0.07, 1.1, 0.07, '#2b2b2b', { pos: [w / 5 - 0.3 + x, hA + 1.05, d / 2 + 1.35] }));
-    g.add(caixa(w * 0.55, 0.1, 0.1, '#2b2b2b', { pos: [w / 5 - 0.3, hA + 1.6, d / 2 + 1.35] })); }
-  if (o.caixa_dagua !== false) { const cx = PROPS.caixa_dagua(); cx.position.set(w / 2 - 1.8, h + Math.tan(inc * Math.PI / 180) * meio * 0.6, -1.5); g.add(cx); }
+  const F = 4;   // plano da fachada
+  const janela = (x, y) => { g.add(caixa(2.9, 2.7, 0.15, '#ffffff', { pos: [x, y, F + 0.04] })); g.add(caixa(2.5, 2.3, 0.16, vid(), { pos: [x, y, F + 0.06], sombra: false }));
+    if (o.grade !== false) for (let k = -1.05; k <= 1.06; k += 0.42) g.add(caixa(0.07, 2.4, 0.07, '#2b2b2b', { pos: [x + k, y, F + 0.2] })); };
+  const px = -w / 4.2; g.add(caixa(2.3, 6.2, 0.15, o.porta || '#7a4b2a', { pos: [px, 3.1 + 0.2, F + 0.05] })); g.add(esfera(0.13, '#e0b040', { pos: [px + 0.8, 3.1, F + 0.15] }));
+  janela(w / 4.5, 4.4); if (andares === 2) { janela(-w / 4.2, hA + 4.2); janela(w / 4.5, hA + 4.2);
+    g.add(caixa(w * 0.55, 0.3, 1.8, '#d8d4cc', { pos: [w / 4.5 - 0.3, hA + 0.15, F + 0.9] }));   // sacada: guarda-corpo na cintura (3)
+    for (let x = -w * 0.25; x <= w * 0.25; x += 0.5) g.add(caixa(0.08, 3, 0.08, '#2b2b2b', { pos: [w / 4.5 - 0.3 + x, hA + 1.8, F + 1.75] }));
+    g.add(caixa(w * 0.55, 0.12, 0.12, '#2b2b2b', { pos: [w / 4.5 - 0.3, hA + 3.3, F + 1.75] })); }
+  if (o.caixa_dagua !== false) { const cx = PROPS.caixa_dagua(); cx.position.set(w / 2 - 1.8, h + Math.tan(inc * Math.PI / 180) * meio * 0.6, z0 - 1.5); g.add(cx); }
   return g;
 }
 

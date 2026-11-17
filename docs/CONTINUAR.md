@@ -18,6 +18,7 @@ Leia este arquivo primeiro. Ele resume o que já existe, as regras de trabalho c
   - `node ferramentas/folha_cenas.mjs roteiros/x.yaml saida.jpg 1-16` → 1 foto por cena (no máx. 16 por folha).
   - `node ferramentas/quadros_cena.mjs roteiros/x.yaml saida.jpg 3,7` → cada cena em 0 s / 1,5 s / 3 s.
   - `node ferramentas/preview_assets.mjs [categoria]` → atualiza `docs/preview/*.jpg`.
+  - `node ferramentas/conferir_mundo.mjs [hora]` → **sem imagens**: lista construções sobrepostas, objetos dentro de construções, construções baixas demais e móveis atravessando móveis. Rode depois de mexer no mundo, em prédios ou em móveis (tem que dar tudo 0).
 - Validar roteiro sem render: `node -e "import('./src/node/roteiro.mjs').then(m=>m.carregarRoteiro('roteiros/x.yaml'))"`.
 
 ## Roteiros prontos para rascunho (todos no mundo integrado)
@@ -31,6 +32,9 @@ Leia este arquivo primeiro. Ele resume o que já existe, as regras de trabalho c
 | `peso_das_promessas.yaml` | longo, 48 cenas (~2 min, aventura) | conferido; cenas do telhado (33–41) ajustadas por último |
 
 Quando o usuário mandar o retorno do rascunho, ajuste **só** as cenas citadas.
+
+## Escala (regra do mundo)
+Personagem 5,2 de altura. Andar de casa 7 studs, porta 6,2, peitoril da janela ~3, prédio com andares de 6,4, toldo de loja a 6,6. Cama de solteiro 2,9×6,2, casal 4,8×6,2.
 
 ## Recursos que os roteiros já podem usar (resumo — detalhes em `docs/ROTEIRO.md`)
 - Casa do protagonista ampliada (cômodos 1,6× × 1,45×, pé-direito 9) para a câmera caber dentro dos cômodos.

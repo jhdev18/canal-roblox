@@ -24,7 +24,7 @@ function nuvens(g, r) {
     for (let j = 0; j < 4; j++) { const e = esfera(r.entre(6, 10), mat('#ffffff', { lambert: true, emissive: '#c2d2e6', fog: false }), { pos: [cx + j * 8 - 12, cy + r.entre(-2, 2), cz] }); e.castShadow = false; g.add(e); } }
 }
 function lua(g) { g.add(esfera(6, mat('#f4f1d0', { basic: true, fog: false }), { pos: [-40, 70, -180], sombra: false })); }
-export function add(g, tipo, o, pos, vira = 0) { const p = PROPS[tipo](o); p.position.set(...pos); p.rotation.y = THREE.MathUtils.degToRad(vira); g.add(p); return p; }
+export function add(g, tipo, o, pos, vira = 0) { const p = PROPS[tipo](o); p.userData.tipo = tipo; p.position.set(...pos); p.rotation.y = THREE.MathUtils.degToRad(vira); g.add(p); return p; }
 export function sala(g, { largura = 26, profundo = 8, altura = 11, parede = '#e8e6e1', chao = '#bfb6a8', teto = '#f4f4f4' } = {}) {
   g.userData.limites = { x: largura / 2 - 0.8, y: altura - 0.8, z: -profundo + 0.8 };
   g.add(caixa(largura, 0.4, 60, chao, { pos: [0, -0.2, 20] }));
