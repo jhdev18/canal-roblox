@@ -100,7 +100,9 @@ export const PREDIOS = {
     tot.position.set(9.5, 0, 2); g.add(tot); return g; },
   coreto: (o = {}) => { const g = grupo([cilindro(5, 5.2, 1.2, '#e9e6dc', { pos: [0, 0.6, 0], seg: 8 }), cilindro(5.3, 5.3, 0.2, '#d8d4cc', { pos: [0, 1.25, 0], seg: 8 })]);
     for (let i = 0; i < 8; i++) { const a = (i + 0.5) / 8 * Math.PI * 2; g.add(cilindro(0.18, 0.18, 4.5, '#ffffff', { pos: [Math.sin(a) * 4.5, 3.5, Math.cos(a) * 4.5] }));
-      if (i !== 0) g.add(caixa(3.4, 0.15, 0.15, '#ffffff', { pos: [Math.sin(a + 0.39) * 4.4, 2.3, Math.cos(a + 0.39) * 4.4], rot: [0, (a + 0.39) / RAD + 90, 0] })); }
+      if (i !== 0) { const m2 = a + Math.PI / 8, r2 = 4.5 * Math.cos(Math.PI / 8);   // grade entre esta coluna e a próxima (tangente ao círculo)
+        for (const y of [1.9, 2.6]) g.add(caixa(3.3, 0.14, 0.14, '#ffffff', { pos: [Math.sin(m2) * r2, y, Math.cos(m2) * r2], rot: [0, m2 / RAD, 0] }));
+        for (let k = -1; k <= 1; k++) { const mk = m2 + k * 0.12; g.add(caixa(0.1, 0.8, 0.1, '#ffffff', { pos: [Math.sin(mk) * r2 * 1.005, 2.2, Math.cos(mk) * r2 * 1.005] })); } } }
     const tel = cilindro(0, 6.2, 3.2, o.cor || '#2e7d5b', { pos: [0, 7.3, 0], seg: 8 }); g.add(tel); g.add(esfera(0.35, '#e0b040', { pos: [0, 9.0, 0] }));
     for (let i = 0; i < 3; i++) g.add(caixa(3, 0.3, 0.9, '#dcd5c6', { pos: [0, 0.15 + i * 0.3, 5.9 - i * 0.6] })); return g; },
 };

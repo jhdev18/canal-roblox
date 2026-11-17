@@ -93,13 +93,32 @@ export const PROPS = {
     for (const sx of [-1, 1]) g.add(caixa(0.12, 1.4, 1.8, janelaMat(n), { pos: [sx * (w / 2 + 0.02), 4.2, -0.5] }));
     return g; },
   arranha_ceu: (o = {}) => PROPS.predio({ altura: o.altura || 45, largura: o.largura || 12, cor: o.cor || '#6f8fb3', noite: o.noite }),
-  fonte: () => grupo([cilindro(4, 4.2, 1.0, '#c9ccd5', { pos: [0, 0.5, 0], seg: 28 }), cilindro(3.6, 3.6, 0.1, mat('#4fa8e8', { rough: 0.05, metal: 0.1 }), { pos: [0, 0.95, 0], seg: 28 }),
-    cilindro(0.5, 0.7, 2.6, '#c9ccd5', { pos: [0, 2, 0] }), cilindro(1.4, 1.2, 0.4, '#c9ccd5', { pos: [0, 3.3, 0], seg: 20 }),
-    cilindro(0.15, 1.2, 1.4, mat('#9fd8ff', { rough: 0.05, emissive: '#bfe6ff', emissiveIntensity: 0.3 }), { pos: [0, 4.2, 0], seg: 16, sombra: false })]),
-  estatua: (o = {}) => { const pedra = '#9ea3ad'; const g = grupo([caixa(3, 2.4, 3, '#c9ccd5', { pos: [0, 1.2, 0] }), caixa(2, 2, 1, pedra, { pos: [0, 4.4, 0] }),
-    caixa(1, 2, 1, pedra, { pos: [-0.5, 2.4 + 1, 0] }), caixa(1, 2, 1, pedra, { pos: [0.5, 3.4, 0] }), caixa(1, 2, 1, pedra, { pos: [-1.5, 4.4, 0] }),
-    caixa(1, 2, 1, pedra, { pos: [1.5, 5.6, 0], rot: [0, 0, 160] }), caixa(1.25, 1.2, 1.2, pedra, { pos: [0, 6.0, 0], round: 0.28 })]);
-    const p = placaTexto(o.texto || 'FUNDADOR', 2.6, 0.5, { fundo: '#7c6a4a', corTexto: '#f5e6b8' }); p.position.set(0, 1.4, 1.52); g.add(p); return g; },
+  fonte: () => { // bacia com borda (água abaixo da borda, sem superfícies coincidentes), coluna, tacinha, jato e cortina d'água
+    const pedra = mat('#c9ccd5', { rough: 0.85 }), agua = new THREE.MeshStandardMaterial({ color: 0x4fa8e8, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.85 });
+    const jato = new THREE.MeshStandardMaterial({ color: 0xbfe6ff, emissive: 0x9fd8ff, emissiveIntensity: 0.35, transparent: true, opacity: 0.45, roughness: 0.05, depthWrite: false });
+    const g = grupo([]);
+    const parede = new THREE.Mesh(new THREE.CylinderGeometry(4.1, 4.3, 1.2, 36, 1, true), new THREE.MeshStandardMaterial({ color: 0xc9ccd5, roughness: 0.85, side: THREE.DoubleSide }));
+    parede.position.y = 0.6; parede.castShadow = parede.receiveShadow = true; g.add(parede);
+    const borda = new THREE.Mesh(new THREE.RingGeometry(3.75, 4.35, 36), new THREE.MeshStandardMaterial({ color: 0xd8dbe2, roughness: 0.8, side: THREE.DoubleSide }));
+    borda.rotation.x = -Math.PI / 2; borda.position.y = 1.2; borda.receiveShadow = true; g.add(borda);
+    g.add(cilindro(4.0, 4.0, 0.3, pedra, { pos: [0, 0.15, 0], seg: 36 }));                        // fundo da bacia (topo em 0.3)
+    g.add(cilindro(3.95, 3.95, 0.06, agua, { pos: [0, 0.92, 0], seg: 36, sombra: false }));       // água (topo em 0.95, abaixo da borda 1.2)
+    g.add(cilindro(0.45, 0.7, 2.5, pedra, { pos: [0, 1.55, 0], seg: 18 }));                       // coluna
+    g.add(cilindro(1.6, 0.6, 0.55, pedra, { pos: [0, 3.05, 0], seg: 24 }));                       // tacinha
+    g.add(cilindro(1.45, 1.45, 0.04, agua, { pos: [0, 3.28, 0], seg: 24, sombra: false }));
+    g.add(cilindro(0.07, 0.12, 1.5, jato, { pos: [0, 4.0, 0], seg: 10, sombra: false }));          // jato
+    g.add(esfera(0.32, jato, { pos: [0, 4.8, 0], sombra: false }));
+    const cortina = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.9, 2.25, 28, 1, true), jato); cortina.position.y = 2.1; g.add(cortina);   // água caindo da tacinha
+    return g; },
+  estatua: (o = {}) => { // pedestal + boneco R6 de pedra com o braço erguido
+    const pedra = mat('#9ea3ad', { rough: 0.9 }), g = grupo([caixa(3.2, 2.4, 3.2, '#c9ccd5', { pos: [0, 1.2, 0] }), caixa(3.7, 0.3, 3.7, '#b8bcc6', { pos: [0, 2.55, 0] })]);
+    const y0 = 2.7;
+    g.add(caixa(1, 2, 1, pedra, { pos: [-0.5, y0 + 1, 0] })); g.add(caixa(1, 2, 1, pedra, { pos: [0.5, y0 + 1, 0] }));          // pernas
+    g.add(caixa(2, 2, 1, pedra, { pos: [0, y0 + 3, 0] }));                                                                     // tronco
+    g.add(caixa(1, 2, 1, pedra, { pos: [1.5, y0 + 3, 0] }));                                                                   // braço esquerdo, para baixo
+    const ombro = grupo([caixa(1, 2, 1, pedra, { pos: [0, -0.6, 0] })]); ombro.position.set(-1.5, y0 + 3.6, 0); ombro.rotation.set(-0.35, 0, -150 * Math.PI / 180); g.add(ombro);   // braço direito erguido
+    g.add(caixa(1.25, 1.2, 1.2, pedra, { pos: [0, y0 + 4.62, 0], round: 0.28 }));                                              // cabeça
+    const p = placaTexto(o.texto || 'FUNDADOR', 2.6, 0.55, { fundo: '#7c6a4a', corTexto: '#f5e6b8' }); p.position.set(0, 1.5, 1.62); g.add(p); return g; },
   bandeira: (o = {}) => { const g = grupo([cilindro(0.1, 0.12, 10, '#d8dde3', { pos: [0, 5, 0], mat: { metal: 0.6, rough: 0.3 } }), esfera(0.2, '#e0b040', { pos: [0, 10.1, 0] })]);
     const cores = o.cores || ['#1f9d48', '#f5cd30', '#1d3b72'];
     cores.forEach((c, i) => g.add(caixa(3.6, 2.4 / cores.length, 0.05, c, { pos: [1.9, 9.4 - i * 2.4 / cores.length, 0] })));
