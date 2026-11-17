@@ -124,6 +124,7 @@ export async function narrar(texto, cfgVoz, ffmpeg = 'ffmpeg') {
     await rodar('powershell', ['-NoProfile', '-NonInteractive', '-Command', ps], { entrada: texto });
   } else if (v.motor === 'nenhum') {
     await rodar(ffmpeg, ['-y', '-v', 'error', '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=mono', '-t', String(Math.max(0.6, texto.split(' ').length * 0.32)), bruto]);
+  } else if (v.motor === 'site') { throw new Error('motor "site": a narração vem de audios/<roteiro>.mp3 (veja --texto-site); a API não é usada');
   } else throw new Error('Motor de voz desconhecido: ' + v.motor);
 
   let filtro;

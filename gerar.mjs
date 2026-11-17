@@ -74,6 +74,11 @@ async function principal() {
   if (a['texto-site']) { const dst = p('audios', `${nome}.txt`); garantirDir(p('audios')); const mod = typeof a['texto-site'] === 'string' ? a['texto-site'] : 'v2'; fs.writeFileSync(dst, textoParaSite(rot.cenas, mod));
     log(`texto para o site salvo em audios/${nome}.txt — cole no ElevenLabs (modelo Eleven Multilingual v2), gere, baixe e salve como audios/${nome}.mp3`); return; }
   const narracaoSite = acharNarracaoSite(nome);
+  if (!narracaoSite && final && cfg.voz.motor === 'site') {   // versão final sem o MP3 do site: para aqui, sem chamar a API
+    const ha = fs.existsSync(p('audios')) ? fs.readdirSync(p('audios')).filter(f => !f.startsWith('.')) : [];
+    console.error(`\n✖ Falta a narração: salve o MP3 do site do ElevenLabs como audios/${nome}.mp3 (o nome tem que ser igual ao do roteiro).`
+      + (ha.length ? `\n  Arquivos que estão em audios/: ${ha.join(', ')}` : '\n  A pasta audios/ está vazia.')
+      + `\n  Texto para colar no site: node gerar.mjs ${arq} --texto-site corrido   (ou --texto-site v4)\n  A API do ElevenLabs não é usada (voz.motor: site no config.yaml).`); process.exit(1); }
   if (narracaoSite) { const comFala = rot.cenas.filter(c => c.fala && c.fala.trim() && !c.audio), partes = dividirNarracao(narracaoSite, comFala.map(c => c.fala), cfg.ffmpeg);
     comFala.forEach((c, i) => { c.audio = partes[i]; }); log(`narração do site: ${path.relative(p(), narracaoSite)} → ${partes.length} partes (uma por cena)`); }
   let cenas = rot.cenas;
