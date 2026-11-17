@@ -31,7 +31,7 @@ cenas:                     # 1 cena = 1 corte (~1–2 s, 3–7 palavras)
 | campo | valores | padrão |
 |---|---|---|
 | `fala` | texto narrado e legendado | — (sem fala = só imagem, use `dur`) |
-| `onde` | rua, parque, fachada, sala, quarto, escola, hospital, casamento, cidade, praca, prefeitura, gabinete, **bairro, quintal, cozinha, campinho**, celular, vazio | cena anterior / rua |
+| `onde` | rua, parque, fachada, sala, quarto, escola, hospital, casamento, cidade, praca, **praca_cheia**, prefeitura, gabinete, **centro**, bairro, quintal, cozinha, campinho, celular, vazio | cena anterior / rua |
 | `hora` | dia, tarde, noite | cena anterior / dia |
 | `cam` | detalhe, close, medio, aberto, geral, baixo, alto, lado, costas | alterna |
 | `mov` | fixo, zoom_in, zoom_out, zoom_rapido, pan, orbita, tremor, seguir, subir, descer | zoom_in |
@@ -76,6 +76,12 @@ atores:
 multidao: { n: 14, area: [-12, 12, 4, 12], olhar_z: -3, acao: [palmas, comemorar, acenar], prop: bandeirinha }
 multidao: { n: 10, acao: [bravo, parado], prop: cartaz, prop_texto: ["FORA!", "QUEREMOS ÁGUA"] }   # protesto
 ```
+
+`modo`: `espalhado` (padrão), `grupos` (rodinhas de 2 a 4 pessoas conversando, viradas umas para as outras) ou `passantes` (andando nas calçadas, alguns no celular ou com cachorro).
+`personagens: todos` (ou uma lista, ex.: `[prefeito, gari, vizinha_fofoqueira]`) usa personagens do elenco na multidão; o resto é gerado.
+
+**Cenários que já vêm com multidão:** `praca_cheia` (~32 pessoas em rodinhas em volta da fonte) e `centro` (pedestres nas calçadas da avenida, com padaria, farmácia, mercado, banco… dos lados e a prefeitura no fim). Use `multidao: false` para esvaziar ou `multidao: { n: 40 }` para mudar.
+Dica: em vídeo vertical, para mostrar muita gente use `cam: alto` + `dist: 2.8` (praça) ou `cam: geral` + `altura: 4` (centro).
 
 `n` (até 40), `area: [x_min, x_max, z_min, z_max]`, `olhar_z` (todos olham para esse ponto em z), `acao` (sorteada entre as da lista), `prop`/`prop_texto`, `rosto`. Figurantes não precisam de elenco, e a câmera não os usa para enquadrar. Para mostrar a multidão inteira, use `cam: geral`.
 

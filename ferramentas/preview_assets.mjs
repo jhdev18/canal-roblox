@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { abrirMotor } from '../src/node/render.mjs';
-import { carregarPersonagens, resolverSpec, catalogo } from '../src/node/roteiro.mjs';
+import { carregarPersonagens, resolverSpec, catalogo, MULTIDAO_PADRAO } from '../src/node/roteiro.mjs';
 import { p, garantirDir } from '../src/node/util.mjs';
 
 const args = process.argv.slice(2);
@@ -15,7 +15,8 @@ const spec = (base, extra = {}) => ({ id: 'a', ...resolverSpec(base, tpl), ...ex
 const NOOB = (extra = {}) => ({ ...spec('noob'), ...extra });
 const FUNDO = { cenario: 'vazio', cor: '#eef1f6', chao: '#d5d9e2', mov: 'fixo', dur: 1.2 };
 const ator = (s, acao = 'parado', o = {}) => ({ id: 'a', spec: s, acao, p: {}, ...o });
-const CENAS_EXEMPLO = { bairro: 'passear_cachorro', quintal: 'sentar', cozinha: 'lavar_louca', campinho: 'chutar', cidade: 'andar_confiante', praca: 'acenar', prefeitura: 'discursar', gabinete: 'sentar', sala: 'sentar', quarto: 'celular', escola: 'falar', hospital: 'deitar', casamento: 'acenar', parque: 'acenar', fachada: 'parado', rua: 'andar' };
+const COM_MULTIDAO = (n) => MULTIDAO_PADRAO[n] ? { multidao: { ...MULTIDAO_PADRAO[n], specs: Object.keys(tpl).map(k => ({ id: k, ...resolverSpec(k, tpl) })) } } : {};
+const CENAS_EXEMPLO = { praca_cheia: 'acenar', centro: 'parado', bairro: 'passear_cachorro', quintal: 'sentar', cozinha: 'lavar_louca', campinho: 'chutar', cidade: 'andar_confiante', praca: 'acenar', prefeitura: 'discursar', gabinete: 'sentar', sala: 'sentar', quarto: 'celular', escola: 'falar', hospital: 'deitar', casamento: 'acenar', parque: 'acenar', fachada: 'parado', rua: 'andar' };
 const T_ACAO = { cair: 1.0, pular: 0.28, comemorar: 0.26, empurrar: 0.5, andar: 0.15, correr: 0.1, acenar: 0.13, socar: 0.1, palmas: 0.2, dancar: 0.15 };
 const COSTAS = ['mochila', 'capa', 'asas', 'rabo_de_cavalo', 'cabelo_longo', 'coque'];
 const TORSO = ['gravata', 'mochila', 'capa', 'asas'];
@@ -29,7 +30,8 @@ const CATEGORIAS = {
   roupas: () => cat.roupas.map(n => ({ nome: n, cena: { ...FUNDO, camera: 'medio', angulo: 15,
     atores: [ator(NOOB({ roupa: n, camisa: { terno: 'preto', jaleco: 'branco', vestido: 'rosa', uniforme: 'azul', listrada: 'vermelho', regata: 'laranja' }[n] }))] } })),
   acoes: () => cat.acoes.map(n => ({ nome: n, t: T_ACAO[n] ?? 0.5, cena: { ...FUNDO, camera: 'aberto', angulo: 30, atores: [ator(NOOB(), n)] } })),
-  cenarios: () => cat.cenarios.filter(n => n !== 'celular').flatMap(n => [{ nome: n, cena: { cenario: n, mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10,
+  cenarios: () => cat.cenarios.filter(n => n !== 'celular').flatMap(n => [{ nome: n, cena: { cenario: n, mov: 'fixo', dur: 1.2, ...COM_MULTIDAO(n),
+    camera: { praca_cheia: 'alto', centro: 'geral' }[n] || 'aberto', dist: { praca_cheia: 2.8 }[n], altura: { centro: 4 }[n], angulo: 10,
     atores: n === 'vazio' ? [] : [ator(NOOB(), CENAS_EXEMPLO[n] || 'parado')] } }]).concat(
     ['rua', 'bairro', 'quarto'].map(n => ({ nome: n + ' · noite', cena: { cenario: n, hora: 'noite', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10, atores: [ator(NOOB(), 'parado')] } })),
     [{ nome: 'rua · tarde', cena: { cenario: 'rua', hora: 'tarde', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10, atores: [ator(NOOB(), 'parado')] } }]),

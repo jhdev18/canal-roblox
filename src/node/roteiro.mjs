@@ -37,6 +37,10 @@ export function resolverSpec(def, templates, pilha = []) {
   return { ...herdado, ...resto, extras: resto.extras ?? herdado.extras ?? [], acessorios: resto.acessorios ?? herdado.acessorios ?? [] };
 }
 
+/** Multidão que já vem com o cenário (sobrescreva com `multidao:` ou desligue com `multidao: false`). */
+export const MULTIDAO_PADRAO = { praca_cheia: { n: 32, modo: 'grupos', personagens: 'todos', area: [-11, 11, -24, 5], livre: 3.5, evitar: [[0, -12, 5.5]] },
+      centro: { n: 18, modo: 'passantes', personagens: 'todos', area: [-11, 11, -60, 6], faixas: [[-10.5, -7], [7, 10.5]] } };
+
 const CAM_CICLO = [['medio', -18], ['close', 12], ['aberto', 0], ['medio', 22], ['baixo', -8], ['close', -15], ['lado', 0]];
 
 export function carregarRoteiro(arquivo) {
@@ -68,8 +72,15 @@ export function carregarRoteiro(arquivo) {
       multidao: c.multidao,
       texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque,
     };
+    if (cen.multidao === undefined && MULTIDAO_PADRAO[cen.cenario]) cen.multidao = { ...MULTIDAO_PADRAO[cen.cenario] };
+    if (cen.multidao === false) cen.multidao = undefined;
+    else if (cen.multidao && MULTIDAO_PADRAO[cen.cenario]) cen.multidao = { ...MULTIDAO_PADRAO[cen.cenario], ...(typeof cen.multidao === 'number' ? { n: cen.multidao } : cen.multidao) };
     if (cen.multidao) {
       if (typeof cen.multidao === 'number') cen.multidao = { n: cen.multidao };
+      if (cen.multidao.modo) checar('modo da multidão', cen.multidao.modo, ['espalhado', 'grupos', 'passantes'], onde);
+      const ps = cen.multidao.personagens;
+      if (ps) { const nomes = ps === 'todos' ? Object.keys(templates) : [].concat(ps);
+        cen.multidao.specs = nomes.map(nm => { checar('personagem (multidão)', nm, Object.keys(templates), onde); return { id: nm, ...resolverSpec(nm, templates) }; }); delete cen.multidao.personagens; }
       for (const ac of [].concat(cen.multidao.acao || [])) checar('ação (multidão)', ac, cat.acoes, onde);
       if (cen.multidao.prop) checar('prop de mão (multidão)', cen.multidao.prop, cat.props_mao, onde);
     }

@@ -188,22 +188,40 @@ export const CENARIOS = {
     const n = o.hora === 'noite';
     g.add(caixa(500, 0.2, 500, '#4ccd3d', { pos: [0, -0.1, 0] }));
     g.add(caixa(40, 0.2, 30, '#d6cdb8', { pos: [0, 0.05, 2] }));
-    const B = '#f4f1ea';
-    g.add(caixa(40, 15, 10, B, { pos: [0, 7.5, -20] })); g.add(caixa(41, 1.2, 11, '#e3ddd0', { pos: [0, 15.6, -20] }));
-    g.add(caixa(14, 18.5, 10.5, B, { pos: [0, 9.25, -19.8] }));
-    const fr = cilindro(8.5, 8.5, 1.4, '#e3ddd0', { pos: [0, 19.3, -13.8], rot: [90, 0, 90], seg: 3 }); fr.scale.set(1, 1, 0.55); g.add(fr);
-    for (let i = 0; i < 6; i++) g.add(cilindro(0.55, 0.6, 12.5, '#ffffff', { pos: [-6.25 + i * 2.5, 7.6, -13.6], seg: 16 }));
-    g.add(caixa(15, 0.8, 2.4, '#e3ddd0', { pos: [0, 14.2, -13.6] }));
-    for (let i = 0; i < 4; i++) g.add(caixa(16 - i * 0.6, 0.4, 2.2, '#dcd5c6', { pos: [0, 0.2 + i * 0.4, -10.2 - i * 1.0] }));
-    const pl = placaTexto(o.texto || 'PREFEITURA MUNICIPAL', 12, 1.2, { fundo: '#e3ddd0', corTexto: '#1d3b72' }); pl.position.set(0, 14.2, -12.38); g.add(pl);
-    add(g, 'porta', { cor: '#5a3a22' }, [0, 1.6, -14.6]);
-    for (const x of [-15, -10, 10, 15]) for (const y of [4, 10]) g.add(caixa(3, 3.6, 0.2, mat(n ? '#ffe3a3' : '#bfe6ff', { emissive: n ? '#ffd27a' : '#bfe6ff', emissiveIntensity: n ? 1.1 : 0.3, rough: 0.1 }), { pos: [x, y, -14.9] }));
+    add(g, 'prefeitura_predio', { texto: o.texto, noite: n }, [0, 0, -20]);
     add(g, 'bandeira', {}, [-11, 0, -9]); add(g, 'bandeira', { cores: ['#ffffff', '#c4281c', '#ffffff'] }, [11, 0, -9]);
     if (o.palanque !== false) add(g, 'palanque', { texto: o.texto_palanque || 'PREFEITURA' }, [0, 0, -3]);
     for (const x of [-18, 18]) add(g, 'arvore', {}, [x, 0, -6]); for (const x of [-26, 26]) add(g, 'arvore', { tam: 1.2 }, [x, 0, -14]);
     for (const x of [-8, 8]) add(g, 'poste', { noite: n }, [x, 0, 3], x < 0 ? 0 : 180);
     g.userData.ancoras = { discursar: [0, 1.52, -2.6] };
     n ? lua(g) : nuvens(g, r);
+  },
+  praca_cheia(o, g, r) { // a praça com muita gente reunida (a multidão vem do roteiro; padrão: ~30 pessoas em rodinhas)
+    CENARIOS.praca(o, g, r);
+    add(g, 'barraca', { cor: '#1e88e5' }, [-22, 0, -8], 40); add(g, 'carro', { cor: '#f5cd30' }, [-26, 0, -26], 30);
+    for (const [x, z] of [[-5, -20], [5, -20], [-18, -12], [18, -4]]) add(g, 'vaso_flor', {}, [x, 0, z]);
+  },
+  centro(o, g, r) { // avenida principal vista de frente: lojas dos dois lados, prefeitura no fim
+    const n = o.hora === 'noite';
+    g.add(caixa(500, 0.2, 500, '#8f949e', { pos: [0, -0.1, 0] }));
+    g.add(caixa(12, 0.1, 76, '#474b57', { pos: [0, 0.02, -27] }));                                   // avenida (ao longo de z)
+    for (let z = 10; z > -62; z -= 7) g.add(caixa(0.3, 0.02, 3, '#f2f3f3', { pos: [0, 0.08, z], sombra: false }));
+    for (const s2 of [-1, 1]) { g.add(caixa(5, 0.25, 76, '#c3c7cf', { pos: [s2 * 8.5, 0.12, -27] })); g.add(caixa(0.3, 0.3, 76, '#d6d9df', { pos: [s2 * 6.1, 0.15, -27] })); }
+    add(g, 'faixa_pedestre', { comprimento: 12 }, [0, 0, 4]).rotation.y = Math.PI / 2;
+    const esq = [['PADARIA', '#e8862f'], ['FARMÁCIA', '#2e9e5b'], ['MERCADO', '#c4281c'], ['AÇOUGUE', '#8a1f1f'], ['LOTÉRICA', '#1d3b72'], ['PAPELARIA', '#6b32a8']];
+    const dir = [['BANCO', '#1d3b72'], ['LANCHONETE', '#d84315'], ['SORVETERIA', '#ff66cc'], ['ÓTICA', '#00897b'], ['LOJA DE ROUPAS', '#6b32a8'], ['PIZZARIA', '#c4281c']];
+    [[esq, -1], [dir, 1]].forEach(([lista, s2]) => lista.forEach(([nome, c], i) => { const z = -2 - i * 11;
+      add(g, 'loja', { texto: nome, cor: c, noite: n, largura: 10, parede: r.item(['#f1e7c9', '#e9e6dc', '#d9d4c7', '#f0d9c0']) }, [s2 * 14.2, 0, z], -s2 * 90);
+      const pl = PROPS.placa_lateral({ texto: nome, cor: c, noite: n }); pl.position.set(s2 * 11.1, 6.2, z + 3); pl.rotation.y = -s2 * Math.PI / 2; g.add(pl);
+      if (i % 2 === 0) add(g, 'poste', { noite: n }, [s2 * 6.6, 0, z - 5], s2 > 0 ? 180 : 0);
+      if (r() < 0.6) add(g, r.item(['lixeira', 'hidrante', 'vaso_flor', 'banco']), {}, [s2 * 9.8, 0, z + r.entre(-3, 3)], s2 * -90); }));
+    for (const s2 of [-1, 1]) for (let i = 0; i < 4; i++) add(g, 'arranha_ceu', { altura: r.entre(28, 50), cor: r.item(['#6f8fb3', '#8aa5c4', '#9fb3c8']), noite: n }, [s2 * 30, 0, -10 - i * 18]);
+    add(g, 'prefeitura_predio', { noite: n }, [0, 0, -86]);
+    add(g, 'bandeira', {}, [-10, 0, -76]); add(g, 'bandeira', { cores: ['#ffffff', '#c4281c', '#ffffff'] }, [10, 0, -76]);
+    g.add(caixa(44, 0.15, 18, '#d6cdb8', { pos: [0, 0.1, -72] })); for (const x of [-14, 14]) add(g, 'arvore', { tam: 1.1 }, [x, 0, -68]);
+    add(g, 'taxi', {}, [-3, 0, -20], 90); add(g, 'onibus', { texto: 'CENTRO' }, [3, 0, -40], -90); add(g, 'carro', { cor: '#f2f3f3' }, [-3, 0, -52], 90);
+    add(g, 'semaforo', { luz: 'verde' }, [-6.8, 0, 5.5]);
+    if (!n) nuvens(g, r); else lua(g);
   },
   gabinete(o, g, r) { // escritório do prefeito
     const n = o.hora === 'noite'; sala(g, { parede: o.parede || '#e9dcc4', chao: o.chao || '#7a5236' });

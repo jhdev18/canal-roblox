@@ -8,7 +8,7 @@ import { criarPersonagem } from './personagem.js';
 import { construirCenario } from './cenarios.js';
 import { criarProp } from './props.js';
 import { posicionarCamera } from './camera.js';
-import { ACOES, LOCOMOCAO, percorrer } from './acoes.js';
+import { ACOES, LOCOMOCAO, percorrer, ROSTO_DA_ACAO, PROP_DA_ACAO } from './acoes.js';
 import { rng } from './util.js';
 import { carregarRostosPersonalizados } from './rostos.js';
 import { cor } from './util.js';
@@ -80,7 +80,7 @@ async function montar(c) {
     const pet = petTipo ? criarProp({ tipo: petTipo, cor: a.pet_cor }) : null; if (pet) raiz.add(pet);
     return { ...a, ator: p, base: bases[i], pet };
   });
-  if (c.multidao) for (const f of criarMultidao(c.multidao, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); atores.push(f); }
+  if (c.multidao) for (const f of criarMultidao(c.multidao, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); atores.push(f); }
   const prin = atores.filter(a => !a.figurante).map(a => a.base.x);
   const xs = prin; const espalha = xs.length > 1 ? Math.max(...xs) - Math.min(...xs) : 0;
   atual = { c, raiz, atores, cen, dur: c.dur, espalha, nquadros: Math.max(1, Math.round(c.dur * cfg.fps)) };
@@ -93,27 +93,49 @@ async function montar(c) {
 const PELES = ['amarelo', 'pele_clara', 'pele_media', 'pele_escura', 'amarelo'];
 const ROUPAS_F = ['azul', 'vermelho', 'verde', 'roxo', 'laranja', 'branco', 'preto', 'rosa', 'ciano', 'cinza', '#3b6fd8', '#f5cd30'];
 const CABELOS = [[], ['cabelo_curto'], ['cabelo_espetado'], ['cabelo_longo'], ['bone'], ['rabo_de_cavalo'], ['cabelo_curto'], ['coque'], ['touca']];
+const CONVERSA = ['falar', 'rir', 'concordar', 'negar', 'parado', 'cochichar', 'celular', 'palmas', 'falar', 'comer', 'acenar', 'olhar_redor'];
+function specAleatorio(r, i) {
+  return { id: 'fig' + i, pele: r.item(PELES), camisa: r.item(ROUPAS_F), calca: r.item(['azul', 'preto', 'cinza_escuro', 'verde_noob', 'marrom', 'bege']),
+    acessorios: r.item(CABELOS), cabelo_cor: r.item(['#2b1d14', '#111', '#7c5c46', '#e0b040', '#c9c9c9']), rosto: 'neutro',
+    bone_cor: r.item(ROUPAS_F), extras: r() < 0.15 ? ['oculos'] : r() < 0.1 ? ['barba'] : [] };
+}
+/**
+ * Figurantes. m = { n, area:[x0,x1,z0,z1], acao, modo: espalhado|grupos|passantes, specs (personagens do elenco), prop, prop_texto, rosto, olhar_z, livre: raio livre no centro }
+ */
 function criarMultidao(m, seed) {
   const r = rng('multidao' + seed + (m.seed || '')); const n = Math.min(m.n ?? 12, 40);
   const [x0, x1, z0, z1] = m.area || [-10, 10, -9, -4];
-  const acoes = [].concat(m.acao || ['parado', 'palmas', 'acenar', 'comemorar']);
-  const out = [];
-  for (let i = 0; i < n; i++) {
-    const spec = { id: 'fig' + i, pele: r.item(PELES), camisa: r.item(ROUPAS_F), calca: r.item(['azul', 'preto', 'cinza_escuro', 'verde_noob', 'marrom', 'bege']),
-      acessorios: r.item(CABELOS), cabelo_cor: r.item(['#2b1d14', '#111', '#7c5c46', '#e0b040', '#c9c9c9']), rosto: 'neutro',
-      bone_cor: r.item(ROUPAS_F), extras: r() < 0.15 ? ['oculos'] : r() < 0.1 ? ['barba'] : [] };
-    const ator = criarPersonagem(spec); const acao = r.item(acoes);
-    ator.setRosto(m.rosto || r.item(['feliz', 'sorriso', 'neutro', ...(acao === 'parado' ? ['desconfiado'] : ['rindo'])]), spec.extras);
-    if (m.prop) ator.setProp(m.prop, { texto: r.item([].concat(m.prop_texto || 'FORA!')) });
-    const x = r.entre(x0, x1), z = r.entre(z0, z1);
-    const vira = m.vira ?? (Math.atan2(-x, (m.olhar_z ?? 0) - z) * 180 / Math.PI) + r.entre(-10, 10);
-    out.push({ id: spec.id, figurante: true, spec, acao, p: {}, atraso: r.entre(0, 3), ator, base: { x, z, y: 0, vira } });
+  const modo = m.modo || 'espalhado', livre = m.livre ?? 0;
+  const acoes = [].concat(m.acao || (modo === 'grupos' ? CONVERSA : modo === 'passantes' ? ['andar', 'andar', 'andar_celular', 'passear_cachorro', 'andar'] : ['parado', 'palmas', 'acenar', 'comemorar']));
+  const specs = [...(m.specs || [])].sort(() => r() - 0.5);
+  const evitar = (x, z) => Math.hypot(x, z) < livre || (m.evitar || []).some(([ex, ez, er]) => Math.hypot(x - ex, z - ez) < er);
+  const ponto = () => { for (let k = 0; k < 40; k++) { const x = r.entre(x0, x1), z = r.entre(z0, z1); if (!evitar(x, z)) return [x, z]; } return [r.entre(x0, x1), r.entre(z0, z1)]; };
+  // posições conforme o modo
+  const lugares = [];
+  if (modo === 'grupos') {
+    while (lugares.length < n) { const [cx, cz] = ponto(); const k = Math.min(n - lugares.length, 2 + Math.floor(r() * 3)); const g0 = r() * 6.28;
+      for (let j = 0; j < k; j++) { const a = g0 + j / k * 6.28 + r.entre(-0.3, 0.3), rr = k === 2 ? 1.5 : 2.0;
+        const x = cx + Math.sin(a) * rr, z = cz + Math.cos(a) * rr; lugares.push({ x, z, vira: Math.atan2(cx - x, cz - z) * 180 / Math.PI }); } }
+  } else if (modo === 'passantes') {
+    for (let i = 0; i < n; i++) { const lado = r() < 0.5 ? -1 : 1, faixa = m.faixas || [[x0, x0 + 2.5], [x1 - 2.5, x1]];
+      const fx = faixa[lado < 0 ? 0 : 1]; lugares.push({ x: r.entre(fx[0], fx[1]), z: r.entre(z0, z1), vira: r() < 0.5 ? 0 : 180, vel: r.entre(3, 5.5) }); }
+  } else {
+    for (let i = 0; i < n; i++) { const [x, z] = ponto(); lugares.push({ x, z, vira: m.vira ?? (Math.atan2(-x, (m.olhar_z ?? 0) - z) * 180 / Math.PI) + r.entre(-10, 10) }); }
   }
-  return out;
+  return lugares.slice(0, n).map((L, i) => {
+    const spec = specs.length && (i < specs.length) && r() < (m.mistura ?? 0.8) ? { ...specs[i], id: 'fig' + i } : specAleatorio(r, i);
+    const ator = criarPersonagem(spec); let acao = r.item(acoes);
+    if (modo !== 'passantes' && LOCOMOCAO.has(acao)) acao = 'parado';
+    ator.setRosto(m.rosto || (spec.rosto !== 'neutro' && !ROSTO_DA_ACAO[acao] ? spec.rosto : ROSTO_DA_ACAO[acao] || r.item(['feliz', 'sorriso', 'neutro', 'rindo'])), spec.extras || []);
+    const prop = m.prop || PROP_DA_ACAO[acao]; if (prop) ator.setProp(prop, { texto: r.item([].concat(m.prop_texto || 'FORA!')) });
+    const pet = acao === 'passear_cachorro' ? criarProp({ tipo: 'cachorro', cor: r.item(['#c58a4a', '#7c5c46', '#f2f3f3', '#2b2b2b']) }) : null;
+    return { id: spec.id, figurante: true, spec, acao, p: { vel: L.vel }, atraso: r.entre(0, 3), ator, pet, base: { x: L.x, z: L.z, y: 0, vira: L.vira } };
+  });
 }
 
 function alvo(t) {
-  const { c } = atual; const atores = atual.atores.filter(a => !a.figurante);
+  const { c } = atual; let atores = atual.atores.filter(a => !a.figurante);
+  if (!atores.length && atual.atores.length && !atual.cen.cameraFixa) atores = atual.atores; // só multidão: mira no centro dela
   if (!atores.length || atual.cen.cameraFixa) return new THREE.Vector3(0, atual.cen.cameraFixa ? -0.2 : 0, 0);
   const foco = atores.filter(a => !c.foco || a.id === c.foco);
   const v = new THREE.Vector3(); (foco.length ? foco : atores).forEach(a => v.add(posNoTempo(a, t))); return v.divideScalar(foco.length || atores.length);

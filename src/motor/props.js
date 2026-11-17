@@ -116,6 +116,21 @@ export const PROPS = {
     return g; },
   quadro_parede: (o = {}) => { const g = grupo([caixa(3.4, 4.2, 0.2, '#c9a24a', { pos: [0, 0, 0] })]); const p = placaTexto(o.texto || '★', 3.0, 1.6, { fundo: o.cor || '#3a5a8a', corTexto: '#f5e6b8' });
     p.position.set(0, 0, 0.11); g.add(p); g.add(plano(3.0, 3.8, mat(o.cor || '#3a5a8a'), { pos: [0, 0, 0.105] })); return g; },
+  prefeitura_predio: (o = {}) => { const n = o.noite, g = grupo([]);
+    const B = '#f4f1ea';
+    g.add(caixa(40, 15, 10, B, { pos: [0, 7.5, 0] })); g.add(caixa(41, 1.2, 11, '#e3ddd0', { pos: [0, 15.6, 0] }));
+    g.add(caixa(14, 18.5, 10.5, B, { pos: [0, 9.25, 0.2] }));
+    const fr = cilindro(8.5, 8.5, 1.4, '#e3ddd0', { pos: [0, 19.3, 6.2], rot: [90, 0, 90], seg: 3 }); fr.scale.set(1, 1, 0.55); g.add(fr);
+    for (let i = 0; i < 6; i++) g.add(cilindro(0.55, 0.6, 12.5, '#ffffff', { pos: [-6.25 + i * 2.5, 7.6, 6.4], seg: 16 }));
+    g.add(caixa(15, 0.8, 2.4, '#e3ddd0', { pos: [0, 14.2, 6.4] }));
+    for (let i = 0; i < 4; i++) g.add(caixa(16 - i * 0.6, 0.4, 2.2, '#dcd5c6', { pos: [0, 0.2 + i * 0.4, -10.2 - i * 1.0 + 20] }));
+    const pl = placaTexto(o.texto || 'PREFEITURA MUNICIPAL', 12, 1.2, { fundo: '#e3ddd0', corTexto: '#1d3b72' }); pl.position.set(0, 14.2, 7.62); g.add(pl);
+    { const pt = PROPS.porta({ cor: '#5a3a22' }); pt.position.set(0, 1.6, 5.4); g.add(pt); }
+    for (const x of [-15, -10, 10, 15]) for (const y of [4, 10]) g.add(caixa(3, 3.6, 0.2, mat(n ? '#ffe3a3' : '#bfe6ff', { emissive: n ? '#ffd27a' : '#bfe6ff', emissiveIntensity: n ? 1.1 : 0.3, rough: 0.1 }), { pos: [x, y, 5.1] }));
+    return g; },
+  placa_lateral: (o = {}) => { const c = o.cor || '#c4281c'; const g = grupo([caixa(0.12, 0.12, 2.2, '#3a3d44', { pos: [0, 0, 1.1] })]);
+    for (const s of [1, -1]) { const p = placaTexto(o.texto || 'LOJA', 2.0, 0.9, { fundo: c, corTexto: '#ffffff', emissivo: o.noite }); p.position.set(s * 0.06, -0.6, 1.3); p.rotation.y = s * Math.PI / 2; g.add(p); }
+    g.add(caixa(0.1, 0.95, 2.05, c, { pos: [0, -0.6, 1.3] })); return g; },
   // --- bairro (casas brasileiras) ---
   casa_br: (o = {}) => casaBR(o, 1),
   sobrado: (o = {}) => casaBR(o, 2),

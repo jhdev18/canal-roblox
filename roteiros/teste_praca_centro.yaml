@@ -1,0 +1,20 @@
+titulo: Teste praça cheia e centro
+cenas:
+  - fala: Domingo, a cidade inteira estava na praça.
+    onde: praca_cheia
+    cam: alto
+    dist: 2.8
+    mov: orbita
+    atores: []
+  - fala: O prefeito apareceu no meio do povo.
+    cam: medio
+    atores: [{ id: prefeito, acao: acenar_multidao }]
+  - fala: No centro, a padaria, a farmácia e a prefeitura,
+    onde: centro
+    cam: geral
+    altura: 4
+    mov: zoom_in
+    atores: []
+  - fala: tudo funcionava normalmente.
+    cam: aberto
+    atores: [{ id: garoto, acao: andar, x: -8.5, z: 2, vira: 180 }]
