@@ -10,8 +10,8 @@ function por(g, tipo, o, pos, vira = 0) { const p = PROPS[tipo](o); p.position.s
 
 // ---------------- móveis de casa ----------------
 export const MOVEIS_CASA = {
-  cadeira_gamer: (o = {}) => { const c = o.cor || '#c4281c', p = '#1b1b1b'; return grupo([caixa(1.8, 0.4, 1.8, p, { pos: [0, 1.4, 0], round: 0.1 }), caixa(1.8, 2.8, 0.4, p, { pos: [0, 3.0, -0.8], round: 0.12 }),
-    caixa(0.5, 2.6, 0.45, c, { pos: [0, 3.0, -0.6] }), caixa(1.2, 0.5, 0.42, c, { pos: [0, 4.2, -0.62], round: 0.1 }), cilindro(0.1, 0.1, 1.1, '#888', { pos: [0, 0.7, 0] }),
+  cadeira_gamer: (o = {}) => { const c = o.cor || '#c4281c', p = '#1b1b1b'; return grupo([caixa(2.4, 0.4, 2.2, p, { pos: [0, 1.4, 0], round: 0.1 }), caixa(2.4, 2.8, 0.4, p, { pos: [0, 3.0, -1.0], round: 0.12 }),
+    caixa(0.6, 2.6, 0.45, c, { pos: [0, 3.0, -0.8] }), caixa(1.4, 0.5, 0.42, c, { pos: [0, 4.2, -0.82], round: 0.1 }), cilindro(0.1, 0.1, 1.1, '#888', { pos: [0, 0.7, 0] }),
     ...[0, 72, 144, 216, 288].map(a => caixa(0.12, 0.12, 1.0, '#888', { pos: [Math.sin(a * RAD) * 0.5, 0.15, Math.cos(a * RAD) * 0.5], rot: [0, a, 0] }))]); },
   guarda_roupa: (o = {}) => { const w = o.largura || 5, c = o.cor || '#c9a36b', g = grupo([caixa(w, 8, 2.2, c, { pos: [0, 4, 0] })]);
     for (let x = -w / 2 + w / 4; x < w / 2; x += w / 2) { g.add(caixa(w / 2 - 0.15, 7.6, 0.08, o.cor2 || '#d8b47c', { pos: [x, 4, 1.12] })); g.add(caixa(0.1, 0.8, 0.1, '#555', { pos: [x + (x < 0 ? 1 : -1) * (w / 4 - 0.4), 4, 1.2] })); }

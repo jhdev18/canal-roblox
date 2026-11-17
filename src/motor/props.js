@@ -43,10 +43,10 @@ export const PROPS = {
     caixa(0.25, 1.0, 1.0, '#333', { pos: [-1.7, 0.5, 0] }), caixa(0.25, 1.0, 1.0, '#333', { pos: [1.7, 0.5, 0] })]),
   mesa: (o = {}) => { const g = grupo([caixa(o.largura || 4, 0.25, 2.4, o.cor || '#a8754a', { pos: [0, 2.2, 0] })]);
     for (const x of [-1, 1]) for (const z of [-1, 1]) g.add(caixa(0.25, 2.1, 0.25, o.cor || '#a8754a', { pos: [x * ((o.largura || 4) / 2 - 0.3), 1.05, z * 0.9] })); return g; },
-  carteira: (o = {}) => grupo([caixa(2.4, 0.2, 1.6, '#c9a26b', { pos: [0, 2.0, 0] }), caixa(2.2, 1.9, 0.15, '#6b6f78', { pos: [0, 1.0, -0.6] })]),
-  cadeira: (o = {}) => grupo([caixa(1.6, 0.2, 1.6, o.cor || '#8a5a33', { pos: [0, 0.9, 0] }), caixa(1.6, 1.8, 0.2, o.cor || '#8a5a33', { pos: [0, 1.8, -0.7] }),
-    caixa(0.2, 0.9, 0.2, '#333', { pos: [-0.6, 0.45, 0.6] }), caixa(0.2, 0.9, 0.2, '#333', { pos: [0.6, 0.45, 0.6] }),
-    caixa(0.2, 0.9, 0.2, '#333', { pos: [-0.6, 0.45, -0.6] }), caixa(0.2, 0.9, 0.2, '#333', { pos: [0.6, 0.45, -0.6] })]),
+  // assentos no tamanho do personagem (corpo 2 de largura; sentado, a coxa fica em y≈1.0)
+  carteira: (o = {}) => grupo([caixa(3.0, 0.2, 2.0, '#c9a26b', { pos: [0, 2.3, 0] }), caixa(2.8, 2.2, 0.15, '#6b6f78', { pos: [0, 1.1, -0.8] })]),
+  cadeira: (o = {}) => grupo([caixa(2.4, 0.2, 2.2, o.cor || '#8a5a33', { pos: [0, 0.9, 0] }), caixa(2.4, 2.6, 0.2, o.cor || '#8a5a33', { pos: [0, 2.2, -1.0] }),
+    ...[[-1, 0.9], [1, 0.9], [-1, -0.9], [1, -0.9]].map(([x, z]) => caixa(0.2, 0.9, 0.2, '#333', { pos: [x, 0.45, z] }))]),
   cama: (o = {}) => grupo([caixa(3.4, 1.0, 7, '#7c5c46', { pos: [0, 0.5, 0] }), caixa(3.2, 0.5, 6.6, o.lencol || '#f2f3f3', { pos: [0, 1.2, 0] }),
     caixa(2.4, 0.4, 1.2, '#ffffff', { pos: [0, 1.6, -2.7], round: 0.15 }), caixa(3.3, 0.55, 4, o.cor || '#3b6fd8', { pos: [0, 1.3, 1.2] }), caixa(3.4, 2.6, 0.3, '#7c5c46', { pos: [0, 1.3, -3.5] })]),
   sofa: (o = {}) => { const c = o.cor || '#6b4fa0'; return grupo([caixa(6, 1.0, 2.4, c, { pos: [0, 0.5, 0], round: 0.15 }), caixa(6, 2.0, 0.7, c, { pos: [0, 1.5, -0.9], round: 0.15 }),
@@ -205,17 +205,17 @@ export const PROPS = {
     caixa(8, 4.2, 0.04, new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.25, roughness: 1 }), { pos: [0, 2.1, -1.5], sombra: false })]); },
   bola: (o = {}) => { const g = grupo([esfera(0.45, o.cor || '#ffffff', { pos: [0, 0.45, 0] })]); for (const [x, y, z] of [[0, 0.88, 0], [0.4, 0.5, 0.15], [-0.3, 0.55, 0.32], [0.05, 0.2, -0.38]]) g.add(esfera(0.13, '#111', { pos: [x, y, z] })); return g; },
   geladeira: () => grupo([caixa(2.0, 5.2, 1.8, '#f2f3f3', { pos: [0, 2.6, 0], round: 0.12 }), caixa(2.02, 0.05, 1.82, '#bbb', { pos: [0, 3.6, 0] }), caixa(0.1, 1.0, 0.1, '#999', { pos: [0.75, 4.3, 0.95] }), caixa(0.1, 1.4, 0.1, '#999', { pos: [0.75, 2.6, 0.95] })]),
-  fogao: () => { const g = grupo([caixa(2.2, 2.3, 1.8, '#f2f3f3', { pos: [0, 1.15, 0] }), caixa(1.8, 1.1, 0.06, '#222', { pos: [0, 1.0, 0.92] }), caixa(2.2, 0.08, 1.8, '#222', { pos: [0, 2.34, 0] })]);
-    for (const x of [-0.5, 0.5]) for (const z of [-0.4, 0.4]) g.add(cilindro(0.3, 0.3, 0.06, '#444', { pos: [x, 2.4, z], seg: 14 })); return g; },
-  pia: () => grupo([caixa(4, 2.3, 1.8, '#f2f3f3', { pos: [0, 1.15, 0] }), caixa(4.1, 0.15, 1.9, '#8c8f99', { pos: [0, 2.35, 0] }), caixa(1.6, 0.1, 1.1, '#5a5d66', { pos: [-0.8, 2.43, 0] }),
-    cilindro(0.06, 0.06, 0.8, '#ccc', { pos: [-0.8, 2.8, -0.6] }), caixa(0.1, 0.1, 0.5, '#ccc', { pos: [-0.8, 3.15, -0.4] })]),
+  fogao: () => { const g = grupo([caixa(2.2, 2.8, 1.8, '#f2f3f3', { pos: [0, 1.4, 0] }), caixa(1.8, 1.3, 0.06, '#222', { pos: [0, 1.2, 0.92] }), caixa(2.2, 0.08, 1.8, '#222', { pos: [0, 2.84, 0] })]);   // altura da cintura do personagem
+    for (const x of [-0.5, 0.5]) for (const z of [-0.4, 0.4]) g.add(cilindro(0.3, 0.3, 0.06, '#444', { pos: [x, 2.9, z], seg: 14 })); return g; },
+  pia: () => grupo([caixa(4, 2.8, 1.8, '#f2f3f3', { pos: [0, 1.4, 0] }), caixa(4.1, 0.15, 1.9, '#8c8f99', { pos: [0, 2.85, 0] }), caixa(1.6, 0.1, 1.1, '#5a5d66', { pos: [-0.8, 2.93, 0] }),
+    cilindro(0.06, 0.06, 0.8, '#ccc', { pos: [-0.8, 3.3, -0.6] }), caixa(0.1, 0.1, 0.5, '#ccc', { pos: [-0.8, 3.65, -0.4] })]),
   armario: (o = {}) => { const w = o.largura || 6, g = grupo([caixa(w, 2.2, 1.2, o.cor || '#a8754a', { pos: [0, 0, 0] })]);
     for (let x = -w / 2 + 1; x < w / 2; x += 2) { g.add(caixa(1.85, 2.0, 0.05, o.cor2 || '#c9945e', { pos: [x, 0, 0.62] })); g.add(caixa(0.1, 0.4, 0.08, '#555', { pos: [x + 0.7, 0, 0.66] })); } return g; },
   mesa_jantar: (o = {}) => { const g = PROPS.mesa({ largura: o.largura || 5, cor: o.cor || '#8a5a33' });
     for (const [x, z, v] of [[-1.3, 2.0, 180], [1.3, 2.0, 180], [-1.3, -2.0, 0], [1.3, -2.0, 0]]) { const c = PROPS.cadeira({ cor: o.cadeira || '#a8754a' }); c.position.set(x, 0, z); c.rotation.y = v * Math.PI / 180; g.add(c); }
     return g; },
-  cadeira_plastico: (o = {}) => grupo([caixa(1.5, 0.2, 1.5, o.cor || '#f2f3f3', { pos: [0, 1.0, 0], round: 0.08 }), caixa(1.5, 1.4, 0.15, o.cor || '#f2f3f3', { pos: [0, 1.8, -0.7], rot: [-8, 0, 0], round: 0.05 }),
-    ...[[-0.6, 0.6], [0.6, 0.6], [-0.6, -0.6], [0.6, -0.6]].map(([x, z]) => caixa(0.15, 1.0, 0.15, o.cor || '#f2f3f3', { pos: [x, 0.5, z] }))]),
+  cadeira_plastico: (o = {}) => grupo([caixa(2.3, 0.2, 2.1, o.cor || '#f2f3f3', { pos: [0, 0.95, 0], round: 0.08 }), caixa(2.3, 2.0, 0.15, o.cor || '#f2f3f3', { pos: [0, 2.0, -1.0], rot: [-8, 0, 0], round: 0.05 }),
+    ...[[-0.95, 0.85], [0.95, 0.85], [-0.95, -0.85], [0.95, -0.85]].map(([x, z]) => caixa(0.15, 0.95, 0.15, o.cor || '#f2f3f3', { pos: [x, 0.47, z] }))]),
   saco_lixo: () => grupo([esfera(0.6, '#1b1b1b', { pos: [0, 0.55, 0], mat: { rough: 0.3 } }), esfera(0.5, '#1b1b1b', { pos: [0.8, 0.45, 0.2], mat: { rough: 0.3 } })]),
   vaso_flor: (o = {}) => grupo([cilindro(0.45, 0.35, 0.8, '#b5653b', { pos: [0, 0.4, 0] }), ...[0, 1, 2, 3].map(i => esfera(0.22, o.cor || ['#ff4f8b', '#ffd23f', '#e53935', '#b06bff'][i], { pos: [Math.sin(i * 1.6) * 0.25, 1.05, Math.cos(i * 1.6) * 0.25] }))]),
   poste_fios: (o = {}) => { const g = grupo([cilindro(0.22, 0.28, 11, '#9a9a9a', { pos: [0, 5.5, 0] }), caixa(2.6, 0.25, 0.25, '#7a7a7a', { pos: [0, 10, 0] }),

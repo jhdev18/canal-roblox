@@ -50,7 +50,7 @@ export const MOVEIS = {
   sinuca: () => { const g = grupo([caixa(4.2, 0.5, 7.6, '#5a3a22', { pos: [0, 2.6, 0] }), caixa(3.6, 0.1, 7.0, '#1f8a4c', { pos: [0, 2.9, 0] })]);
     for (const x of [-1.8, 1.8]) for (const z of [-3.5, 3.5]) g.add(caixa(0.4, 2.4, 0.4, '#4a2e1a', { pos: [x, 1.2, z] }));
     [['#fdd835', 0.3, 1], ['#e53935', -0.4, 1.4], ['#1e88e5', 0.6, 1.6], ['#111', 0, 2.2], ['#ffffff', 0, -2.5]].forEach(([c, x, z]) => g.add(esfera(0.14, c, { pos: [x, 3.1, z] }))); return g; },
-  banqueta: (o = {}) => grupo([cilindro(0.6, 0.6, 0.25, o.cor || '#c4281c', { pos: [0, 2.6, 0], seg: 16 }), cilindro(0.1, 0.1, 2.5, '#9aa0aa', { pos: [0, 1.25, 0] }), cilindro(0.6, 0.6, 0.1, '#9aa0aa', { pos: [0, 0.05, 0] })]),
+  banqueta: (o = {}) => grupo([cilindro(0.95, 0.95, 0.25, o.cor || '#c4281c', { pos: [0, 2.6, 0], seg: 16 }), cilindro(0.1, 0.1, 2.5, '#9aa0aa', { pos: [0, 1.25, 0] }), cilindro(0.6, 0.6, 0.1, '#9aa0aa', { pos: [0, 0.05, 0] })]),
   prateleira_garrafas: (o = {}) => { const w = o.largura || 8, g = grupo([caixa(w, 5, 0.3, '#5a3a22', { pos: [0, 4.5, -0.3] })]);
     for (const y of [3.0, 4.6, 6.2]) { g.add(caixa(w, 0.12, 1.0, '#4a2e1a', { pos: [0, y - 0.06, 0] }));
       for (let x = -w / 2 + 0.4; x < w / 2 - 0.2; x += 0.45) g.add(cilindro(0.13, 0.15, 1.0, ['#2e7d32', '#8d5524', '#c62828', '#f9a825', '#e0e0e0'][Math.round(x * 4 + y) % 5 < 0 ? 0 : Math.round(x * 4 + y) % 5], { pos: [x, y + 0.5, 0.1], seg: 8 })); }
@@ -64,9 +64,9 @@ export const MOVEIS = {
   estufa_paes: (o = {}) => { const w = o.largura || 6, g = grupo([caixa(w, 3.0, 1.8, '#8a5a33', { pos: [0, 1.5, 0] }), caixa(w, 1.8, 1.6, mat('#fff3d6', { rough: 0.05, emissive: '#ffcf7a', emissiveIntensity: 0.35 }), { pos: [0, 3.9, 0], sombra: false })]);
     for (let i = 0; i < Math.floor(w / 0.7); i++) for (const z of [-0.4, 0.3]) g.add(caixa(0.55, 0.32, 0.4, i % 3 ? '#d9a25a' : '#b87a35', { pos: [-w / 2 + 0.45 + i * 0.7, 3.25, z], round: 0.14 }));
     return g; },
-  cadeiras_espera: (o = {}) => { const n = o.n || 4, g = grupo([caixa(n * 1.5, 0.15, 0.4, '#5a5d66', { pos: [0, 0.6, 0] })]);
-    for (let i = 0; i < n; i++) { const x = (i - (n - 1) / 2) * 1.5; g.add(caixa(1.3, 0.2, 1.3, o.cor || '#1e88e5', { pos: [x, 1.0, 0], round: 0.08 })); g.add(caixa(1.3, 1.3, 0.2, o.cor || '#1e88e5', { pos: [x, 1.8, -0.6], round: 0.08 })); }
-    for (const x of [-(n * 1.5) / 2 + 0.3, (n * 1.5) / 2 - 0.3]) g.add(caixa(0.15, 0.9, 1.0, '#5a5d66', { pos: [x, 0.45, 0] })); return g; },
+  cadeiras_espera: (o = {}) => { const n = o.n || 4, P = 2.2, g = grupo([caixa(n * P, 0.15, 0.4, '#5a5d66', { pos: [0, 0.6, 0] })]);   // um assento a cada 2.2 (mesmo passo do `sentar` em grupo)
+    for (let i = 0; i < n; i++) { const x = (i - (n - 1) / 2) * P; g.add(caixa(2.0, 0.2, 1.9, o.cor || '#1e88e5', { pos: [x, 0.95, 0], round: 0.08 })); g.add(caixa(2.0, 1.8, 0.2, o.cor || '#1e88e5', { pos: [x, 1.95, -0.9], round: 0.08 })); }
+    for (const x of [-(n * P) / 2 + 0.3, (n * P) / 2 - 0.3]) g.add(caixa(0.15, 0.85, 1.4, '#5a5d66', { pos: [x, 0.42, 0] })); return g; },
   maca: () => grupo([caixa(2.6, 0.3, 6, '#9fd0e8', { pos: [0, 2.2, 0] }), caixa(2.2, 0.15, 1.2, '#ffffff', { pos: [0, 2.45, -2.3], round: 0.08 }),
     ...[[-1.1, -2.6], [1.1, -2.6], [-1.1, 2.6], [1.1, 2.6]].map(([x, z]) => caixa(0.15, 2.1, 0.15, '#9aa0aa', { pos: [x, 1.05, z] }))]),
   mesa_trabalho: (o = {}) => { const g = PROPS.mesa({ largura: o.largura || 5, cor: o.cor || '#8a6a4a' }); const c = PROPS.computador(); c.position.set(-0.8, 0, -0.4); g.add(c);

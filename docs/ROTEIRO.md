@@ -52,6 +52,7 @@ ligados por portas) e o posto de gasolina.
 **Locais:** prefeitura, igreja, banco, escola, posto_saude, padaria, farmacia, loterica, bar, mercado, delegacia, casa (todos com `dentro: true`),
 praca, coreto, fonte, parquinho, estatua, rua_bairro, campinho (campo de futebol do bairro, entre o mercadinho e a borracharia, com gramado dos lados), posto_gasolina, vista.
 
+- **Escala:** tudo é medido pelo personagem (5,2 de altura, 2 de largura; ~3 studs por metro). Portas com 6,2 de altura, assentos com 2,2–2,4 de largura na altura da pose `sentar`, bancadas de cozinha na cintura. Ao criar móvel novo, siga essas medidas e não use escala menor que 1 em móveis de uso.
 - **Tamanho dos prédios:** ambientes grandes, no estilo Roblox (farmácia 18×18 com teto de 10; prefeitura 32×22; igreja 20×32 com teto de 15). A praça tem um calçadão arborizado em volta, depois o anel de ruas.
 - **Mapa com os nomes:** `docs/preview/mapa_mundo.jpg`. Interiores de todos os prédios: `docs/preview/interiores_mundo.jpg`. Câmera de cima para cenas: `cam: mapa` (e `alvo_xz: [x, z]` para escolher o centro).
 - **Só o local gravado existe na cena:** o resto do mundo é removido ao montar cada cena (mais leve para a GPU).
