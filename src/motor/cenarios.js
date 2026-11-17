@@ -190,7 +190,6 @@ export const CENARIOS = {
     for (const [x, z] of [[-20, -4], [20, -6], [-24, -20], [24, -22], [8, -28], [-12, -30]]) add(g, 'arvore', { tam: r.entre(0.9, 1.3) }, [x, 0, z]);
     for (const x of [-16, 16]) add(g, 'poste', { noite: n }, [x, 0, -2]);
     add(g, 'bandeira', {}, [16, 0, -18]); add(g, 'barraca', { cor: '#c4281c' }, [22, 0, -12], -40);
-    for (let i = 0; i < 7; i++) g.add(esfera(0.28, '#8d8f99', { pos: [r.entre(-6, 6), 0.3, r.entre(-4, 2)] }));   // pombos
     for (let x = -60; x <= 60; x += 15) add(g, r() < 0.5 ? 'predio' : 'casa', { altura: r.entre(10, 26), cor: r.item(['#e9e6dc', '#f0b446', '#8fc1e3', '#d9534f']), noite: n }, [x, 0, -46]);
     n ? lua(g) : nuvens(g, r);
   },

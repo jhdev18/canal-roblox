@@ -223,7 +223,6 @@ function praca(g, n, r) {
   for (const [x, z] of [[-4.6, 25], [4.6, 25], [-4.6, -25], [4.6, -25], [25, 4.6], [25, -4.6], [-25, 4.6], [-25, -4.6]])
     por(g, 'poste', { noite: n }, [x, 0.45, z], x < 0 ? 0 : 180);
   por(g, 'barraca', { cor: '#c4281c' }, [-15, 0.45, 4.9], 0, 0.75); por(g, 'bandeira', {}, [8, 0.45, -24.8]);
-  for (let i = 0; i < 8; i++) g.add(esfera(0.28, '#8d8f99', { pos: [r.entre(-2.5, 2.5), 0.75, r.entre(9, 16)] }));
 }
 
 export function construirMundo(o, g, r) {
