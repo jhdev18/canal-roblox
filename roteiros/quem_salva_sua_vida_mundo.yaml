@@ -28,7 +28,7 @@ cenas:
     local: coreto
     cam: aberto
     multidao: { n: 10, modo: natural, area: [-16, 16, -14, 8] }   # praça movimentada
-    atores: [menina comemorar, amigo comemorar]
+    atores: [{ id: menina, acao: comemorar, x: -2.9, vira: 10 }, { id: amigo, acao: comemorar, x: 2.9, vira: -10 }]
 
   # --- problema ---
   - fala: "Mas o garoto recebeu o pior nome possível:"

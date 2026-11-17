@@ -38,7 +38,8 @@ export const ACOES = {
   triste: (t) => { const b = respirar(poseBase(), t, 0.5); b.cab[0] = 25; b.tor[0] = 8; b.bd = [-4, 2]; b.be = [-4, 2]; return b; },
   bravo: (t) => { const b = poseBase(); b.bd = [-6, 22 + S(t * 30) * 3]; b.be = [-6, 22 + S(t * 30) * 3]; b.tor[0] = 6; b.dx = S(t * 38) * 0.03;
     const pisa = Math.max(0, S(t * 6)); b.pd[0] = pisa * 25; return b; },
-  comemorar: (t) => { const b = poseBase(); b.bd = [0, 160 + S(t * 10) * 12]; b.be = [0, 160 + S(t * 10 + 1) * 12]; b.y = Math.abs(S(t * 6)) * 1.1; b.cab[0] = -10; return b; },
+  comemorar: (t) => { const b = poseBase(); b.bd = [-6, 166 + S(t * 10) * 6]; b.be = [-6, 166 + S(t * 10 + 1) * 6];   // braços quase na vertical: ocupam pouco espaço para o lado (não invadem o vizinho)
+    b.y = Math.abs(S(t * 6)) * 1.1; b.cab[0] = -10; return b; },
   pular: (t) => { const b = poseBase(); const k = Math.max(0, S(t * TAU * 0.9)); b.y = k * 2.2; b.bd = [0, 30 + k * 120]; b.be = [0, 30 + k * 120]; b.pd[0] = k * 20; b.pe[0] = -k * 20; return b; },
   apontar: (t) => { const b = respirar(poseBase(), t, 0.5); b.bd = [90, 0]; return b; },
   abracar: (t) => { const b = respirar(poseBase(), t, 0.5); b.bd = [85, -28]; b.be = [85, -28]; return b; },

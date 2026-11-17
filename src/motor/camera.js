@@ -30,7 +30,7 @@ export function posicionarCamera(cam, c, t, dur, alvoFn, espalhamento = 0) {
   const k = dur > 0 ? Math.min(1, t / dur) : 0;
   let dist = e.dist * (c.dist || 1), ang = (c.angulo ?? e.ang ?? 0), el = e.el, alt = e.alt + (c.altura || 0);
   // vídeo vertical: a largura limita. Afasta até o grupo caber (com um leve corte permitido).
-  if (espalhamento > 0) dist = Math.max(dist, (espalhamento + 3.2) / (cam.aspect * 2 * Math.tan(THREE.MathUtils.degToRad(cam.fov / 2))) * 0.85);
+  if (espalhamento > 0) dist = Math.max(dist, (espalhamento + 5.0) / (cam.aspect * 2 * Math.tan(THREE.MathUtils.degToRad(cam.fov / 2))) * 0.95);   // folga para braços e gestos nas bordas
   const mov = c.mov || 'zoom_in';
   if (mov === 'zoom_in') dist *= 1 - 0.12 * suave(k);
   if (mov === 'zoom_out') dist *= 0.85 + 0.2 * suave(k);
