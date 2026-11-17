@@ -1,12 +1,13 @@
 // Gera pranchas de catálogo (docs/preview/*.jpg) fotografando cada asset com o próprio motor.
 // Rode de novo sempre que criar um asset:   node ferramentas/preview_assets.mjs [categoria...] [--gpu nao]
-// Categorias: personagens rostos extras acessorios roupas acoes cenarios locais telas props
+// Categorias: personagens rostos extras acessorios roupas acoes cenarios predios locais telas props
+// Rodando todas (sem argumentos), também gera docs/preview/geral.jpg com tudo junto.
 import fs from 'node:fs';
 import path from 'node:path';
 import { abrirMotor } from '../src/node/render.mjs';
 import { carregarPersonagens, resolverSpec, catalogo, MULTIDAO_PADRAO } from '../src/node/roteiro.mjs';
 import { p, garantirDir } from '../src/node/util.mjs';
-import { LOCAIS } from '../src/motor/cidade.js';
+import { LOCAIS, NOMES_PREDIOS } from '../src/motor/cidade.js';
 
 const args = process.argv.slice(2);
 const gpu = args.includes('--gpu') ? args[args.indexOf('--gpu') + 1] : 'auto';
@@ -37,6 +38,8 @@ const CATEGORIAS = {
     atores: n === 'vazio' || n === 'cidade_pequena' ? [] : [ator(NOOB(), CENAS_EXEMPLO[n] || 'parado')] } }]).concat(
     ['rua', 'bairro', 'quarto'].map(n => ({ nome: n + ' · noite', cena: { cenario: n, hora: 'noite', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10, atores: [ator(NOOB(), 'parado')] } })),
     [{ nome: 'rua · tarde', cena: { cenario: 'rua', hora: 'tarde', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10, atores: [ator(NOOB(), 'parado')] } }]),
+  predios: () => NOMES_PREDIOS.map(n => { const T = { igreja: [8, 2.0], escola: [2, 1.9], posto_gasolina: [2, 1.9], mercado: [1.5, 1.7], prefeitura: [3, 1.9], coreto: [1.5, 1.1] }[n] || [1.5, 1.4];
+    return { nome: n, cena: { ...FUNDO, camera: 'geral', angulo: 28, altura: T[0], dist: T[1], props: [{ tipo: n, z: n === 'coreto' ? 0 : 4 }], atores: [] } }; }),
   locais: () => LOCAIS.filter(l => l !== 'vista').map(l => ({ nome: 'onde: ' + l, cena: { cenario: 'cidade_pequena', local: l, mov: 'fixo', dur: 1.2, camera: 'aberto', dist: 1.3, altura: 2, angulo: 15,
     atores: [ator(NOOB(), 'acenar')] } })),
   telas: () => [
@@ -63,8 +66,9 @@ function pagina(titulo, itens, colunas) {
 }
 
 const TITULOS = { personagens: 'Personagens (assets/personagens.yaml)', rostos: 'Rostos (rosto:)', extras: 'Extras de rosto (extras:)', acessorios: 'Acessórios (acessorios:)',
-  roupas: 'Roupas (roupa:)', locais: 'Locais da cidade pequena (onde: <local>)', acoes: 'Ações (acao:)', cenarios: 'Cenários (onde: + hora:)', telas: 'Telas de celular (onde: celular + tela:)', props: 'Props de cenário (props:)' };
+  roupas: 'Roupas (roupa:)', predios: 'Prédios da cidade pequena (props: — e cada um é um local em onde:)', locais: 'Locais da cidade pequena (onde: <local>)', acoes: 'Ações (acao:)', cenarios: 'Cenários (onde: + hora:)', telas: 'Telas de celular (onde: celular + tela:)', props: 'Props de cenário (props:)' };
 
+const todos = [];
 const motor = await abrirMotor({ largura: 360, altura: 640, fps: 30, ao: true, sombra: 2048, gpu });
 console.log('GPU:', motor.gpuInfo);
 const dir = garantirDir(p('docs', 'preview'));
@@ -81,5 +85,18 @@ for (const nomeCat of (pedidas.length ? pedidas : Object.keys(CATEGORIAS))) {
   await pg.locator('body').screenshot({ path: path.join(dir, nomeCat + '.jpg'), type: 'jpeg', quality: 85 });
   await pg.close();
   console.log(`→ docs/preview/${nomeCat}.jpg`);
+  todos.push([nomeCat, itens]);
+}
+if (!pedidas.length) { // prancha geral: tudo numa imagem, por categoria
+  const cols = 14, w = 104;
+  const html = `<!doctype html><meta charset="utf-8"><style>body{margin:0;background:#14161c;font-family:Segoe UI,Roboto,Arial,sans-serif;color:#fff;padding:20px;width:${cols * (w + 6) + 40}px}
+    h1{margin:0 0 4px;font-size:34px} h2{margin:22px 0 8px;font-size:21px;color:#ffd23f} p{margin:0;color:#9aa3b5}
+    .g{display:grid;grid-template-columns:repeat(${cols},${w}px);gap:6px} figure{margin:0;background:#1f2230;border-radius:8px;overflow:hidden}
+    img{width:${w}px;height:${Math.round(w * 16 / 9)}px;object-fit:cover;display:block} figcaption{font:600 10px/1.2 Consolas,monospace;padding:3px 2px;text-align:center;color:#e8e8e8;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}</style>
+    <h1>Biblioteca de assets — visão geral</h1><p>${todos.reduce((a, [, i]) => a + i.length, 0)} itens · nome = o que se escreve no roteiro</p>
+    ${todos.map(([c, i]) => `<h2>${TITULOS[c]} · ${i.length}</h2><div class="g">${i.map(x => `<figure><img src="${x.img}"><figcaption>${x.nome}</figcaption></figure>`).join('')}</div>`).join('')}`;
+  const pg = await motor.page.context().browser().newPage(); await pg.setContent(html);
+  await pg.locator('body').screenshot({ path: path.join(dir, 'geral.jpg'), type: 'jpeg', quality: 82 }); await pg.close();
+  console.log('→ docs/preview/geral.jpg');
 }
 await motor.fechar();

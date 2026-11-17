@@ -120,7 +120,8 @@ export const PROPS = {
     const B = '#f4f1ea';
     g.add(caixa(40, 15, 10, B, { pos: [0, 7.5, 0] })); g.add(caixa(41, 1.2, 11, '#e3ddd0', { pos: [0, 15.6, 0] }));
     g.add(caixa(14, 18.5, 10.5, B, { pos: [0, 9.25, 0.2] }));
-    const fr = cilindro(8.5, 8.5, 1.4, '#e3ddd0', { pos: [0, 19.3, 6.2], rot: [90, 0, 90], seg: 3 }); fr.scale.set(1, 1, 0.55); g.add(fr);
+    { const sh = new THREE.Shape([new THREE.Vector2(-7.6, 0), new THREE.Vector2(7.6, 0), new THREE.Vector2(0, 3.6)]);   // frontão triangular
+      const fr = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 1.6, bevelEnabled: false }), mat('#e3ddd0')); fr.position.set(0, 14.6, 5.2); fr.castShadow = fr.receiveShadow = true; g.add(fr); }
     for (let i = 0; i < 6; i++) g.add(cilindro(0.55, 0.6, 12.5, '#ffffff', { pos: [-6.25 + i * 2.5, 7.6, 6.4], seg: 16 }));
     g.add(caixa(15, 0.8, 2.4, '#e3ddd0', { pos: [0, 14.2, 6.4] }));
     for (let i = 0; i < 4; i++) g.add(caixa(16 - i * 0.6, 0.4, 2.2, '#dcd5c6', { pos: [0, 0.2 + i * 0.4, -10.2 - i * 1.0 + 20] }));
