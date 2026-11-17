@@ -79,10 +79,24 @@ export const ACOES = {
   cocar_cabeca: (t) => { const b = respirar(poseBase(), t, 0.4); b.bd = [150 + S(t * 16) * 6, 28]; b.cab = [6, 0, -10]; return b; },
   girar: (t) => { const b = poseBase(); b.raiz[1] = (t * 360) % 360; b.bd = [0, 80]; b.be = [0, 80]; return b; },
   desmaiar: (t) => { const b = poseBase(); const k = ease((t - 0.25) / 0.6); b.raiz = [90 * k, 0, 0]; b.y = 0.5 * k; b.dx = t < 0.25 ? S(t * 40) * 0.05 : 0; b.bd = [0, 10 + 40 * k]; b.be = [0, 10 + 40 * k]; return b; },
+
+  // --- dia a dia / bairro ---
+  chutar: (t) => { const b = respirar(poseBase(), t, 0.3); const k = Math.max(0, S(Math.min(t, 0.6) / 0.6 * Math.PI)); b.pd = [-30 + 110 * k, 0]; b.be = [40 * k, 20]; b.bd = [-20 * k, 15]; b.tor[0] = -8 * k; return b; },
+  varrer: (t) => { const b = respirar(poseBase(), t, 0.3); const k = S(t * 5); b.bd = [45 + k * 15, -15]; b.be = [55 + k * 15, -25]; b.tor[1] = k * 14; b.cab[0] = 16; return b; },
+  regar: (t) => { const b = respirar(poseBase(), t, 0.4); b.bd = [70 + S(t * 2) * 8, -6]; b.cab[0] = 18; return b; },
+  gritar: (t) => { const b = poseBase(); b.bd = [140, -35]; b.be = [140, -35]; b.tor[0] = -8; b.cab[0] = -14; b.y = Math.abs(S(t * 10)) * 0.05; return b; },
+  bater_porta: (t) => { const b = respirar(poseBase(), t, 0.3); b.bd = [95 + Math.max(0, S(t * 14)) * 18, -5]; return b; },
+  espreguicar: (t) => { const b = poseBase(); const k = ease(t / 0.8); b.bd = [0, 20 + 150 * k]; b.be = [0, 20 + 150 * k]; b.tor[0] = -10 * k; b.cab[0] = -20 * k; b.y = 0.1 * k; return b; },
+  cozinhar: (t) => { const b = respirar(poseBase(), t, 0.3); b.bd = [60, -18 + S(t * 6) * 14]; b.be = [50, -10]; b.cab[0] = 22; return b; },
+  comer: (t) => { const b = respirar(poseBase(), t, 0.3); const k = Math.max(0, S(t * 4)); b.bd = [60 + k * 70, -25 * k]; b.be = [40, -10]; b.cab[0] = 10 - k * 6; return b; },
+  lavar_louca: (t) => { const b = respirar(poseBase(), t, 0.3); b.bd = [55 + S(t * 9) * 8, -15 + S(t * 6) * 8]; b.be = [55 - S(t * 9) * 8, -15]; b.cab[0] = 25; return b; },
+  pedir_silencio: (t) => { const b = respirar(poseBase(), t, 0.3); b.bd = [135, -40]; b.cab[0] = -4; return b; },
+  sentar_chao: (t) => { const b = respirar(poseBase(), t, 0.4); b.y = -1.5; b.pd = [88, 8]; b.pe = [88, 8]; b.bd = [40, 8]; b.be = [40, 8]; return b; },
+  passear_cachorro: (t, d, p) => { const b = ciclo(poseBase(), t, 1.5, 24); b.bd = [35, 10]; b.frente = t * (p.vel ?? 4.5); return b; },
 };
 
 /** Ações que andam (usam `vel`, `caminho` e `ate`). */
-export const LOCOMOCAO = new Set(['andar', 'correr', 'andar_confiante', 'andar_celular', 'correr_medo', 'fugir', 'carregar']);
+export const LOCOMOCAO = new Set(['andar', 'correr', 'andar_confiante', 'andar_celular', 'correr_medo', 'fugir', 'carregar', 'passear_cachorro']);
 
 /**
  * Percorre um trajeto [[x,z],...] a partir de (x0,z0) por `dist` studs.
@@ -105,10 +119,10 @@ export const ROSTO_DA_ACAO = { chorar: 'chorando', assustar: 'assustado', bravo:
   cair: 'assustado', triste: 'triste', pensar: 'pensativo', tremer: 'nervoso', dancar: 'feliz', socar: 'bravo',
   discursar: 'confiante', andar_confiante: 'confiante', acenar_multidao: 'sorriso', correr_medo: 'assustado', fugir: 'assustado',
   maos_pra_cima: 'assustado', implorar: 'triste', espiar: 'desconfiado', cochichar: 'malandro', comemorar_vitoria: 'rindo',
-  rir: 'rindo', negar: 'desconfiado', cocar_cabeca: 'pensativo', desmaiar: 'morto', apertar_mao: 'sorriso' };
+  rir: 'rindo', negar: 'desconfiado', cocar_cabeca: 'pensativo', desmaiar: 'morto', apertar_mao: 'sorriso', gritar: 'bravo', espreguicar: 'dormindo', comer: 'feliz', chutar: 'confiante' };
 
 /** Objetos que aparecem na mão automaticamente com a ação. */
 export const PROP_DA_ACAO = { celular: 'celular', digitar: 'celular', andar_celular: 'celular', entrevistar: 'microfone', filmar: 'filmadora',
-  carregar: 'caixa', assinar: 'caneta' };
+  carregar: 'caixa', assinar: 'caneta', varrer: 'vassoura', regar: 'regador', cozinhar: 'colher', comer: 'garfo', passear_cachorro: 'coleira' };
 
 export const NOMES_ACOES = Object.keys(ACOES);

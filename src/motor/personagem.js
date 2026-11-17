@@ -100,6 +100,13 @@ export const PROPS_MAO = {
   caneta: () => cilindro(0.04, 0.04, 0.6, '#1d3b72', { pos: [0, 0.2, 0] }),
   maleta: () => grupo([caixa(1.0, 0.75, 0.3, '#3b2a1e', { pos: [0, -0.5, 0], round: 0.06 }), caixa(0.4, 0.12, 0.1, '#222', { pos: [0, -0.05, 0] })]),
   prancheta: () => grupo([caixa(0.8, 1.05, 0.05, '#a8754a'), caixa(0.7, 0.85, 0.06, '#ffffff', { pos: [0, -0.05, 0.01] })]),
+  vassoura: () => grupo([cilindro(0.06, 0.06, 4.2, '#a8754a', { pos: [0, 0.3, 0] }), caixa(1.2, 0.5, 0.35, '#d9b44a', { pos: [0, -1.9, 0] })]),
+  regador: () => grupo([caixa(0.8, 0.7, 0.5, '#2e7d32', { pos: [0, -0.2, 0.3], round: 0.1 }), cilindro(0.05, 0.08, 0.9, '#2e7d32', { pos: [0, -0.1, 0.9], rot: [60, 0, 0] })]),
+  colher: () => grupo([cilindro(0.04, 0.04, 1.0, '#a8754a', { pos: [0, 0.2, 0] }), esfera(0.12, '#a8754a', { pos: [0, 0.72, 0] })]),
+  garfo: () => grupo([cilindro(0.03, 0.03, 0.6, '#ccc', { pos: [0, 0.2, 0] }), caixa(0.16, 0.18, 0.03, '#ccc', { pos: [0, 0.55, 0] })]),
+  sacola: () => grupo([caixa(0.9, 1.0, 0.5, '#f2f3f3', { pos: [0, -0.7, 0] }), caixa(0.5, 0.06, 0.06, '#f2f3f3', { pos: [0, -0.1, 0] })]),
+  coleira: () => cilindro(0.025, 0.025, 2.6, '#c4281c', { pos: [0, -0.9, 0.9], rot: [-55, 0, 0] }),
+  bola_mao: () => grupo([esfera(0.42, '#ffffff', { pos: [0, -0.3, 0.2] })]),
   bandeirinha: (o) => grupo([cilindro(0.03, 0.03, 1.6, '#ddd', { pos: [0, 0.8, 0] }), caixa(0.9, 0.6, 0.03, o.cor || '#1f9d48', { pos: [0.47, 1.3, 0] })]),
   cartaz: (o) => { const [c, g] = canvas(256, 160); g.fillStyle = '#fff'; g.fillRect(0, 0, 256, 160); g.strokeStyle = '#c4281c'; g.lineWidth = 10; g.strokeRect(5, 5, 246, 150);
     g.fillStyle = '#111'; g.font = '900 40px Arial Black, Arial'; g.textAlign = 'center'; g.textBaseline = 'middle';

@@ -38,7 +38,7 @@ function iniciar(c) {
 }
 
 /** Posição base de cada ator (auto-distribui quem não tem x). */
-const ANCORA_DA_ACAO = { deitar: 'deitar', dormir: 'deitar', sentar: 'sentar', discursar: 'discursar', assinar: 'assinar' };
+const ANCORA_DA_ACAO = { deitar: 'deitar', dormir: 'deitar', sentar: 'sentar', discursar: 'discursar', assinar: 'assinar', cozinhar: 'cozinhar', lavar_louca: 'lavar_louca' };
 function posicoes(atores, ancoras = {}) {
   const usadas = {};
   const semX = atores.filter(a => a.x === undefined && !(ancoras[ANCORA_DA_ACAO[a.acao]] && a.y === undefined)); const n = semX.length;
@@ -46,7 +46,8 @@ function posicoes(atores, ancoras = {}) {
     const anc = ancoras[ANCORA_DA_ACAO[a.acao]];
     if (anc && a.y === undefined) { // vai sozinho para a cama/sofá do cenário (y explícito no roteiro = posição manual)
       const k = usadas[a.acao] = (usadas[a.acao] ?? -1) + 1;
-      return { x: anc[0] + (a.acao === 'sentar' ? k * 2.2 : k * 0), y: anc[1], z: anc[2], vira: 0 };
+      const v = anc[3] ?? 0, passo = a.acao === 'sentar' ? k * 2.2 : 0;
+      return { x: anc[0] + passo * Math.cos(v * Math.PI / 180), y: anc[1], z: anc[2] - passo * Math.sin(v * Math.PI / 180), vira: v };
     }
     let x = a.x, vira = a.vira;
     if (x === undefined) { const i = semX.indexOf(a); x = (i - (n - 1) / 2) * 3.4; }
@@ -75,7 +76,9 @@ async function montar(c) {
     const p = criarPersonagem(a.spec); raiz.add(p.raiz);
     p.setRosto(a.rosto || p.rostoPadrao(a.acao), a.spec.extras || []);
     p.setProp(a.prop === undefined ? p.propPadrao(a.acao) : a.prop, { texto: a.prop_texto, cor: a.prop_cor });
-    return { ...a, ator: p, base: bases[i] };
+    const petTipo = a.pet || (a.acao === 'passear_cachorro' ? 'cachorro' : null);
+    const pet = petTipo ? criarProp({ tipo: petTipo, cor: a.pet_cor }) : null; if (pet) raiz.add(pet);
+    return { ...a, ator: p, base: bases[i], pet };
   });
   if (c.multidao) for (const f of criarMultidao(c.multidao, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); atores.push(f); }
   const prin = atores.filter(a => !a.figurante).map(a => a.base.x);
@@ -118,7 +121,14 @@ function alvo(t) {
 
 function posar(t) {
   const { atores, c, dur } = atual;
-  for (const a of atores) a.ator.posar(a.acao, t + (a.atraso || 0), dur, a.p || {}, a.base);
+  for (const a of atores) {
+    a.ator.posar(a.acao, t + (a.atraso || 0), dur, a.p || {}, a.base);
+    if (a.pet) { // animal de estimação acompanha o dono (ao lado direito, um pouco à frente)
+      const rz = a.ator.raiz, ang = rz.rotation.y, ox = a.acao === 'passear_cachorro' ? 0.9 : -1.9, oz = a.acao === 'passear_cachorro' ? 2.6 : 0.6;
+      a.pet.position.set(rz.position.x + ox * Math.cos(ang) + oz * Math.sin(ang), Math.abs(Math.sin(t * 11)) * (LOCOMOCAO.has(a.acao) ? 0.1 : 0), rz.position.z - ox * Math.sin(ang) + oz * Math.cos(ang));
+      a.pet.rotation.y = ang;
+    }
+  }
   const camC = atual.cen.cameraFixa ? { camera: 'detalhe', mov: c.mov || 'zoom_in', angulo: 0, dist: c.dist || 3.1 } : c;
   posicionarCamera(cam, camC, t, dur, alvo, atores.length && !c.foco ? atual.espalha : 0);
   const foco = alvo(t); const d = new THREE.Vector3(...atual.cen.sol.dir).normalize();

@@ -116,8 +116,94 @@ export const PROPS = {
     return g; },
   quadro_parede: (o = {}) => { const g = grupo([caixa(3.4, 4.2, 0.2, '#c9a24a', { pos: [0, 0, 0] })]); const p = placaTexto(o.texto || '★', 3.0, 1.6, { fundo: o.cor || '#3a5a8a', corTexto: '#f5e6b8' });
     p.position.set(0, 0, 0.11); g.add(p); g.add(plano(3.0, 3.8, mat(o.cor || '#3a5a8a'), { pos: [0, 0, 0.105] })); return g; },
+  // --- bairro (casas brasileiras) ---
+  casa_br: (o = {}) => casaBR(o, 1),
+  sobrado: (o = {}) => casaBR(o, 2),
+  muro: (o = {}) => { const w = o.largura || 10, c = o.cor || '#e9e6dc', h = o.altura || 2.2; const g = grupo([]);
+    const vao = o.portao === false ? 0 : 3.2, px = o.portao_x ?? 0;
+    const lados = vao ? [[-w / 2, px - vao / 2], [px + vao / 2, w / 2]] : [[-w / 2, w / 2]];
+    for (const [a, b] of lados) if (b - a > 0.05) { g.add(caixa(b - a, h, 0.4, c, { pos: [(a + b) / 2, h / 2, 0] })); g.add(caixa(b - a + 0.04, 0.15, 0.5, '#d8d4cc', { pos: [(a + b) / 2, h + 0.07, 0] })); }
+    if (vao) { const pt = PROPS.portao({ largura: vao, cor: o.portao_cor }); pt.position.x = px; g.add(pt); }
+    return g; },
+  portao: (o = {}) => { const w = o.largura || 3.2, c = o.cor || '#3a3d44'; const g = grupo([caixa(w, 0.12, 0.12, c, { pos: [0, 2.3, 0] }), caixa(w, 0.12, 0.12, c, { pos: [0, 0.15, 0] })]);
+    for (let x = -w / 2 + 0.1; x <= w / 2 - 0.05; x += 0.28) g.add(caixa(0.07, 2.2, 0.07, c, { pos: [x, 1.22, 0] })); return g; },
+  cerca_viva: (o = {}) => { const g = grupo([]); for (let i = 0; i < (o.n || 5); i++) g.add(caixa(1.6, 1.4, 1.2, i % 2 ? '#2f8a3c' : '#38a047', { pos: [i * 1.55, 0.7, 0], round: 0.4 })); return g; },
+  caixa_dagua: () => grupo([cilindro(1.0, 0.9, 1.3, '#1e6fd9', { pos: [0, 0.65, 0], seg: 20 }), cilindro(1.05, 1.05, 0.2, '#1a5fc0', { pos: [0, 1.4, 0], seg: 20 })]),
+  churrasqueira: () => grupo([caixa(3, 2.6, 1.6, '#b5653b', { pos: [0, 1.3, 0] }), caixa(2.2, 1.0, 0.3, '#1b1b1b', { pos: [0, 2.0, 0.7] }),
+    caixa(1.2, 3, 1.0, '#a85a33', { pos: [0, 4.1, -0.2] }), caixa(2.0, 0.08, 0.8, '#777', { pos: [0, 2.0, 0.4] })]),
+  piscina: (o = {}) => { const w = o.largura || 8, d = o.prof || 5; return grupo([caixa(w + 1, 0.3, d + 1, '#e8e2d2', { pos: [0, 0.15, 0] }),
+    caixa(w, 0.32, d, mat('#3fb6e8', { rough: 0.05, metal: 0.1, emissive: '#1a7fb0', emissiveIntensity: 0.25 }), { pos: [0, 0.17, 0], sombra: false })]); },
+  varal: () => { const g = grupo([cilindro(0.06, 0.06, 3.5, '#888', { pos: [-3, 1.75, 0] }), cilindro(0.06, 0.06, 3.5, '#888', { pos: [3, 1.75, 0] }), cilindro(0.02, 0.02, 6, '#ddd', { pos: [0, 3.4, 0], rot: [0, 0, 90] })]);
+    [['#e53935', -2.2, 1.2], ['#1e88e5', -0.9, 1.0], ['#fdd835', 0.3, 1.3], ['#ffffff', 1.6, 0.9]].forEach(([c, x, h]) => g.add(caixa(1.0, h, 0.04, c, { pos: [x, 3.35 - h / 2, 0] }))); return g; },
+  casinha_cachorro: (o = {}) => { const g = grupo([caixa(2.4, 1.8, 2.4, o.cor || '#b5653b', { pos: [0, 0.9, 0] }), caixa(0.9, 1.1, 0.1, '#2a1a12', { pos: [0, 0.6, 1.21] })]);
+    for (const s of [-1, 1]) g.add(caixa(1.6, 0.15, 2.7, '#7a2e1f', { pos: [s * 0.62, 2.2, 0], rot: [0, 0, -s * 38] })); return g; },
+  cachorro: (o = {}) => { const c = o.cor || '#c58a4a', esc = '#2a1a12'; const g = grupo([caixa(1.0, 0.9, 2.0, c, { pos: [0, 1.0, 0], round: 0.2 }), caixa(0.9, 0.85, 0.9, c, { pos: [0, 1.7, 1.15], round: 0.25 }),
+    caixa(0.5, 0.35, 0.4, o.focinho || '#e8c9a0', { pos: [0, 1.55, 1.7], round: 0.1 }), caixa(0.18, 0.14, 0.1, esc, { pos: [0, 1.68, 1.92] }),
+    caixa(0.25, 0.5, 0.15, o.orelha || '#8a5a33', { pos: [-0.42, 2.0, 1.1], rot: [0, 0, 20] }), caixa(0.25, 0.5, 0.15, o.orelha || '#8a5a33', { pos: [0.42, 2.0, 1.1], rot: [0, 0, -20] }),
+    caixa(0.12, 0.12, 0.05, esc, { pos: [-0.22, 1.85, 1.61] }), caixa(0.12, 0.12, 0.05, esc, { pos: [0.22, 1.85, 1.61] }), caixa(0.2, 0.2, 0.9, c, { pos: [0, 1.5, -1.3], rot: [-35, 0, 0] })]);
+    for (const [x, z] of [[-0.3, 0.7], [0.3, 0.7], [-0.3, -0.7], [0.3, -0.7]]) g.add(caixa(0.3, 0.6, 0.3, c, { pos: [x, 0.3, z] })); g.scale.setScalar(o.tam || 1); return g; },
+  gato: (o = {}) => { const c = o.cor || '#7c7f88'; const g = grupo([caixa(0.6, 0.6, 1.2, c, { pos: [0, 0.6, 0], round: 0.15 }), caixa(0.65, 0.6, 0.6, c, { pos: [0, 1.15, 0.6], round: 0.15 }),
+    cilindro(0, 0.13, 0.3, c, { pos: [-0.2, 1.55, 0.6], seg: 4 }), cilindro(0, 0.13, 0.3, c, { pos: [0.2, 1.55, 0.6], seg: 4 }), caixa(0.12, 0.12, 0.8, c, { pos: [0, 1.0, -0.8], rot: [-50, 0, 0] }),
+    caixa(0.1, 0.12, 0.04, '#9be36b', { pos: [-0.14, 1.2, 0.91] }), caixa(0.1, 0.12, 0.04, '#9be36b', { pos: [0.14, 1.2, 0.91] })]);
+    for (const [x, z] of [[-0.18, 0.4], [0.18, 0.4], [-0.18, -0.4], [0.18, -0.4]]) g.add(caixa(0.18, 0.4, 0.18, c, { pos: [x, 0.2, z] })); return g; },
+  bicicleta: (o = {}) => { const c = o.cor || '#c4281c'; const g = grupo([]);
+    for (const z of [-1.1, 1.1]) { const roda = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.07, 8, 24), mat('#1b1b1b')); roda.position.set(0, 0.75, z); roda.rotation.y = Math.PI / 2; roda.castShadow = true; g.add(roda); }
+    g.add(caixa(0.12, 0.12, 2.0, c, { pos: [0, 1.25, 0], rot: [-12, 0, 0] })); g.add(caixa(0.12, 1.0, 0.12, c, { pos: [0, 1.2, -0.5] })); g.add(caixa(0.4, 0.12, 0.7, '#222', { pos: [0, 1.75, -0.55] }));
+    g.add(caixa(0.12, 0.9, 0.12, c, { pos: [0, 1.4, 1.0] })); g.add(caixa(1.0, 0.1, 0.1, '#222', { pos: [0, 1.9, 1.0] })); return g; },
+  moto: (o = {}) => { const c = o.cor || '#1d3b72'; const g = grupo([caixa(0.7, 0.9, 2.4, c, { pos: [0, 1.2, 0], round: 0.25 }), caixa(0.6, 0.25, 1.1, '#111', { pos: [0, 1.75, -0.4] }),
+    caixa(1.2, 0.1, 0.1, '#222', { pos: [0, 2.1, 1.05] }), caixa(0.5, 0.4, 0.2, mat('#ffe9a8', { emissive: '#ffe9a8', emissiveIntensity: 0.8 }), { pos: [0, 1.6, 1.25] })]);
+    for (const z of [-1.0, 1.05]) g.add(cilindro(0.6, 0.6, 0.3, '#1b1b1b', { pos: [0, 0.6, z], rot: [0, 0, 90] })); if (o.bau) g.add(caixa(1.0, 0.9, 0.9, '#c4281c', { pos: [0, 2.1, -1.1] })); return g; },
+  balanco: () => { const g = grupo([caixa(5, 0.25, 0.25, '#c4281c', { pos: [0, 5, 0] })]);
+    for (const x of [-2.4, 2.4]) for (const z of [-1, 1]) g.add(caixa(0.22, 5.2, 0.22, '#c4281c', { pos: [x, 2.5, z * 0.8], rot: [z * 12, 0, 0] }));
+    for (const x of [-1, 1]) { g.add(cilindro(0.03, 0.03, 3.2, '#999', { pos: [x - 0.4, 3.4, 0] })); g.add(cilindro(0.03, 0.03, 3.2, '#999', { pos: [x + 0.4, 3.4, 0] })); g.add(caixa(1.0, 0.12, 0.5, '#f5cd30', { pos: [x, 1.8, 0] })); }
+    return g; },
+  escorregador: () => grupo([caixa(1.6, 0.2, 5, '#1e88e5', { pos: [0, 1.9, 1.6], rot: [38, 0, 0] }), caixa(1.8, 3.6, 1.8, '#f5cd30', { pos: [0, 1.8, -1.6] }), caixa(1.9, 0.2, 1.9, '#e53935', { pos: [0, 3.7, -1.6] })]),
+  trave: () => { const b = '#f2f3f3'; return grupo([caixa(0.25, 4.2, 0.25, b, { pos: [-4, 2.1, 0] }), caixa(0.25, 4.2, 0.25, b, { pos: [4, 2.1, 0] }), caixa(8.25, 0.25, 0.25, b, { pos: [0, 4.2, 0] }),
+    caixa(8, 4.2, 0.04, new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.25, roughness: 1 }), { pos: [0, 2.1, -1.5], sombra: false })]); },
+  bola: (o = {}) => { const g = grupo([esfera(0.45, o.cor || '#ffffff', { pos: [0, 0.45, 0] })]); for (const [x, y, z] of [[0, 0.88, 0], [0.4, 0.5, 0.15], [-0.3, 0.55, 0.32], [0.05, 0.2, -0.38]]) g.add(esfera(0.13, '#111', { pos: [x, y, z] })); return g; },
+  geladeira: () => grupo([caixa(2.0, 5.2, 1.8, '#f2f3f3', { pos: [0, 2.6, 0], round: 0.12 }), caixa(2.02, 0.05, 1.82, '#bbb', { pos: [0, 3.6, 0] }), caixa(0.1, 1.0, 0.1, '#999', { pos: [0.75, 4.3, 0.95] }), caixa(0.1, 1.4, 0.1, '#999', { pos: [0.75, 2.6, 0.95] })]),
+  fogao: () => { const g = grupo([caixa(2.2, 2.3, 1.8, '#f2f3f3', { pos: [0, 1.15, 0] }), caixa(1.8, 1.1, 0.06, '#222', { pos: [0, 1.0, 0.92] }), caixa(2.2, 0.08, 1.8, '#222', { pos: [0, 2.34, 0] })]);
+    for (const x of [-0.5, 0.5]) for (const z of [-0.4, 0.4]) g.add(cilindro(0.3, 0.3, 0.06, '#444', { pos: [x, 2.4, z], seg: 14 })); return g; },
+  pia: () => grupo([caixa(4, 2.3, 1.8, '#f2f3f3', { pos: [0, 1.15, 0] }), caixa(4.1, 0.15, 1.9, '#8c8f99', { pos: [0, 2.35, 0] }), caixa(1.6, 0.1, 1.1, '#5a5d66', { pos: [-0.8, 2.43, 0] }),
+    cilindro(0.06, 0.06, 0.8, '#ccc', { pos: [-0.8, 2.8, -0.6] }), caixa(0.1, 0.1, 0.5, '#ccc', { pos: [-0.8, 3.15, -0.4] })]),
+  armario: (o = {}) => { const w = o.largura || 6, g = grupo([caixa(w, 2.2, 1.2, o.cor || '#a8754a', { pos: [0, 0, 0] })]);
+    for (let x = -w / 2 + 1; x < w / 2; x += 2) { g.add(caixa(1.85, 2.0, 0.05, o.cor2 || '#c9945e', { pos: [x, 0, 0.62] })); g.add(caixa(0.1, 0.4, 0.08, '#555', { pos: [x + 0.7, 0, 0.66] })); } return g; },
+  mesa_jantar: (o = {}) => { const g = PROPS.mesa({ largura: o.largura || 5, cor: o.cor || '#8a5a33' });
+    for (const [x, z, v] of [[-1.3, 2.0, 180], [1.3, 2.0, 180], [-1.3, -2.0, 0], [1.3, -2.0, 0]]) { const c = PROPS.cadeira({ cor: o.cadeira || '#a8754a' }); c.position.set(x, 0, z); c.rotation.y = v * Math.PI / 180; g.add(c); }
+    return g; },
+  cadeira_plastico: (o = {}) => grupo([caixa(1.5, 0.2, 1.5, o.cor || '#f2f3f3', { pos: [0, 1.0, 0], round: 0.08 }), caixa(1.5, 1.4, 0.15, o.cor || '#f2f3f3', { pos: [0, 1.8, -0.7], rot: [-8, 0, 0], round: 0.05 }),
+    ...[[-0.6, 0.6], [0.6, 0.6], [-0.6, -0.6], [0.6, -0.6]].map(([x, z]) => caixa(0.15, 1.0, 0.15, o.cor || '#f2f3f3', { pos: [x, 0.5, z] }))]),
+  saco_lixo: () => grupo([esfera(0.6, '#1b1b1b', { pos: [0, 0.55, 0], mat: { rough: 0.3 } }), esfera(0.5, '#1b1b1b', { pos: [0.8, 0.45, 0.2], mat: { rough: 0.3 } })]),
+  vaso_flor: (o = {}) => grupo([cilindro(0.45, 0.35, 0.8, '#b5653b', { pos: [0, 0.4, 0] }), ...[0, 1, 2, 3].map(i => esfera(0.22, o.cor || ['#ff4f8b', '#ffd23f', '#e53935', '#b06bff'][i], { pos: [Math.sin(i * 1.6) * 0.25, 1.05, Math.cos(i * 1.6) * 0.25] }))]),
+  poste_fios: (o = {}) => { const g = grupo([cilindro(0.22, 0.28, 11, '#9a9a9a', { pos: [0, 5.5, 0] }), caixa(2.6, 0.25, 0.25, '#7a7a7a', { pos: [0, 10, 0] }),
+    cilindro(0.35, 0.35, 0.9, '#6d6f75', { pos: [0.6, 8.6, 0] })]);
+    if (o.noite) { g.add(caixa(0.7, 0.25, 0.5, mat('#eee', { emissive: '#ffe2a0', emissiveIntensity: 2 }), { pos: [0, 8.0, 0.7] })); const l = new THREE.PointLight(0xffd59a, 35, 22, 1.6); l.position.set(0, 7.6, 1); g.add(l); }
+    return g; },
+  lombada: () => grupo([caixa(8, 0.25, 1.6, '#f5cd30', { pos: [0, 0.1, 0], round: 0.1 })]),
 };
 export const NOMES_PROPS = Object.keys(PROPS);
+
+/** Casa brasileira: telhado de telha em duas águas, grade na janela, caixa d'água opcional. andares = 1 ou 2. */
+function casaBR(o, andares) {
+  const w = o.largura || 9, d = 8, hA = 4.2, h = hA * andares, c = o.cor || '#f0b446', n = o.noite;
+  const g = grupo([caixa(w, h, d, c, { pos: [0, h / 2, 0] }), caixa(w + 0.1, 0.5, d + 0.1, o.barrado || '#d8d4cc', { pos: [0, 0.25, 0] })]);
+  const telha = o.telhado || '#c8643b', inc = 26, meio = d / 2 + 0.7, comp = meio / Math.cos(inc * Math.PI / 180);
+  for (const s of [-1, 1]) g.add(caixa(w + 1.2, 0.35, comp, telha, { pos: [0, h + Math.tan(inc * Math.PI / 180) * meio / 2, s * meio / 2], rot: [s * inc, 0, 0] }));
+  { // oitão (triângulo das laterais) sob as duas águas do telhado
+    const sub = Math.tan(inc * Math.PI / 180) * (d / 2), sh = new THREE.Shape([new THREE.Vector2(-d / 2, 0), new THREE.Vector2(d / 2, 0), new THREE.Vector2(0, sub)]);
+    const ot = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: w - 0.02, bevelEnabled: false }), mat(c)); ot.rotation.y = Math.PI / 2; ot.position.set(-w / 2 + 0.01, h, 0);
+    ot.castShadow = ot.receiveShadow = true; g.add(ot); }
+  const vid = () => mat(n ? '#ffe3a3' : '#a8dcff', n ? { emissive: '#ffd27a', emissiveIntensity: 1.1 } : { rough: 0.15, metal: 0.1 });
+  const janela = (x, y) => { g.add(caixa(2.2, 1.9, 0.15, '#ffffff', { pos: [x, y, d / 2 + 0.04] })); g.add(caixa(1.9, 1.6, 0.16, vid(), { pos: [x, y, d / 2 + 0.06], sombra: false }));
+    if (o.grade !== false) for (let k = -0.8; k <= 0.81; k += 0.4) g.add(caixa(0.06, 1.7, 0.06, '#2b2b2b', { pos: [x + k, y, d / 2 + 0.2] })); };
+  g.add(caixa(1.8, 3.4, 0.15, o.porta || '#7a4b2a', { pos: [-w / 4, 1.95, d / 2 + 0.05] })); g.add(esfera(0.1, '#e0b040', { pos: [-w / 4 + 0.6, 1.9, d / 2 + 0.15] }));
+  janela(w / 5, 2.4); if (andares === 2) { janela(-w / 4, hA + 2.2); janela(w / 5, hA + 2.2);
+    g.add(caixa(w * 0.55, 0.25, 1.4, '#d8d4cc', { pos: [w / 5 - 0.3, hA + 0.4, d / 2 + 0.7] }));
+    for (let x = -w * 0.25; x <= w * 0.25; x += 0.45) g.add(caixa(0.07, 1.1, 0.07, '#2b2b2b', { pos: [w / 5 - 0.3 + x, hA + 1.05, d / 2 + 1.35] }));
+    g.add(caixa(w * 0.55, 0.1, 0.1, '#2b2b2b', { pos: [w / 5 - 0.3, hA + 1.6, d / 2 + 1.35] })); }
+  if (o.caixa_dagua !== false) { const cx = PROPS.caixa_dagua(); cx.position.set(w / 2 - 1.8, h + Math.tan(inc * Math.PI / 180) * meio * 0.6, -1.5); g.add(cx); }
+  return g;
+}
 
 export function criarProp(spec) {
   const fn = PROPS[spec.tipo]; if (!fn) return null;

@@ -215,6 +215,70 @@ export const CENARIOS = {
     g.userData.ancoras = { sentar: [0, 0, -6.1], assinar: [0, 0, -5.8] };
     luzTeto(g, 0, -1, n);
   },
+  bairro(o, g, r) { // rua de bairro: atores no asfalto, calçada, muros/portões e casas logo atrás, morro com mais casas ao fundo
+    const n = o.hora === 'noite';
+    g.add(caixa(500, 0.2, 500, '#4ccd3d', { pos: [0, -0.1, 0] }));
+    g.add(caixa(500, 0.1, 16, '#55596a', { pos: [0, 0.02, 5] }));                               // asfalto
+    for (let i = 0; i < 40; i++) g.add(caixa(r.entre(0.6, 2), 0.02, r.entre(0.4, 1.2), '#4a4e5d', { pos: [r.entre(-40, 40), 0.075, r.entre(-2, 12)], sombra: false })); // remendos
+    g.add(caixa(500, 0.35, 0.35, '#c9ccd5', { pos: [0, 0.17, -3.2] }));                          // meio-fio
+    g.add(caixa(500, 0.3, 2.6, '#bfc2ca', { pos: [0, 0.15, -4.6] }));                            // calçada
+    const cores = ['#f0b446', '#8fc1e3', '#f2a7c3', '#b7e1a1', '#e9e6dc', '#f28b5b', '#c9b2e8', '#ffe08a', '#9fd8c8'];
+    const muros = ['#e9e6dc', '#d9d4c7', '#f2a7c3', '#8fc1e3', '#e8c58c'];
+    for (let x = -48, i = 0; x <= 48; x += 12, i++) {
+      const sob = r() < 0.4; add(g, sob ? 'sobrado' : 'casa_br', { cor: r.item(cores), telhado: r.item(['#c8643b', '#b5533a', '#8a4a35', '#5a5d66']), noite: n, largura: r.entre(8, 10), caixa_dagua: r() < 0.7 }, [x + r.entre(-0.5, 0.5), 0, -12.5]);
+      add(g, 'muro', { largura: 12, cor: r.item(muros), portao_x: r.entre(-2.5, 2.5), portao_cor: r.item(['#3a3d44', '#7a2e1f', '#1d3b72', '#2e5d3a']) }, [x, 0, -6.2]);
+      if (r() < 0.5) add(g, 'arbusto', {}, [x + r.entre(-4, 4), 0, -7.8]);
+    }
+    for (let x = -40; x <= 40; x += 16) add(g, 'poste_fios', { noite: n }, [x + 5, 0, -3.8]);
+    for (const y of [10.0, 9.3]) g.add(cilindro(0.03, 0.03, 200, '#222', { pos: [0, y, -3.8], rot: [0, 0, 90], seg: 6, sombra: false }));
+    add(g, 'carro', { cor: r.item(['#c4281c', '#1d3b72', '#f2f3f3', '#4d4f57']) }, [-9, 0, -1.4], 90);
+    add(g, 'moto', { cor: '#c4281c' }, [10, 0, -1.8], 90); add(g, 'bicicleta', {}, [-3.5, 0, -4.6], 80);
+    add(g, 'cachorro', {}, [5.5, 0, -4.3], -30); add(g, 'saco_lixo', {}, [-14, 0, -4.8]); add(g, 'lixeira', { cor: '#2e7d32' }, [14, 0, -4.8]);
+    add(g, 'arvore', { tam: 0.9 }, [18, 0, -4.6]); add(g, 'arvore', { tam: 1.1 }, [-20, 0, -4.6]); add(g, 'lombada', {}, [24, 0, 3]);
+    g.add(caixa(200, 8, 40, '#3fae3a', { pos: [0, 2, -46], rot: [6, 0, 0] }));                     // morro ao fundo
+    for (let x = -70; x <= 70; x += 8) add(g, r() < 0.3 ? 'sobrado' : 'casa_br', { cor: r.item(cores), noite: n, largura: 7, grade: false }, [x + r.entre(-2, 2), 4.5 + r.entre(0, 3), -36 - r.entre(0, 8)]);
+    n ? lua(g) : nuvens(g, r);
+  },
+  quintal(o, g, r) { // quintal: churrasqueira, piscina, varal, casinha de cachorro
+    const n = o.hora === 'noite';
+    g.add(caixa(500, 0.2, 500, '#4ccd3d', { pos: [0, -0.1, 0] }));
+    g.add(caixa(30, 0.15, 10, '#c9b79c', { pos: [0, 0.07, -8] }));                               // piso de cimento queimado
+    add(g, 'muro', { largura: 40, altura: 3.2, cor: o.cor || '#e9e6dc', portao: false }, [0, 0, -14]);
+    add(g, 'muro', { largura: 34, altura: 3.2, cor: o.cor || '#e9e6dc', portao: false }, [-16, 0, 3], 90); add(g, 'muro', { largura: 34, altura: 3.2, cor: o.cor || '#e9e6dc', portao: false }, [16, 0, 3], 90);
+    add(g, 'churrasqueira', {}, [-9, 0, -12.6]); add(g, 'piscina', {}, [9, 0, -6]); add(g, 'varal', {}, [-2, 0, -11]);
+    add(g, 'casinha_cachorro', {}, [-12.5, 0, -2], 70); add(g, 'cachorro', { cor: '#7c5c46' }, [-10, 0, -0.5], 40);
+    add(g, 'mesa', { largura: 4, cor: '#f2f3f3' }, [-3, 0, -4]); add(g, 'cadeira_plastico', {}, [-5.2, 0, -4], 90); add(g, 'cadeira_plastico', {}, [-0.8, 0, -4], -90);
+    add(g, 'arvore', { tam: 1.2 }, [13, 0, -12]); add(g, 'vaso_flor', {}, [5, 0, -13]); add(g, 'vaso_flor', { cor: '#ffd23f' }, [6.2, 0, -13]);
+    add(g, 'casa_br', { cor: '#f0b446', noite: n }, [0, 3.2, -24]);
+    g.userData.ancoras = { sentar: [-5.0, 0, -4, 90] };
+    n ? lua(g) : nuvens(g, r);
+  },
+  cozinha(o, g, r) { // cozinha de casa
+    const n = o.hora === 'noite'; sala(g, { parede: o.parede || '#f2efe6', chao: o.chao || '#c9c2b3' });
+    for (let x = -12; x <= 12; x += 1.2) for (let y = 0.6; y < 6; y += 1.2) g.add(caixa(1.15, 1.15, 0.05, (Math.round(x / 1.2) + Math.round(y / 1.2)) % 2 ? '#ffffff' : '#dfe9ef', { pos: [x, y, -7.7], sombra: false }));
+    add(g, 'pia', {}, [-2, 0, -6.8]); add(g, 'fogao', {}, [2.4, 0, -6.8]); add(g, 'geladeira', {}, [-7, 0, -6.6]);
+    const a = PROPS.armario({}); a.position.set(-1.5, 7.2, -7.1); g.add(a);
+    add(g, 'mesa_jantar', {}, [3, 0, 1.5]);
+    janela(g, 7.5, 6.5, -7.6, 4, 3, n);
+    g.userData.ancoras = { sentar: [1.7, 0, -0.3], cozinhar: [2.4, 0, -5.0, 180], lavar_louca: [-2.8, 0, -5.0, 180] };
+    luzTeto(g, 0, -1, n);
+  },
+  campinho(o, g, r) { // campinho de futebol de bairro
+    const n = o.hora === 'noite';
+    g.add(caixa(500, 0.2, 500, '#7a6a4f', { pos: [0, -0.1, 0] }));
+    g.add(caixa(36, 0.06, 56, o.chao || '#58b947', { pos: [0, 0.02, -10] }));
+    for (let i = 0; i < 30; i++) g.add(caixa(r.entre(1, 3), 0.03, r.entre(1, 3), '#9b8a66', { pos: [r.entre(-14, 14), 0.06, r.entre(-30, 10)], sombra: false })); // terra batida
+    const L = '#f2f3f3';
+    g.add(caixa(0.25, 0.03, 52, L, { pos: [-16, 0.07, -10], sombra: false })); g.add(caixa(0.25, 0.03, 52, L, { pos: [16, 0.07, -10], sombra: false }));
+    g.add(caixa(32, 0.03, 0.25, L, { pos: [0, 0.07, -36], sombra: false })); g.add(caixa(32, 0.03, 0.25, L, { pos: [0, 0.07, 6], sombra: false }));
+    g.add(caixa(32, 0.03, 0.25, L, { pos: [0, 0.07, 6 - 21], sombra: false }));
+    add(g, 'trave', {}, [0, 0, -36]); add(g, 'bola', {}, [1.5, 0, -1.5]);
+    for (const x of [-19, 19]) for (let z = -38; z <= 8; z += 4) g.add(caixa(0.12, 5, 0.12, '#888', { pos: [x, 2.5, z] }));
+    for (const x of [-19, 19]) g.add(caixa(0.05, 5, 46, new THREE.MeshStandardMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.3 }), { pos: [x, 2.5, -15], sombra: false }));
+    for (const x of [-22, 22]) add(g, 'poste_fios', { noite: n }, [x, 0, -14]);
+    for (let x = -60; x <= 60; x += 10) add(g, r() < 0.3 ? 'sobrado' : 'casa_br', { cor: r.item(['#f0b446', '#8fc1e3', '#f2a7c3', '#e9e6dc']), noite: n, largura: 8 }, [x, 0, -50]);
+    n ? lua(g) : nuvens(g, r);
+  },
   celular(o, g, r) { // close na tela do celular (use `tela: {tipo, ...}`)
     g.add(caixa(60, 60, 1, o.cor || '#6b7a99', { pos: [0, 4, -6] }));
     const tel = grupo([caixa(3.3, 6.6, 0.35, '#111', { round: 0.3 })]);
@@ -223,7 +287,7 @@ export const CENARIOS = {
   },
   vazio(o, g, r) { g.add(caixa(500, 0.2, 500, o.chao || '#d5d9e2', { pos: [0, -0.1, 0] })); },
 };
-const INTERNOS = new Set(['sala', 'quarto', 'escola', 'hospital', 'gabinete']);
+const INTERNOS = new Set(['sala', 'quarto', 'escola', 'hospital', 'gabinete', 'cozinha']);
 export const NOMES_CENARIOS = Object.keys(CENARIOS);
 
 export function construirCenario(nome, o = {}) {

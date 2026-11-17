@@ -1,0 +1,25 @@
+titulo: Teste dos assets do bairro
+cenas:
+  - fala: Num bairro tranquilo,
+    onde: bairro
+    cam: aberto
+    atores: [{ id: vizinha_fofoqueira, acao: cochichar, x: -2, vira: 30 }, { id: vizinho, acao: rir, x: 2 }]
+  - fala: o garoto passeava com o cachorro.
+    cam: aberto
+    mov: seguir
+    foco: garoto
+    atores: [{ id: garoto, acao: passear_cachorro, x: -8, ate: [4, 0] }]
+  - fala: No quintal, o tio fazia churrasco.
+    onde: quintal
+    cam: aberto
+    atores: [{ id: tio, acao: cozinhar, x: -9, z: -10.5, vira: 180 }, tia sentar feliz]
+  - fala: Na cozinha, a mãe lavava a louça.
+    onde: cozinha
+    cam: medio
+    angulo: 25
+    atores: [mae lavar_louca, { id: irma, acao: sentar }]
+  - fala: E no campinho, gol!
+    onde: campinho
+    hora: tarde
+    cam: aberto
+    atores: [{ id: jogador, acao: chutar, x: 0, vira: 180 }, { id: garoto, acao: comemorar, x: 4 }]

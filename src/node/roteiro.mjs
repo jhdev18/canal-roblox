@@ -79,9 +79,10 @@ export function carregarRoteiro(arquivo) {
       if (typeof a === 'string') { const [id, acao, rosto] = a.trim().split(/\s+/); a = { id, acao, rosto }; }
       const s = spec(a.id, onde);
       const ator = { id: a.id, spec: s, acao: a.acao || 'parado', rosto: a.rosto, x: a.x, z: a.z, y: a.y, vira: a.vira, prop: a.prop, atraso: a.atraso,
-        prop_texto: a.prop_texto, prop_cor: a.prop_cor, caminho: a.caminho, ate: a.ate, p: { vel: a.vel, ao_chegar: a.ao_chegar } };
+        prop_texto: a.prop_texto, prop_cor: a.prop_cor, pet: a.pet, pet_cor: a.pet_cor, caminho: a.caminho, ate: a.ate, p: { vel: a.vel, ao_chegar: a.ao_chegar } };
       for (const pt of [...(a.caminho || []), ...(a.ate ? [a.ate] : [])]) if (!Array.isArray(pt) || pt.length !== 2 || pt.some(v => typeof v !== 'number'))
         throw new Error(`${onde}: ator ${a.id}: cada ponto de caminho/ate deve ser [x, z], ex.: ate: [6, -2]`);
+      if (a.pet) checar('animal (pet)', a.pet, ['cachorro', 'gato'], onde);
       if (a.ao_chegar) checar('ação (ao_chegar)', a.ao_chegar, cat.acoes, onde);
       checar('ação', ator.acao, cat.acoes, onde); checar('rosto', ator.rosto, cat.rostos, onde);
       if (ator.prop) checar('prop de mão', ator.prop, cat.props_mao, onde);

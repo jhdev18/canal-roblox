@@ -45,3 +45,15 @@ cidadao:       { pele: pele_media, camisa: "#3b6fd8", calca: bege, acessorios: [
 cidada:        { pele: pele_clara, camisa: rosa_claro, calca: azul, acessorios: [rabo_de_cavalo], cabelo_cor: "#7c5c46", extras: [cilios] }
 idosa:         { pele: pele_clara, camisa: roxo, calca: cinza, acessorios: [coque], cabelo_cor: "#e8e8e8", extras: [oculos, cilios], rosto: feliz }
 crianca:       { base: noob, camisa: laranja, acessorios: [cabelo_espetado], cabelo_cor: "#2b1d14", escala: 0.75 }
+
+# --- bairro / família ---
+vizinho:           { pele: pele_media, camisa: branco, calca: bege, roupa: regata, acessorios: [careca_lados], cabelo_cor: preto, extras: [bigode] }
+vizinha_fofoqueira: { pele: pele_clara, camisa: rosa, calca: roxo, acessorios: [coque], cabelo_cor: "#e0b040", extras: [cilios, blush], rosto: malandro }
+tia:               { pele: pele_media, camisa: laranja, calca: preto, acessorios: [cabelo_longo], cabelo_cor: "#3a2416", extras: [cilios], rosto: feliz }
+tio:               { pele: pele_clara, camisa: verde, calca: azul, roupa: listrada, acessorios: [cabelo_curto], cabelo_cor: "#5a4636", extras: [barba] }
+irmao_mais_velho:  { pele: amarelo, camisa: preto, calca: azul, acessorios: [cabelo_baguncado, fone], cabelo_cor: "#2b1d14", rosto: desconfiado }
+irma:              { pele: amarelo, camisa: rosa_claro, calca: azul_claro, acessorios: [rabo_de_cavalo, laco], cabelo_cor: "#7c5c46", extras: [cilios, sardas] }
+entregador:        { pele: pele_media, camisa: vermelho, calca: preto, acessorios: [capacete, mochila], capacete_cor: vermelho, mochila_cor: vermelho }
+carteiro:          { pele: pele_clara, camisa: amarelo, calca: azul, acessorios: [bone, mochila], bone_cor: azul, mochila_cor: amarelo }
+pedreiro:          { pele: pele_escura, camisa: cinza, calca: azul, acessorios: [capacete], capacete_cor: amarelo, extras: [bigode] }
+jogador:           { pele: amarelo, camisa: amarelo, calca: azul, roupa: uniforme, acessorios: [cabelo_espetado], cabelo_cor: "#111" }

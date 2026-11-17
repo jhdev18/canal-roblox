@@ -31,7 +31,7 @@ cenas:                     # 1 cena = 1 corte (~1–2 s, 3–7 palavras)
 | campo | valores | padrão |
 |---|---|---|
 | `fala` | texto narrado e legendado | — (sem fala = só imagem, use `dur`) |
-| `onde` | rua, parque, fachada, sala, quarto, escola, hospital, casamento, **cidade, praca, prefeitura, gabinete**, celular, vazio | cena anterior / rua |
+| `onde` | rua, parque, fachada, sala, quarto, escola, hospital, casamento, cidade, praca, prefeitura, gabinete, **bairro, quintal, cozinha, campinho**, celular, vazio | cena anterior / rua |
 | `hora` | dia, tarde, noite | cena anterior / dia |
 | `cam` | detalhe, close, medio, aberto, geral, baixo, alto, lado, costas | alterna |
 | `mov` | fixo, zoom_in, zoom_out, zoom_rapido, pan, orbita, tremor, seguir, subir, descer | zoom_in |
@@ -57,7 +57,9 @@ Forma longa: `{ id: pai, acao: andar, rosto: feliz, x: 3, z: 0, vira: 90, vel: 8
 
 ### Movimentação (trajetos)
 
-Ações que andam: andar, correr, andar_confiante, andar_celular, correr_medo, fugir, carregar.
+Ações que andam: andar, correr, andar_confiante, andar_celular, correr_medo, fugir, carregar, passear_cachorro.
+
+`pet: cachorro | gato` (+ `pet_cor`) coloca um animal que acompanha o ator; `passear_cachorro` já vem com cachorro e coleira.
 
 ```yaml
 atores:
@@ -84,13 +86,14 @@ multidao: { n: 10, acao: [bravo, parado], prop: cartaz, prop_texto: ["FORA!", "Q
 - Algumas ações já trocam o rosto (chorar→chorando, assustar→assustado…) e põem objeto na mão (celular).
 
 **Ações:** parado, falar, andar, correr, acenar, celular, digitar, sentar, deitar, dormir, assustar, chorar, triste, bravo, comemorar, pular, apontar, abracar, olhar_redor, cair, dancar, pensar, socar, palmas, ajoelhar, empurrar, tremer,
-discursar, acenar_multidao, apertar_mao, continencia, andar_confiante, andar_celular, correr_medo, fugir, carregar, entrevistar, filmar, assinar, cochichar, maos_pra_cima, implorar, espiar, agachar, comemorar_vitoria, rir, negar, concordar, cocar_cabeca, girar, desmaiar
+discursar, acenar_multidao, apertar_mao, continencia, andar_confiante, andar_celular, correr_medo, fugir, carregar, entrevistar, filmar, assinar, cochichar, maos_pra_cima, implorar, espiar, agachar, comemorar_vitoria, rir, negar, concordar, cocar_cabeca, girar, desmaiar,
+chutar, varrer, regar, gritar, bater_porta, espreguicar, cozinhar, comer, lavar_louca, pedir_silencio, sentar_chao, passear_cachorro
 
 **Rostos:** neutro, feliz, sorriso, rindo, malandro, desconfiado, triste, chorando, assustado, surpreso, bravo, dormindo, apaixonado, nervoso, morto, pensativo, confiante (+ qualquer `assets/rostos/<nome>.png`)
 
-**Objetos de mão (`prop`):** celular, espada, presente, flor, livro, dinheiro, microfone, filmadora, caixa, caneta, maleta, prancheta, bandeirinha (`prop_cor`), cartaz (`prop_texto: "FORA!"`)
+**Objetos de mão (`prop`):** celular, espada, presente, flor, livro, dinheiro, microfone, filmadora, caixa, caneta, maleta, prancheta, bandeirinha (`prop_cor`), cartaz (`prop_texto: "FORA!"`), vassoura, regador, colher, garfo, sacola, coleira, bola_mao
 
-Âncoras automáticas: `discursar` vai para o palanque (prefeitura), `sentar`/`assinar` para a mesa do gabinete.
+Âncoras automáticas: `discursar` vai para o palanque (prefeitura), `sentar`/`assinar` para a mesa do gabinete, `sentar` para a mesa da cozinha e a cadeira do quintal, `cozinhar`/`lavar_louca` para o fogão/pia da cozinha.
 
 ## Tela de celular (`onde: celular`)
 
@@ -104,7 +107,8 @@ tela: { tipo: ligacao, nome: Desconhecido }
 ## Personagens (`assets/personagens.yaml`)
 
 Prontos: noob, garoto, amigo, pai, pai_terno, mae, menina, noiva, nerd, valentao, medico, professora, padre, vovo, rei, policial, anjo, demonio, bebe, gamer,
-prefeito, primeira_dama, vice_prefeito, candidato_rival, assessor, seguranca, reporter, cinegrafista, empresario, gari, bombeiro, taxista, vendedor, ladrao, cidadao, cidada, idosa, crianca
+prefeito, primeira_dama, vice_prefeito, candidato_rival, assessor, seguranca, reporter, cinegrafista, empresario, gari, bombeiro, taxista, vendedor, ladrao, cidadao, cidada, idosa, crianca,
+vizinho, vizinha_fofoqueira, tia, tio, irmao_mais_velho, irma, entregador, carteiro, pedreiro, jogador
 
 Campos: `pele, camisa, calca, rosto, extras, acessorios, roupa, cabelo_cor, escala, mangas, bone_cor, laco_cor, capa_cor, gravata_cor, mochila_cor, chifre_cor, vestido_cor`
 
@@ -116,7 +120,8 @@ Campos: `pele, camisa, calca, rosto, extras, acessorios, roupa, cabelo_cor, esca
 ## Props de cenário
 
 arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, cadeira, cama, sofa, tv, computador, planta, presente, caixa_correio, cerca, porta, caixao, bolo,
-semaforo (`luz: verde`), onibus (`texto`), taxi, viatura, hidrante, lixeira, faixa_pedestre, loja (`texto`, `cor`), arranha_ceu, fonte, estatua (`texto`), bandeira (`cores`), palanque (`texto`), barraca, outdoor (`texto`), mesa_escritorio, poltrona, estante, quadro_parede (`texto`)
+semaforo (`luz: verde`), onibus (`texto`), taxi, viatura, hidrante, lixeira, faixa_pedestre, loja (`texto`, `cor`), arranha_ceu, fonte, estatua (`texto`), bandeira (`cores`), palanque (`texto`), barraca, outdoor (`texto`), mesa_escritorio, poltrona, estante, quadro_parede (`texto`),
+casa_br / sobrado (`cor`, `telhado`, `grade: false`, `caixa_dagua: false`), muro (`largura`, `cor`, `portao_x`, `portao: false`), portao, cerca_viva, caixa_dagua, poste_fios, churrasqueira, piscina, varal, casinha_cachorro, cachorro / gato (`cor`), bicicleta, moto (`bau: true`), balanco, escorregador, trave, bola, geladeira, fogao, pia, armario, mesa_jantar, cadeira_plastico, saco_lixo, vaso_flor, lombada
 
 ## Música
 

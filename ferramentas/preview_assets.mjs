@@ -15,7 +15,7 @@ const spec = (base, extra = {}) => ({ id: 'a', ...resolverSpec(base, tpl), ...ex
 const NOOB = (extra = {}) => ({ ...spec('noob'), ...extra });
 const FUNDO = { cenario: 'vazio', cor: '#eef1f6', chao: '#d5d9e2', mov: 'fixo', dur: 1.2 };
 const ator = (s, acao = 'parado', o = {}) => ({ id: 'a', spec: s, acao, p: {}, ...o });
-const CENAS_EXEMPLO = { cidade: 'andar_confiante', praca: 'acenar', prefeitura: 'discursar', gabinete: 'sentar', sala: 'sentar', quarto: 'celular', escola: 'falar', hospital: 'deitar', casamento: 'acenar', parque: 'acenar', fachada: 'parado', rua: 'andar' };
+const CENAS_EXEMPLO = { bairro: 'passear_cachorro', quintal: 'sentar', cozinha: 'lavar_louca', campinho: 'chutar', cidade: 'andar_confiante', praca: 'acenar', prefeitura: 'discursar', gabinete: 'sentar', sala: 'sentar', quarto: 'celular', escola: 'falar', hospital: 'deitar', casamento: 'acenar', parque: 'acenar', fachada: 'parado', rua: 'andar' };
 const T_ACAO = { cair: 1.0, pular: 0.28, comemorar: 0.26, empurrar: 0.5, andar: 0.15, correr: 0.1, acenar: 0.13, socar: 0.1, palmas: 0.2, dancar: 0.15 };
 const COSTAS = ['mochila', 'capa', 'asas', 'rabo_de_cavalo', 'cabelo_longo', 'coque'];
 const TORSO = ['gravata', 'mochila', 'capa', 'asas'];
@@ -31,7 +31,7 @@ const CATEGORIAS = {
   acoes: () => cat.acoes.map(n => ({ nome: n, t: T_ACAO[n] ?? 0.5, cena: { ...FUNDO, camera: 'aberto', angulo: 30, atores: [ator(NOOB(), n)] } })),
   cenarios: () => cat.cenarios.filter(n => n !== 'celular').flatMap(n => [{ nome: n, cena: { cenario: n, mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10,
     atores: n === 'vazio' ? [] : [ator(NOOB(), CENAS_EXEMPLO[n] || 'parado')] } }]).concat(
-    ['rua', 'parque', 'quarto'].map(n => ({ nome: n + ' · noite', cena: { cenario: n, hora: 'noite', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10, atores: [ator(NOOB(), 'parado')] } })),
+    ['rua', 'bairro', 'quarto'].map(n => ({ nome: n + ' · noite', cena: { cenario: n, hora: 'noite', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10, atores: [ator(NOOB(), 'parado')] } })),
     [{ nome: 'rua · tarde', cena: { cenario: 'rua', hora: 'tarde', mov: 'fixo', dur: 1.2, camera: 'aberto', angulo: 10, atores: [ator(NOOB(), 'parado')] } }]),
   telas: () => [
     { tipo: 'mensagem', de: 'Mãe', mensagens: [{ texto: 'Cadê você?' }, { texto: 'Tô chegando!', eu: true }] },
@@ -39,7 +39,8 @@ const CATEGORIAS = {
     { tipo: 'alarme', hora: '06:30' }, { tipo: 'ligacao', nome: 'Desconhecido' },
   ].map(t => ({ nome: 'celular · ' + t.tipo, cena: { cenario: 'celular', tela: t, mov: 'fixo', dur: 1.2, atores: [] } })),
   props: () => cat.props.map(n => { const G = { casa: [3, 1], predio: [9, 1.6], poste: [3, 1], arvore: [3, 1], pinheiro: [3, 1], carro: [-0.5, 1], taxi: [-0.5, 1], viatura: [-0.5, 1],
-      onibus: [0, 1.5], arranha_ceu: [20, 2.8], bandeira: [3, 1.1], outdoor: [6, 1.2], semaforo: [2.5, 0.9], loja: [1.5, 1.2], palanque: [0, 0.9], estante: [1, 0.8], fonte: [0, 0.9], estatua: [1.5, 0.9], barraca: [0, 0.9] }[n];
+      onibus: [0, 1.5], arranha_ceu: [20, 2.8], bandeira: [3, 1.1], outdoor: [6, 1.2], semaforo: [2.5, 0.9], loja: [1.5, 1.2], palanque: [0, 0.9], estante: [1, 0.8], fonte: [0, 0.9], estatua: [1.5, 0.9], barraca: [0, 0.9],
+      casa_br: [3, 1], sobrado: [5, 1.2], muro: [0, 0.7], balanco: [1, 0.8], escorregador: [0, 0.7], trave: [0, 0.8], geladeira: [0, 0.6], churrasqueira: [0, 0.6], poste_fios: [3, 1], piscina: [-2, 0.8], varal: [0, 0.6] }[n];
     return { nome: n, cena: { ...FUNDO, camera: G ? 'geral' : 'medio', angulo: 30, altura: G ? G[0] : -1.5, dist: G ? G[1] : undefined, props: [{ tipo: n }], atores: [] } }; }),
 };
 
