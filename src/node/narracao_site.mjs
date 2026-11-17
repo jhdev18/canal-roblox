@@ -19,6 +19,7 @@ export function acharNarracaoSite(nome) {
 /** Texto para colar no site: uma fala por linha, com pausa entre as cenas (é ela que marca onde cortar).
  *  Modelos v2/turbo/flash leem <break>; o v3/v4 não — usa a tag de áudio [long pause]. */
 export function textoParaSite(cenas, modelo = 'v2') {
+  if (String(modelo) === 'corrido') return cenas.filter(c => c.fala && c.fala.trim()).map(c => c.fala.trim()).join('\n') + '\n';   // sem pausas marcadas
   const pausa = /^v[34]/.test(String(modelo)) ? '[long pause]' : `<break time="${PAUSA_SITE}s" />`;
   return cenas.filter(c => c.fala && c.fala.trim()).map(c => c.fala.trim()).join(`\n${pausa}\n`) + '\n';
 }
@@ -36,23 +37,37 @@ function silencios(arquivo, ffmpeg, ruido = -35, min = 0.3) {
 }
 
 /**
- * Corta a narração em uma parte por cena com fala. Usa as N−1 maiores pausas (as <break> entre as cenas).
- * Devolve os arquivos .wav (cache/audio/site_*), na ordem das cenas com fala.
+ * Corta a narração em uma parte por cena com fala (na ordem). Funciona com ou sem pausas marcadas:
+ * estima onde cada fala termina pela quantidade de letras e escolhe, perto disso, o silêncio entre frases
+ * (pausas longas, como <break>/[long pause], pesam mais). Devolve os .wav em cache/audio/site_*.
  */
-export function dividirNarracao(arquivo, nFalas, ffmpeg) {
-  const st = fs.statSync(arquivo), id = hash([path.resolve(arquivo), st.mtimeMs, st.size, nFalas]);
-  const dir = garantirDir(p('cache', 'audio')), saida = Array.from({ length: nFalas }, (_, i) => path.join(dir, `site_${id}_${i + 1}.wav`));
+export function dividirNarracao(arquivo, falas, ffmpeg) {
+  const n = falas.length, st = fs.statSync(arquivo), id = hash([path.resolve(arquivo), st.mtimeMs, st.size, falas]);
+  const dir = garantirDir(p('cache', 'audio')), saida = Array.from({ length: n }, (_, i) => path.join(dir, `site_${id}_${i + 1}.wav`));
   if (saida.every(f => fs.existsSync(f))) return saida;
-  let { lista, dur } = silencios(arquivo, ffmpeg);
-  if (lista.length < nFalas - 1) ({ lista, dur } = silencios(arquivo, ffmpeg, -30, 0.25));   // áudio mais "sujo": limiar mais tolerante
-  const internas = lista.filter(s => s.ini > 0.3 && s.fim < dur - 0.3);   // silêncio do começo e do fim do arquivo não separa cenas
-  if (internas.length < nFalas - 1) throw new Error(`A narração ${path.basename(arquivo)} tem ${internas.length + 1} trechos, mas o roteiro tem ${nFalas} falas.\n`
-    + `Gere o áudio no site com o texto de "node gerar.mjs <roteiro> --texto-site" (as pausas <break> separam as cenas) e o modelo Eleven Multilingual v2.`);
-  const cortes = internas.slice().sort((a, b) => (b.fim - b.ini) - (a.fim - a.ini)).slice(0, nFalas - 1).sort((a, b) => a.ini - b.ini);
-  const cauda = lista.find(s => s.fim >= dur - 0.3 && s.ini > 0.3), cabeca = lista.find(s => s.ini <= 0.3);   // silêncio no começo/fim do arquivo fica de fora
-  const limites = [cabeca ? Math.max(0, cabeca.fim - 0.08) : 0, ...cortes.flatMap(s => [s.ini + 0.12, s.fim - 0.08]), cauda ? cauda.ini + 0.12 : dur];   // guarda um respiro no fim de cada fala
-  for (let i = 0; i < nFalas; i++) {
-    const t0 = Math.max(0, limites[i * 2]), t1 = limites[i * 2 + 1];
+  let { lista, dur } = silencios(arquivo, ffmpeg, -35, 0.12);
+  const cabeca = lista.find(x => x.ini <= 0.3), cauda = lista.find(x => x.fim >= dur - 0.3 && x.ini > 0.3);
+  const s0 = cabeca ? cabeca.fim : 0, s1 = cauda ? cauda.ini : dur;
+  let cand = lista.filter(x => x.ini > s0 + 0.2 && x.fim < s1 - 0.2);
+  if (cand.length < n - 1) { ({ lista } = silencios(arquivo, ffmpeg, -30, 0.08)); cand = lista.filter(x => x.ini > s0 + 0.2 && x.fim < s1 - 0.2); }
+  if (cand.length < n - 1) throw new Error(`A narração ${path.basename(arquivo)} tem ${cand.length + 1} trechos com silêncio entre eles, mas o roteiro tem ${n} falas.\n`
+    + 'Gere de novo com o texto de "node gerar.mjs <roteiro> --texto-site" (ou --texto-site v4), sem juntar nem cortar frases.');
+  // posição esperada do fim de cada fala (proporcional às letras) e escolha ótima dos cortes (programação dinâmica)
+  const letras = falas.map(t => Math.max(1, t.replace(/[^\p{L}\p{N}]/gu, '').length)), tot = letras.reduce((a, b) => a + b, 0);
+  let acc = 0; const esperado = letras.slice(0, -1).map(l => s0 + (s1 - s0) * (acc += l) / tot);
+  const sigma = Math.max(0.5, 0.3 * (s1 - s0) / n), M = cand.length, INF = 1e18;
+  const custo = (k, j) => { const meio = (cand[j].ini + cand[j].fim) / 2, len = cand[j].fim - cand[j].ini; return ((meio - esperado[k]) / sigma) ** 2 - 6 * Math.min(len, 1.5); };
+  let D = cand.map((_, j) => custo(0, j)); const volta = [D.map(() => -1)];
+  for (let k = 1; k < n - 1; k++) { const N = new Array(M).fill(INF), V = new Array(M).fill(-1); let melhor = INF, arg = -1;
+    for (let j = 0; j < M; j++) { if (j > 0 && D[j - 1] < melhor) { melhor = D[j - 1]; arg = j - 1; } if (arg >= 0) { N[j] = melhor + custo(k, j); V[j] = arg; } }
+    D = N; volta.push(V); }
+  let j = D.indexOf(Math.min(...D)); let cortes = [];
+  for (let k = n - 2; k >= 0; k--) { cortes.unshift(cand[j]); j = volta[k][j]; }
+  const longas = cand.filter(x => x.fim - x.ini >= 0.7);   // texto com pausas marcadas: as pausas longas são exatamente as trocas de cena
+  if (longas.length >= n - 1 && longas.length <= n + 1) cortes = longas.slice().sort((a, b) => (b.fim - b.ini) - (a.fim - a.ini)).slice(0, n - 1).sort((a, b) => a.ini - b.ini);
+  const limites = [Math.max(0, s0 - 0.08), ...cortes.flatMap(x => [x.ini + Math.min(0.12, (x.fim - x.ini) / 2), x.fim - Math.min(0.08, (x.fim - x.ini) / 2)]), Math.min(dur, s1 + 0.12)];
+  for (let i = 0; i < n; i++) {
+    const t0 = limites[i * 2], t1 = limites[i * 2 + 1];
     const r = spawnSync(ffmpeg, ['-y', '-v', 'error', '-nostdin', '-i', arquivo, '-ss', t0.toFixed(3), '-to', t1.toFixed(3), '-ar', '44100', '-ac', '1', saida[i]], { encoding: 'utf8' });
     if (r.status !== 0) throw new Error(`ffmpeg não conseguiu cortar a narração: ${r.stderr?.slice(0, 300)}`);
   }

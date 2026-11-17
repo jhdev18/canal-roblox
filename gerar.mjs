@@ -7,7 +7,7 @@
 //   node gerar.mjs --vozes  /  --musicas            -> lista vozes do ElevenLabs / músicas disponíveis
 // Opções: --rapido (540x960, sem AO) · --cenas 2-4 · --voz piper|espeak|nenhum · --gpu nao · --encoder h264_nvenc · --fps 24
 //          --sem-musica (só narração + efeitos) · --duas-versoes (gera com e sem música de uma vez)
-//          --texto-site [v4] (texto para gerar a narração no site do ElevenLabs; v4 usa [long pause]; o MP3 baixado vai em audios/<nome>.mp3)
+//          --texto-site [v4|corrido] (texto para a narração no site do ElevenLabs; v4 usa [long pause], corrido = sem pausas; o MP3 baixado vai em audios/<nome>.mp3)
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
@@ -74,7 +74,7 @@ async function principal() {
   if (a['texto-site']) { const dst = p('audios', `${nome}.txt`); garantirDir(p('audios')); const mod = typeof a['texto-site'] === 'string' ? a['texto-site'] : 'v2'; fs.writeFileSync(dst, textoParaSite(rot.cenas, mod));
     log(`texto para o site salvo em audios/${nome}.txt — cole no ElevenLabs (modelo Eleven Multilingual v2), gere, baixe e salve como audios/${nome}.mp3`); return; }
   const narracaoSite = acharNarracaoSite(nome);
-  if (narracaoSite) { const comFala = rot.cenas.filter(c => c.fala && c.fala.trim() && !c.audio), partes = dividirNarracao(narracaoSite, comFala.length, cfg.ffmpeg);
+  if (narracaoSite) { const comFala = rot.cenas.filter(c => c.fala && c.fala.trim() && !c.audio), partes = dividirNarracao(narracaoSite, comFala.map(c => c.fala), cfg.ffmpeg);
     comFala.forEach((c, i) => { c.audio = partes[i]; }); log(`narração do site: ${path.relative(p(), narracaoSite)} → ${partes.length} partes (uma por cena)`); }
   let cenas = rot.cenas;
   if (a.cenas) { const sel = intervalo(a.cenas, cenas.length); cenas = cenas.filter((_, i) => sel.has(i)); }
