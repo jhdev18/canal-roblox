@@ -25,7 +25,7 @@ cenas:
     local: casa
     comodo: sala
     cam: medio
-    atores: [{ id: f1, acao: maos_pra_cima, rosto: bravo, x: 1.6, vira: -30 }, { id: mae, acao: assustar, x: -1.6, vira: 30 }]
+    atores: [{ id: f1, acao: maos_pra_cima, rosto: bravo, x: 1.6, z: -2.5, vira: -30 }, { id: mae, acao: assustar, x: -1.6, z: -2.5, vira: 30 }]
   - fala: senão o fantasma fica triste e leva a sorte da casa embora.
     cam: close
     atores: [{ id: f1, acao: triste, rosto: chorando }]

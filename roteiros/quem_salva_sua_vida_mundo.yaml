@@ -48,7 +48,7 @@ cenas:
     local: escola
     dentro: true
     cam: medio
-    atores: [{ id: valentao, acao: bravo, x: -3.1, z: 3.5, vira: 25 }, { id: garoto, acao: triste, x: 3.1, z: 3.5, vira: -25 }]   # nos corredores entre as carteiras, quadro ao fundo
+    atores: [{ id: valentao, acao: bravo, x: -3.1, z: -6.5, vira: 25 }, { id: garoto, acao: triste, x: 3.1, z: -6.5, vira: -25 }]   # nos corredores entre as carteiras, quadro ao fundo
   - fala: Por anos, o garoto fugiu dele.
     onde: mundo
     local: escola                  # calçada da escola, na saída da aula

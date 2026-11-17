@@ -32,8 +32,8 @@ function porta(w, h, cor, vidro, portas) {
   if (vidro) piv.add(caixa(w, 0.15, 0.16, '#9aa0aa', { pos: [w / 2, h - 0.08, 0] }));
   piv.add(esfera(0.1, '#e0b040', { pos: [w - 0.3, h / 2, 0.12] })); portas.push(piv); return piv;
 }
-function luzInterna(g, x, z, h, n, forca = 1, alc = 30) { const l = new THREE.PointLight(0xfff2dd, (n ? 55 : 34) * forca, alc, 1.4); l.position.set(x, h - 1.0, z); g.add(l);
-  g.add(caixa(2.2, 0.12, 2.2, mat('#ffffff', { emissive: '#ffffff', emissiveIntensity: 1.3 }), { pos: [x, h - 0.08, z], sombra: false })); }
+function luzInterna(g, x, z, h, n, forca = 1, alc = 30) { const l = new THREE.PointLight(0xfff2dd, (n ? 55 : 34) * forca, alc, 1.4); l.position.set(x, h - 2.4, z); g.add(l);
+  g.add(cilindro(0.7, 0.55, 0.3, mat('#f4f1ea', { emissive: '#fff3d6', emissiveIntensity: n ? 0.8 : 0.35 }), { pos: [x, h - 0.15, z], seg: 18, sombra: false })); }   // plafon pequeno (luz abaixo do forro, sem mancha)
 const por = (g, tipo, o, pos, vira = 0, esc) => { const p = PROPS[tipo](o); p.position.set(...pos); p.rotation.y = vira * RAD; if (esc) p.scale.setScalar(esc); g.add(p); return p; };
 
 /** `sentar` (e `rezar`) passam a ser a lista de assentos reais, do mais perto do ponto principal ao mais longe: cada pessoa pega um livre. */
@@ -521,6 +521,17 @@ export function enquadrarMundo(g, { local, dentro, comodo }) {
   const [px, pz] = rot(S[0], S[1], th); g.position.set(-px, -chao, -pz);
   // âncoras: local do prédio -> mapa -> enquadrado
   const ancoras = {};
+  // dentro de um cômodo/prédio a câmera fica entre as paredes (filmagem de verdade, sem ver forro e telhado por fora)
+  let limites = null;
+  if (lote && (dentro || comodo)) {
+    let R;   // retângulo do ambiente em coordenadas do lote [x0, x1, z0, z1]
+    if (local === 'casa') { const C = { sala: [-13, 1, -10, 0], cozinha: [1, 13, -10, 0], quarto: [-13, -4, -20, -10], banheiro: [-4, 3, -20, -10], quarto_pais: [3, 13, -20, -10] }[comodo || 'sala'];
+      if (C) R = [C[0] * CSX, C[1] * CSX, C[2] * CSZ, C[3] * CSZ]; }
+    else if (ref) R = [-ref.userData.w / 2, ref.userData.w / 2, -ref.userData.d, 0];
+    if (R) { const pts = [[R[0], R[2]], [R[1], R[2]], [R[0], R[3]], [R[1], R[3]]].map(([lx, lz]) => { const [ax, az] = rot(lx, lz, lote.rot * RAD); return rot(lote.f[0] + ax - S[0], lote.f[1] + az - S[1], th); });
+      const m = 0.7, xs = pts.map(p => p[0]), zs = pts.map(p => p[1]);
+      limites = { x0: Math.min(...xs) + m, x1: Math.max(...xs) - m, z0: Math.min(...zs) + m, z1: Math.max(...zs) - m, y: (local === 'casa' ? CASA.h : ref?.userData.h || 9) - 1.2 }; }
+  }
   if (lote) for (const [k, v] of Object.entries(ancLocal)) {
     if (k === 'fila') { const [ix, iz] = rot(v.inicio[0], v.inicio[1], lote.rot * RAD); const [mx, mz] = [lote.f[0] + ix - S[0], lote.f[1] + iz - S[1]]; const [fx, fz] = rot(mx, mz, th);
       const [cx, cz] = rot(...rot(v.cresce[0], v.cresce[1], lote.rot * RAD), th);
@@ -530,5 +541,5 @@ export function enquadrarMundo(g, { local, dentro, comodo }) {
       return [fx, (p[1] ?? 0) + 0.2 - chao, fz, (p[3] ?? 0) + lote.rot - r]; };
     ancoras[k] = Array.isArray(v[0]) ? v.map(um) : um(v);
   }
-  return { ancoras };
+  return { ancoras, limites };
 }

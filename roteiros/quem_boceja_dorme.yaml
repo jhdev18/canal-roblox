@@ -38,11 +38,11 @@ cenas:
     local: escola
     dentro: true
     cam: medio
-    atores: [{ id: prof, acao: falar, x: 3.1, z: 3.5, vira: -20 }]
+    atores: [{ id: prof, acao: falar, x: 3.1, z: -6.5, vira: -20 }]
   - fala: Professor de matemática dá aula fantasiado de palhaço.
     som: boing
     cam: medio
-    atores: [{ id: palhaco, acao: dancar, rosto: rindo, x: 3.1, z: 3.5, vira: -20 }]
+    atores: [{ id: palhaco, acao: dancar, rosto: rindo, x: 3.1, z: -6.5, vira: -20 }]
   - fala: Nos ônibus, todo mundo viaja de óculos escuros.
     onde: mundo
     local: rua_bairro
@@ -74,11 +74,11 @@ cenas:
     local: escola
     dentro: true
     cam: medio
-    atores: [{ id: colega, acao: bocejar, x: -3.1, z: 3.5, vira: 25 }, { id: nina, acao: parado, rosto: confiante, x: 3.1, z: 3.5, vira: -25 }]
+    atores: [{ id: colega, acao: bocejar, x: -3.1, z: -6.5, vira: 25 }, { id: nina, acao: parado, rosto: confiante, x: 3.1, z: -6.5, vira: -25 }]
   - fala: Nunca dormiu.
     cam: close
     foco: nina
-    atores: [{ id: nina, acao: parado, rosto: confiante, x: 3.1, z: 3.5 }]
+    atores: [{ id: nina, acao: parado, rosto: confiante, x: 3.1, z: -6.5 }]
   - fala: O avô dela, o Seu Tião, é o contrário. Boceja o dia inteiro.
     onde: mundo
     local: casa

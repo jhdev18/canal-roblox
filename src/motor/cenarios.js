@@ -241,7 +241,7 @@ export const CENARIOS = {
     const raio = o.alcance ?? (vista ? Infinity : o.comodo ? 4 : o.dentro ? 45 : 80);
     g.userData.recortados = recortarMundo(g, raio, principal ? [principal] : []);
     if (o.comodo === 'quarto_pais' && e.ancoras.deitar_pais) { e.ancoras.deitar = e.ancoras.deitar_pais; e.ancoras.dormir = e.ancoras.deitar_pais; }
-    g.userData.ancoras = e.ancoras; },
+    g.userData.ancoras = e.ancoras; g.userData.limites = e.limites; },
   casa_protagonista(o, g, r) { construirCasa(o, g, r); const e = enquadrarComodo(g, o.comodo); g.userData.ancoras = e.ancoras; g.userData.limites = e.limites; },   // casa completa (use `comodo:`)   // modelo da cidade inteira (use `local:` para escolher onde a cena acontece)
   gabinete(o, g, r) { // escritório do prefeito: mesa, poltrona, bandeiras, estante, mesa de reunião, sofá e janelões
     const n = o.hora === 'noite'; sala(g, { largura: 30, parede: o.parede || '#e9dcc4', chao: o.chao || '#6b4426', profundo: 10, altura: 12 });

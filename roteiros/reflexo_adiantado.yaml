@@ -55,10 +55,10 @@ cenas:
     local: escola
     dentro: true
     cam: medio
-    atores: [{ id: davi, acao: sentar, rosto: triste }, { id: colega, acao: parado, x: -3.1, z: 3.5, vira: 30 }, { id: colega2, acao: parado, x: 3.1, z: 3.5, vira: -30 }]
+    atores: [{ id: davi, acao: sentar, rosto: triste }, { id: colega, acao: parado, x: -3.1, z: -6.5, vira: 30 }, { id: colega2, acao: parado, x: 3.1, z: -6.5, vira: -30 }]
   - fala: Diziam que o espelho do Davi era amaldiçoado.
     cam: medio
-    atores: [{ id: colega, acao: cochichar, x: -3.1, z: 3.5, vira: 40 }, { id: colega2, acao: rir, x: -1.2, z: 3.8, vira: -60 }]
+    atores: [{ id: colega, acao: cochichar, x: -3.1, z: -6.5, vira: 40 }, { id: colega2, acao: rir, x: -1.2, z: -6.5, vira: -60 }]
   - fala: Até que um dia, na vitrine da padaria, o reflexo do Davi parou.
     som: suspense
     onde: mundo

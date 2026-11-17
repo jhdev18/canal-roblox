@@ -110,6 +110,7 @@ async function montar(c) {
   if (c.multidao) for (const f of criarMultidao({ ...c.multidao, ancoraFila: cen.ancoras.fila, assentos: assentosLivres, principais: trilhas, livreAte, chaoLivre, dur }, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); if (c.multidao.sobre) { f.sobre = c.multidao.sobre; colocarSobre(f); } atores.push(f); }
   const prin = atores.filter(a => !a.figurante).map(a => a.base.x);
   const xs = prin; const espalha = xs.length > 1 ? Math.max(...xs) - Math.min(...xs) : 0;
+  cam.fov = cen.limites ? 58 : 40; cam.updateProjectionMatrix();   // dentro de cômodo: lente mais aberta (a câmera não pode recuar além da parede)
   atual = { c, raiz, atores, cen, dur: c.dur, espalha, nquadros: Math.max(1, Math.round(c.dur * cfg.fps)) };
   // mundo integrado: paredes que somem (corte) e portas automáticas
   cena.updateMatrixWorld(true);
@@ -240,7 +241,10 @@ function posar(t) {
   const camC = atual.cen.cameraFixa ? { camera: 'detalhe', mov: c.mov || 'zoom_in', angulo: 0, dist: c.dist || 3.1 } : c;
   const mira = posicionarCamera(cam, camC, t, dur, alvo, atores.length && !c.foco ? atual.espalha : 0);
   const L = atual.cen.limites; // interiores: a câmera não atravessa paredes
-  if (L && mira) { cam.position.x = Math.max(-L.x, Math.min(L.x, cam.position.x)); cam.position.y = Math.max(0.8, Math.min(L.y, cam.position.y)); cam.position.z = Math.max(L.z, cam.position.z); cam.lookAt(mira); }
+  if (L && mira) {
+    if (L.x0 !== undefined) { cam.position.x = Math.max(L.x0, Math.min(L.x1, cam.position.x)); cam.position.z = Math.max(L.z0, Math.min(L.z1, cam.position.z)); }   // cômodo do mundo: as 4 paredes
+    else { cam.position.x = Math.max(-L.x, Math.min(L.x, cam.position.x)); cam.position.z = Math.max(L.z, cam.position.z); }
+    cam.position.y = Math.max(0.8, Math.min(L.y, cam.position.y)); cam.lookAt(mira); }
   if (atual.portas?.length || atual.unidades?.length) { cena.updateMatrixWorld(true); portasECortes(); }
   const foco = alvo(t); const d = new THREE.Vector3(...atual.cen.sol.dir).normalize();
   sol.target.position.copy(foco); sol.position.copy(foco).addScaledVector(d, 60 + (atual.cen.sombra || 35)); sol.target.updateMatrixWorld();
