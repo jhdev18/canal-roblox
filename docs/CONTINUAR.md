@@ -43,6 +43,10 @@ Quando o usuário mandar o retorno do rascunho, ajuste **só** as cenas citadas.
 - Trilha embutida só com faixas livres (originais CC0 em `assets/musicas/`, Biblioteca de áudio do YouTube, Pixabay, NCS). Lançamentos comerciais (ex.: "pickled chicken", DistroKid, ℗ bigfrozenballs) **não** entram no vídeo: o usuário adiciona pelo editor de Shorts do app, e só em Shorts de até 1 min.
 - `--sem-musica` gera `_sem_musica.mp4`; `--duas-versoes` gera os dois.
 
+## Efeitos sonoros
+- Marcados com moderação (`som:` na cena; toca no início dela): 3–5 nos curtos, 6–7 nos longos — gancho, viradas e ações (freada, ronco, notificação).
+- Arquivos esperados em `assets/sfx/` (baixar do Pixabay Sound Effects ou da Biblioteca de áudio do YouTube): boom, whoosh, drama, susto, suspense, pop, boing, notificacao, freada, ronco, bocejo, chuva, trovao, agua. Efeito sem arquivo fica de fora (o `gerar.mjs` avisa).
+
 ## Pendências
 1. **Músicas:** o usuário vai escolher faixas. Colocar em `assets/musicas/<clima>/` e registrar origem/licença em `assets/musicas/LICENCA.md`.
 2. **Escola, hospital e delegacia com vários cômodos** (corredor, salas, cantina, enfermaria…). Atenção: as tentativas anteriores foram cortadas pelo filtro de segurança várias vezes; fazer em passos pequenos, começando pela escola (só paredes internas), e deixar a delegacia por último ou pular.

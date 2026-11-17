@@ -13,6 +13,7 @@ elenco:
 cenas:
   # --- regra ---
   - fala: Nesse mundo, toda casa velha tem um fantasma.
+    som: pop
     onde: mundo
     local: casa
     hora: tarde
@@ -31,6 +32,7 @@ cenas:
 
   # --- a exceção ---
   - fala: Porém, o Seu Nonô, de noventa e dois anos, é impossível de assustar.
+    som: boing
     comodo: sala
     cam: medio
     atores: [{ id: nono, acao: sentar, rosto: neutro }]
@@ -67,6 +69,7 @@ cenas:
     cam: baixo
     atores: [{ id: f3, acao: espiar, rosto: malandro }]
   - fala: Mas o Seu Nonô dorme às sete.
+    som: ronco
     comodo: quarto_pais
     hora: noite
     cam: alto
@@ -90,6 +93,7 @@ cenas:
     cam: medio
     atores: [{ id: f1, acao: tremer, rosto: assustado, x: -1.6 }, { id: f2, acao: tremer, rosto: assustado }, { id: f3, acao: tremer, rosto: assustado, x: 1.6 }]
   - fala: com medo do ronco do Seu Nonô.
+    som: ronco
     comodo: quarto_pais
     cam: alto
     angulo: 20

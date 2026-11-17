@@ -22,6 +22,7 @@ elenco:
 cenas:
   # ---------- a regra ----------
   - fala: Nesse mundo, bocejo é contagioso de verdade.
+    som: bocejo
     onde: mundo
     local: praca
     cam: medio
@@ -39,6 +40,7 @@ cenas:
     cam: medio
     atores: [{ id: prof, acao: falar, x: 3.1, z: 3.5, vira: -20 }]
   - fala: Professor de matemática dá aula fantasiado de palhaço.
+    som: boing
     cam: medio
     atores: [{ id: palhaco, acao: dancar, rosto: rindo, x: 3.1, z: 3.5, vira: -20 }]
   - fala: Nos ônibus, todo mundo viaja de óculos escuros.
@@ -130,6 +132,7 @@ cenas:
     multidao: { n: 14, modo: natural, area: [-16, 16, -12, 6], acao: [esperar, cocar_cabeca, olhar_redor, pensar] }
     atores: [{ id: homem, acao: esperar, rosto: nervoso }]
   - fala: Quarenta minutos depois, o padeiro bocejou.
+    som: bocejo
     cam: close
     foco: padeiro
     atores: [{ id: padeiro, acao: bocejar }]
@@ -141,6 +144,7 @@ cenas:
     multidao: { n: 12, modo: natural, area: [-16, 16, -12, 6], acao: [cochilar], sobre: zzz }
     atores: [{ id: farma, acao: bocejar }]
   - fala: Em um minuto, a praça inteira estava roncando.
+    som: ronco
     cam: alto
     dist: 2.2
     multidao: { n: 22, modo: natural, area: [-20, 20, -18, 8], acao: [cochilar], sobre: zzz }
@@ -267,6 +271,7 @@ cenas:
     props: [{ tipo: caminhao_sorvete, x: 0, z: -8, vira: 0 }]
     atores: [{ id: motorista, acao: sentar, x: -1.0, y: 1.85, z: -4.8, vira: 0, sobre: zzz }, { id: nina, acao: apontar, prop: pao, x: -3.1, y: 0.9, z: -4.4, vira: 80 }]
   - fala: e ele pisou no freio a um palmo da praça.
+    som: freada
     cam: medio
     mov: tremor
     alvo_xz: [-1, -4.8]
@@ -285,12 +290,14 @@ cenas:
     cam: medio
     atores: [{ id: tiao, acao: continencia, rosto: confiante, x: 1.6, z: 1 }, { id: nina, acao: carregar, prop: bandeja_paes, x: -1.6, z: 1 }]
   - fala: E o prefeito? No discurso da semana seguinte, ele mesmo bocejou,
+    som: bocejo
     onde: mundo
     local: coreto
     cam: baixo
     foco: prefeito
     atores: [{ id: prefeito, acao: bocejar, x: 0, z: -2.4 }]
   - fala: e dormiu ali mesmo, em pé.
+    som: ronco
     cam: baixo
     mov: zoom_out
     atores: [{ id: prefeito, acao: cochilar, x: 0, z: -2.4, sobre: zzz }, { id: padeiro, acao: rir, x: 3.4, y: 0, z: -1.6, vira: -30 }]

@@ -21,6 +21,7 @@ cenas:
     multidao: { n: 4, modo: natural, area: [-12, 12, -10, 10] }
     atores: [{ id: garoto, acao: andar, rosto: feliz, x: -6.4, z: -6, vira: 0 }]   # anda pela calçada, ao longo da rua
   - fala: o celular diz quem vai salvar a sua vida.
+    som: notificacao
     onde: celular
     tela: { tipo: notificacao, app: Destino, titulo: Quem vai salvar sua vida, texto: "..." }
   - fala: Todo mundo recebia um herói.
@@ -39,6 +40,7 @@ cenas:
     mov: zoom_rapido
     atores: [garoto celular surpreso]
   - fala: o valentão da escola.
+    som: boom
     onde: celular
     tela: { tipo: notificacao, app: Destino, titulo: Quem vai salvar sua vida, texto: "O valentão da escola" }
   - fala: O mesmo que roubava o lanche dele todo dia.
@@ -62,12 +64,14 @@ cenas:
     cam: baixo
     atores: [garoto celular desconfiado]
   - fala: um carro veio na direção dele.
+    som: freada
     cam: aberto
     angulo: -35
     mov: tremor
     props: [{ tipo: carro, x: -4.5, z: 2.5, vira: 90, cor: "#f2f3f3" }]
     atores: [{ id: garoto, acao: assustar, x: 1 }]
   - fala: E alguém o empurrou pra longe.
+    som: whoosh
     cam: lado
     mov: zoom_rapido
     atores: [{ id: valentao, acao: empurrar, x: -2, vira: 90, rosto: bravo }, { id: garoto, acao: cair, x: 1, vira: -90 }]
@@ -88,6 +92,7 @@ cenas:
     alvo_xz: [6, -7]
     atores: [{ id: valentao, acao: sentar, rosto: nervoso, x: 6.2, z: -6.9, y: 1.5, vira: 0 }, { id: garoto, acao: parado, rosto: surpreso, x: 3.4, z: -5.0, vira: 40 }]
   - fala: Quem ia salvar a vida dele era o garoto.
+    som: drama
     onde: celular
     tela: { tipo: notificacao, app: Destino, titulo: Quem vai salvar sua vida, texto: "O garoto que você mais maltratou" }
 

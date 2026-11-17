@@ -42,6 +42,7 @@ cenas:
     props: [{ tipo: vidro, x: 8, z: -0.1 }]
     atores: [{ id: davi, acao: parado, x: 8, z: 1.4, vira: 180 }, { id: refl, acao: parado, x: 8, z: -1.6, vira: 0 }]
   - fala: Ele se mexia um segundo antes.
+    som: susto
     cam: medio
     dist: 1.25
     angulo: 35
@@ -59,6 +60,7 @@ cenas:
     cam: medio
     atores: [{ id: colega, acao: cochichar, x: -3.1, z: 3.5, vira: 40 }, { id: colega2, acao: rir, x: -1.2, z: 3.8, vira: -60 }]
   - fala: Até que um dia, na vitrine da padaria, o reflexo do Davi parou.
+    som: suspense
     onde: mundo
     local: padaria
     cam: medio
@@ -81,6 +83,7 @@ cenas:
     foco: davi
     atores: [{ id: davi, acao: parado, rosto: assustado, x: 8, z: 0, vira: 0 }]
   - fala: Todos os reflexos da cidade estavam parados, olhando pra ele.
+    som: boom
     onde: mundo
     local: rua_bairro
     hora: tarde
@@ -112,6 +115,7 @@ cenas:
     props: [{ tipo: vidro, x: 8, z: -0.1 }]
     atores: [{ id: davi, acao: parado, rosto: assustado, x: 8, z: 1.4, vira: 180 }, { id: refl, acao: parado, rosto: malandro, x: 8, z: -1.6, vira: 0 }]
   - fala: Naquela noite, o reflexo do Davi sorriu… e o Davi não.
+    som: susto
     onde: mundo
     local: casa
     comodo: quarto

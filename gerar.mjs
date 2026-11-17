@@ -142,6 +142,8 @@ async function principal() {
   const versoes = a['duas-versoes'] ? [true, false] : [!a['sem-musica']];
   const musicaEscolhida = versoes.includes(true) ? await escolherMusica(rot, nome, cfg) : null;
   const pecas = cenas.map(c => ({ clipe: c.clipe, audio: c.audioArq, dur: c.dur, som: c.som }));
+  const semArquivo = [...new Set(cenas.map(c => c.som).filter(n => n && !['mp3', 'wav', 'ogg'].some(e => fs.existsSync(p('assets', 'sfx', `${n}.${e}`)))))];
+  if (semArquivo.length) log(`efeitos sem arquivo (ficam de fora): ${semArquivo.join(', ')} — coloque em assets/sfx/<nome>.mp3`);
   let total = 0, saida = '';
   for (const comMusica of versoes) {
     const musica = comMusica ? musicaEscolhida : null;

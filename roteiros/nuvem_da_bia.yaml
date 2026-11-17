@@ -14,6 +14,7 @@ elenco:
 
 cenas:
   - fala: Nesse mundo, quando alguém fica triste, uma nuvem de chuva nasce em cima da cabeça dele.
+    som: chuva
     onde: mundo
     local: praca
     cam: medio
@@ -56,6 +57,7 @@ cenas:
     multidao: { n: 10, modo: natural, area: [-16, 16, -12, 6], acao: [comemorar, dancar, palmas] }
     atores: [{ id: bia, acao: triste, sobre: { tipo: nuvem_cabeca, escala: 1.4, altura: 8 } }]
   - fala: E então o céu ficou vermelho.
+    som: trovao
     hora: vermelho
     cam: aberto
     props: [{ tipo: bandeirinhas, x: 0, z: -4, largura: 26 }]
@@ -87,6 +89,7 @@ cenas:
     props: [{ tipo: chuva_brasas, largura: 34, prof: 28 }]
     atores: [{ id: bia, acao: parado, rosto: confiante, sobre: { tipo: nuvem_cabeca, escala: 2.2, altura: 10 } }, { id: homem, acao: tremer, x: -2.4, z: 0.6, vira: 40 }, { id: mulher, acao: tremer, x: 2.4, z: 0.6, vira: -40 }, { id: crianca, acao: abracar, x: 0.4, z: 2.0, vira: 180 }]
   - fala: Era um guarda-chuva.
+    som: boom
     hora: vermelho
     cam: medio
     angulo: 30

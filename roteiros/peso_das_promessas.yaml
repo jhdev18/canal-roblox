@@ -22,6 +22,7 @@ elenco:
 cenas:
   # ---------- a regra ----------
   - fala: Nesse mundo, toda promessa vira uma pedra.
+    som: boom
     onde: mundo
     local: rua_bairro
     cam: medio
@@ -88,6 +89,7 @@ cenas:
 
   # ---------- o desastre ----------
   - fala: Até que choveu três dias sem parar.
+    som: chuva
     hora: tarde
     cam: aberto
     props: [{ tipo: chuva, largura: 30, prof: 40 }]
@@ -98,6 +100,7 @@ cenas:
     props: [{ tipo: chuva, largura: 30, prof: 40 }, { tipo: agua, nivel: 1.4, largura: 80, prof: 80 }]
     atores: [{ id: homem, acao: assustar, x: -6.2, z: -2 }]
   - fala: A água invadiu as ruas.
+    som: agua
     hora: tarde
     cam: aberto
     props: [{ tipo: chuva, largura: 30, prof: 40 }, { tipo: agua, nivel: 3.4, largura: 80, prof: 80 }]
@@ -222,6 +225,7 @@ cenas:
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }, { tipo: barco, x: 0, y: 3.1, z: 10, vira: 0 }]
     atores: [{ id: bento, acao: triste, x: 0.4, y: 2.7, z: 11, vira: 180 }, { id: leo, acao: apontar, x: -0.4, y: 2.7, z: 9, vira: 180 }]
   - fala: "O Léo pulou na água e, pela primeira vez na vida, prometeu:"
+    som: agua
     hora: tarde
     cam: medio
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
@@ -232,6 +236,7 @@ cenas:
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
     atores: [{ id: leo, acao: falar, rosto: confiante, x: 0, y: 0.6, z: 6.5 }]
   - fala: Uma pedra apareceu no bolso dele. Pesada.
+    som: boom
     hora: tarde
     cam: medio
     props: [{ tipo: agua, nivel: 3.6, largura: 80, prof: 80 }]
@@ -263,6 +268,7 @@ cenas:
 
   # ---------- o final ----------
   - fala: Quando a água baixou, tinha um homem parado na porta da casa,
+    som: drama
     hora: dia
     cam: aberto
     atores: [{ id: pai, acao: parado, rosto: triste, x: -7.6, z: 0.6, vira: 20, sobre: { tipo: pedra, altura: 2.4, x: 1.15, z: 0.4, fixo: true, tam: 3 } }]
