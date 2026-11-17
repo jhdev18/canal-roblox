@@ -48,7 +48,6 @@ Todo vídeo é feito em **duas etapas**, para não gastar créditos do ElevenLab
 | `node gerar.mjs <roteiro> --final --sim` | versão final sem perguntar (confirma o gasto direto) |
 | `node gerar.mjs <roteiro> --final --forcar` | pula a exigência de rascunho (não recomendado) |
 | `node gerar.mjs <roteiro> --cenas 3-5` | só essas cenas (`saida/<nome>_parcial.mp4`) |
-| `node gerar.mjs <roteiro> --cenas 3-5` (no rascunho) | refaz só algumas cenas para conferir |
 | `node gerar.mjs --vozes` | lista as vozes da sua conta ElevenLabs |
 | `node gerar.mjs --musicas` | lista as músicas de fundo disponíveis |
 | `node gerar.mjs <roteiro> --encoder h264_nvenc` | codifica o vídeo na GPU (mais rápido) |
