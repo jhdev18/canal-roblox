@@ -162,7 +162,7 @@ function casaProtagonista(ctx) {
   for (const [t, c, x] of [['GAMER', '#6b32a8', -10], ['GOOOL!', '#1f9d48', -6.8]]) { const p = PROPS.poster({ texto: t, cor: c }); p.position.set(x, 5.2, -19.55); p.scale.setScalar(0.8); g.add(p); }
   por(g, 'vaso_sanitario', {}, [-2.6, 0.2, -18.8]); por(g, 'pia_banheiro', {}, [-3.2, 0.2, -12.2], 90, 0.9); por(g, 'box_chuveiro', {}, [1.0, 0.2, -18], 0, 0.95);
   por(g, 'cama_casal', { cor: '#b84a5a' }, [8.2, 0.2, -16.3], 0, 0.95); por(g, 'criado_mudo', {}, [4.3, 0.2, -19]); por(g, 'criado_mudo', {}, [12.1, 0.2, -19]); por(g, 'guarda_roupa', { largura: 3.6, cor: '#e9e6dc' }, [12.3, 0.2, -11.6], -90, 0.85);
-  if (foco) for (const [x, z] of Object.values(COMODOS_MUNDO)) luzInterna(g, x, z, h, n, 0.7);
+  if (foco) { const [x, z] = COMODOS_MUNDO[ctx.comodo || 'sala']; luzInterna(g, x, z, h, n, 1.1); }   // só a luz do cômodo da cena (cada luz pesa no render)
   g.userData.ancoras = { sentar: [-7.4, 0.2, -8.4, 0], cozinhar: [10.4, 0.2, -5, 90], lavar_louca: [10.4, 0.2, -8.2, 90], deitar: [-11.1, 1.65, -13.2, 0], dormir: [-11.1, 1.65, -13.2, 0],
     jogar_pc: [-6.7, 0.7, -14, 90], deitar_pais: [6.8, 1.65, -13.4, 0] };
   return g;
