@@ -52,7 +52,8 @@ node gerar.mjs roteiros/exemplo_inimigo.yaml
 Por padrão o vídeo sai **só com narração** (`musica_padrao: nenhuma`). Para usar uma música **popular e em alta**:
 
 1. No app do YouTube, toque em **Criar → Enviar vídeo** (ou abra o Short no editor do YouTube Studio).
-2. Toque em **Adicionar som** e escolha a música em alta.
+2. Toque em **Adicionar som** e escolha uma música em alta **sem letra**, para não competir com a narração. Na busca, use termos como
+   `instrumental`, `phonk`, `piano`, `suspense`, `sad piano`, `lofi`, `beat` ou `<nome da música> instrumental`. Ouça um trecho antes de escolher, porque algumas têm voz no refrão.
 3. Em **Volume**, deixe o som original (a narração) em ~100% e a música em ~15–25%.
 
 As músicas dessa biblioteca são licenciadas pelo próprio YouTube para Shorts: são legais, não precisam de crédito e não geram reivindicação de Content ID. No TikTok e no Reels o processo é o mesmo.
