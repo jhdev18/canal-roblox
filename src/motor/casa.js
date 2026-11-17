@@ -8,6 +8,31 @@ const RAD = Math.PI / 180;
 function placa(g, texto, w, h, pos, o = {}) { const p = placaTexto(texto, w, h, o); p.position.set(...pos); g.add(p); return p; }
 function por(g, tipo, o, pos, vira = 0) { const p = PROPS[tipo](o); p.position.set(...pos); p.rotation.y = vira * RAD; g.add(p); return p; }
 
+// pôster com desenho (sem texto): controle, bola, estrela, coração
+function posterIcone(o) {
+  const g = grupo([caixa(2.4, 3.2, 0.06, o.cor || '#6b32a8', { sombra: false }), caixa(2.6, 3.4, 0.04, '#ffffff', { pos: [0, 0, -0.03], sombra: false })]), z = 0.06, add = (m) => { m.castShadow = false; g.add(m); return m; };
+  const forma = (pts, cor, esc = 1) => { const sh = new THREE.Shape(pts.map(([x, y]) => new THREE.Vector2(x * esc, y * esc))); const m = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.05, bevelEnabled: false }), mat(cor)); m.position.z = z - 0.02; return add(m); };
+  if (o.icone === 'controle') {
+    add(caixa(1.7, 0.75, 0.08, '#2b2d33', { pos: [0, 0.1, z], round: 0.3 })); for (const s of [-1, 1]) add(caixa(0.55, 0.85, 0.08, '#2b2d33', { pos: [s * 0.62, -0.25, z], rot: [0, 0, s * 18], round: 0.25 }));
+    add(caixa(0.42, 0.13, 0.04, '#ffffff', { pos: [-0.5, 0.12, z + 0.05] })); add(caixa(0.13, 0.42, 0.04, '#ffffff', { pos: [-0.5, 0.12, z + 0.05] }));   // direcional
+    for (const [x, y, c] of [[0.5, 0.3, '#43a047'], [0.5, -0.06, '#e53935'], [0.32, 0.12, '#1e88e5'], [0.68, 0.12, '#fdd835']]) add(cilindro(0.08, 0.08, 0.05, c, { pos: [x, y, z + 0.05], rot: [90, 0, 0], seg: 10 }));
+    add(caixa(1.9, 0.12, 0.04, '#ffd23f', { pos: [0, 1.05, z] })); add(caixa(1.9, 0.12, 0.04, '#ffd23f', { pos: [0, -1.1, z] }));
+  } else if (o.icone === 'bola') {
+    add(cilindro(0.85, 0.85, 0.05, '#ffffff', { pos: [0, 0.05, z], rot: [90, 0, 0], seg: 28 }));
+    add(cilindro(0.3, 0.3, 0.06, '#1b1b1b', { pos: [0, 0.05, z + 0.02], rot: [90, 0, 0], seg: 5 }));
+    for (let i = 0; i < 5; i++) { const a = (i * 72 + 90) * RAD; add(cilindro(0.17, 0.17, 0.06, '#1b1b1b', { pos: [Math.cos(a) * 0.66, 0.05 + Math.sin(a) * 0.66, z + 0.02], rot: [90, 0, 0], seg: 5 })); }
+    add(caixa(1.9, 0.12, 0.04, '#ffffff', { pos: [0, -1.1, z] }));
+  } else if (o.icone === 'estrela') {
+    const p = []; for (let i = 0; i < 10; i++) { const a = (90 + i * 36) * RAD, r = i % 2 ? 0.38 : 0.92; p.push([Math.cos(a) * r, Math.sin(a) * r + 0.05]); } forma(p, '#ffd23f');
+    for (const [x, y] of [[-0.8, 1.1], [0.85, -1.0], [0.8, 1.15]]) add(esfera(0.07, '#ffffff', { pos: [x, y, z] }));
+  } else if (o.icone === 'coracao') {
+    const sh = new THREE.Shape(); sh.moveTo(0, -0.75); sh.bezierCurveTo(-1.1, 0.0, -0.75, 0.95, 0, 0.45); sh.bezierCurveTo(0.75, 0.95, 1.1, 0.0, 0, -0.75);
+    const m = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.05, bevelEnabled: false }), mat('#e91e63')); m.position.set(0, 0.05, z - 0.02); add(m);
+    for (const [x, y] of [[-0.8, 1.1], [0.8, -1.05]]) add(esfera(0.08, '#ffffff', { pos: [x, y, z] }));
+  }
+  return g;
+}
+
 // ---------------- móveis de casa ----------------
 export const MOVEIS_CASA = {
   cadeira_gamer: (o = {}) => { const c = o.cor || '#c4281c', p = '#1b1b1b'; return grupo([caixa(2.4, 0.4, 2.2, p, { pos: [0, 1.4, 0], round: 0.1 }), caixa(2.4, 2.8, 0.4, p, { pos: [0, 3.0, -1.0], round: 0.12 }),
@@ -46,7 +71,19 @@ export const MOVEIS_CASA = {
     g.add(caixa(0.25, 1.6, 0.25, c, { pos: [x, 0.2, 0.2] }))); g.add(caixa(1.2, 0.3, 0.3, '#555', { pos: [2.4, 0.9, 0.2] })); return g; },
   luminaria: () => grupo([cilindro(0.5, 0.5, 0.1, '#333', { pos: [0, 0.05, 0] }), cilindro(0.06, 0.06, 5, '#333', { pos: [0, 2.5, 0] }),
     cilindro(0.5, 0.9, 1.0, mat('#fff3d6', { emissive: '#ffd27a', emissiveIntensity: 0.7 }), { pos: [0, 5.2, 0], sombra: false })]),
-  poster: (o = {}) => { const p = placaTexto(o.texto || 'GAMER', 2.4, 3.2, { fundo: o.cor || '#6b32a8', corTexto: o.cor_texto || '#ffd23f' }); return grupo([p]); },
+  poster: (o = {}) => { if (o.icone) return posterIcone(o); const p = placaTexto(o.texto || 'GAMER', 2.4, 3.2, { fundo: o.cor || '#6b32a8', corTexto: o.cor_texto || '#ffd23f' }); return grupo([p]); },
+  // quarto de menina
+  penteadeira: (o = {}) => { const c = o.cor || '#f7f2fa', g = grupo([caixa(3.2, 0.25, 1.6, c, { pos: [0, 2.6, 0] }), caixa(3.2, 1.2, 1.5, c, { pos: [0, 1.9, 0] })]);
+    for (const x of [-1.45, 1.45]) g.add(caixa(0.25, 1.4, 1.4, c, { pos: [x, 0.7, 0] }));
+    g.add(caixa(2.6, 2.8, 0.2, '#e8c9e0', { pos: [0, 4.3, -0.65], round: 0.3 })); g.add(caixa(2.2, 2.4, 0.06, mat('#d9eef7', { metal: 0.7, rough: 0.08 }), { pos: [0, 4.3, -0.52], sombra: false }));
+    for (const [x, cor] of [[-0.9, '#e91e63'], [-0.5, '#ab47bc'], [0.9, '#ffd23f']]) g.add(cilindro(0.12, 0.12, 0.45, cor, { pos: [x, 2.95, 0.2], seg: 8 }));
+    const b = grupo([cilindro(0.6, 0.6, 0.3, '#f48fb1', { pos: [0, 1.9, 0], seg: 14 }), cilindro(0.1, 0.1, 1.8, '#d8d4cc', { pos: [0, 0.9, 0], seg: 6 })]); b.position.z = 1.7; g.add(b);   // banqueta
+    return g; },
+  ursinho: (o = {}) => { const c = o.cor || '#b07a4f', cc = '#e7c7a4';
+    return grupo([esfera(0.55, c, { pos: [0, 0.55, 0] }), esfera(0.42, c, { pos: [0, 1.35, 0] }), esfera(0.16, c, { pos: [-0.3, 1.7, 0] }), esfera(0.16, c, { pos: [0.3, 1.7, 0] }),
+      esfera(0.16, cc, { pos: [0, 1.28, 0.34] }), esfera(0.05, '#222', { pos: [-0.14, 1.45, 0.37] }), esfera(0.05, '#222', { pos: [0.14, 1.45, 0.37] }),
+      esfera(0.2, c, { pos: [-0.55, 0.75, 0.1] }), esfera(0.2, c, { pos: [0.55, 0.75, 0.1] }), esfera(0.22, c, { pos: [-0.3, 0.15, 0.35] }), esfera(0.22, c, { pos: [0.3, 0.15, 0.35] }),
+      caixa(0.5, 0.18, 0.1, o.laco || '#e91e63', { pos: [0, 1.0, 0.38] })]); },
 };
 registrarProps(MOVEIS_CASA);
 
@@ -71,7 +108,7 @@ export const COMODOS = {
     por(g, 'cama', { cor: o.cor || '#1e88e5' }, [-7, 0, -9.7]); por(g, 'criado_mudo', {}, [-3.6, 0, -12.6]);
     por(g, 'mesa', { largura: 5, cor: '#f2f3f3' }, [9.4, 0, -8], -90); por(g, 'computador', {}, [9.8, 0, -8], -90); por(g, 'cadeira_gamer', {}, [7.0, 0, -8], -90);
     por(g, 'guarda_roupa', { largura: 4.5 }, [-9.2, 0, -2.2], 90); g.add(caixa(1.4, 0.5, 1.0, '#222', { pos: [9.2, 2.45, -6.2] }));   // videogame
-    for (const [t, c, x] of [['GAMER', '#6b32a8', -2.2], ['GOOOL!', '#1f9d48', 0.8]]) { const p = PROPS.poster({ texto: t, cor: c }); p.position.set(x, 6.5, -D + 0.25); g.add(p); }
+    for (const [t, c, x] of [['controle', '#6b32a8', -2.2], ['bola', '#1f9d48', 0.8]]) { const p = PROPS.poster({ icone: t, cor: c }); p.position.set(x, 6.5, -D + 0.25); g.add(p); }
     por(g, 'tapete', { cor: '#2e5fa8', cor2: '#4f7fd1', largura: 5, prof: 3.5 }, [-1, 0, -5]); por(g, 'bola', {}, [1.5, 0, -3]); g.add(caixa(1.4, 1.6, 0.7, '#c4281c', { pos: [3.5, 0.8, -12.5], round: 0.15 }));
     return { deitar: [-7, 1.45, -6.6, 0], dormir: [-7, 1.45, -6.6, 0], sentar: [7.3, 0.5, -8, 90], jogar_pc: [7.3, 0.5, -8, 90] };
   },
