@@ -62,6 +62,7 @@ praca, coreto, fonte, parquinho, estatua, rua_bairro, campinho (campo de futebol
 - Dentro da casa, os móveis dos outros cômodos ficam escondidos para não atrapalhar a câmera.
 - Todas as âncoras continuam funcionando (`atender`, `fila: N`, `rezar`, `segurar_grade`, `sentar`, `deitar`, `jogar_pc`, `cozinhar`…).
 - **Rua:** pontos de ônibus (`ponto_onibus`), banca de jornal (`banca_jornal`), placas com nome de rua (`placa_rua`, `texto`), bicicletário (`bicicletario`). A casa do protagonista é maior (cômodos mais espaçosos) e os prédios têm janelas altas nas laterais e nos fundos.
+- **Sem atravessar nada:** quem anda reto para antes de parede, muro, banco ou poste (o terminal avisa). A multidão não fica no caminho dos personagens, os figurantes só aparecem em chão livre e quem passa anda só para onde não há obstáculo. Na `rua_bairro` a rua vai para o fundo da tela: para andar ao longo dela use `vira: 0` (vindo para a câmera) ou `vira: 180`; as calçadas ficam em `x` ≈ ±6,5.
 - **Filas com curva:** na lotérica a fila sai do guichê, vira e segue o cordão junto à parede (cabem 6 pessoas sem tapar a porta). Em âncoras de fila, `caminho: [[x, z], ...]` define as curvas.
 - **Assentos de verdade:** no mundo, `sentar` e `rezar` usam os assentos reais (cadeiras, carteiras, cadeiras de espera, bancos da igreja e da praça, sofá, poltrona, banquetas). Cada personagem pega o assento livre mais perto do ponto principal; vários sentados não se sobrepõem.
 

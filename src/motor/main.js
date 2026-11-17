@@ -12,6 +12,7 @@ import { ACOES, LOCOMOCAO, percorrer, ROSTO_DA_ACAO, PROP_DA_ACAO } from './acoe
 import { rng } from './util.js';
 import { carregarRostosPersonalizados } from './rostos.js';
 import { cor } from './util.js';
+const RAD = Math.PI / 180;
 
 let R, composer, cena, cam, sol, hemi, cfg, atual;
 
@@ -85,9 +86,27 @@ async function montar(c) {
     const pet = petTipo ? criarProp({ tipo: petTipo, cor: a.pet_cor }) : null; if (pet) raiz.add(pet);
     return { ...a, ator: p, base: bases[i], pet };
   });
+  // colisão simples com o cenário: ninguém atravessa parede, muro, banco ou poste
+  cena.updateMatrixWorld(true);
+  const semPorta = new Set(); for (const p of cen.grupo.userData.portas || []) p.traverse(m => semPorta.add(m));
+  const obst = []; cen.grupo.traverse(o => { if (o.isMesh && !semPorta.has(o)) obst.push(o); });
+  const ray = new THREE.Raycaster(), V = (x, y, z) => new THREE.Vector3(x, y, z);
+  const livreAte = (x, z, ang, len) => { let d = len; for (const y of [1.0, 3.0]) { ray.set(V(x, y, z), V(Math.sin(ang), 0, Math.cos(ang))); ray.far = len;
+      const h = ray.intersectObjects(obst, false)[0]; if (h) d = Math.min(d, h.distance); } return d; };
+  const chaoLivre = (x, z) => [[0, 0], [0.75, 0], [-0.75, 0], [0, 0.6], [0, -0.6]].every(([ox, oz]) => { ray.set(V(x + ox, 7, z + oz), V(0, -1, 0)); ray.far = 7;
+      const h = ray.intersectObjects(obst, false)[0]; return !h || h.point.y < 0.75; });
+  const dur = c.dur || 3, rotaDe = (a) => { const b = a.base, f = LOCOMOCAO.has(a.acao) ? (ACOES[a.acao] || ACOES.parado)(dur, dur, a.p || {}).frente : 0;
+      return [[b.x, b.z], ...(b.caminho || (f > 0.3 ? [[b.x + Math.sin(b.vira * RAD) * f, b.z + Math.cos(b.vira * RAD) * f]] : []))]; };
+  for (const a of atores) { const b = a.base; if (!LOCOMOCAO.has(a.acao) || b.caminho) continue;   // andando reto: para antes do obstáculo
+    const f = (ACOES[a.acao] || ACOES.parado)(dur, dur, a.p || {}).frente; if (f < 0.3) continue;
+    const d = livreAte(b.x, b.z, b.vira * RAD, f + 1.1); if (d < f + 1.1) { const ate = Math.max(0, d - 1.1); b.caminho = [[b.x + Math.sin(b.vira * RAD) * ate, b.z + Math.cos(b.vira * RAD) * ate]];
+      console.warn(`[motor] ${a.id} andaria através de um obstáculo: para em ${ate.toFixed(1)} studs`); } }
+  const trilhas = []; for (const a of atores) { const pts = rotaDe(a);   // pontos por onde os personagens passam (a multidão não fica no caminho)
+    for (let k = 0; k < pts.length; k++) { trilhas.push(pts[k]); if (k) { const [ax, az] = pts[k - 1], [bx, bz] = pts[k], L = Math.hypot(bx - ax, bz - az);
+      for (let s = 1.5; s < L; s += 1.5) trilhas.push([ax + (bx - ax) * s / L, az + (bz - az) * s / L]); } } }
   const usados = new Set(bases.map(b => [b.x, b.y, b.z].join()));
   const assentosLivres = Array.isArray(cen.ancoras.sentar?.[0]) ? cen.ancoras.sentar.filter(p => !usados.has([p[0], p[1], p[2]].join())) : [];
-  if (c.multidao) for (const f of criarMultidao({ ...c.multidao, ancoraFila: cen.ancoras.fila, assentos: assentosLivres, principais: bases.map(b => [b.x, b.z]) }, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); atores.push(f); }
+  if (c.multidao) for (const f of criarMultidao({ ...c.multidao, ancoraFila: cen.ancoras.fila, assentos: assentosLivres, principais: trilhas, livreAte, chaoLivre, dur }, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); atores.push(f); }
   const prin = atores.filter(a => !a.figurante).map(a => a.base.x);
   const xs = prin; const espalha = xs.length > 1 ? Math.max(...xs) - Math.min(...xs) : 0;
   atual = { c, raiz, atores, cen, dur: c.dur, espalha, nquadros: Math.max(1, Math.round(c.dur * cfg.fps)) };
@@ -125,7 +144,8 @@ function criarMultidao(m, seed) {
     || (m.principais || []).some(([px, pz]) => Math.hypot(x - px, z - pz) < 3.2);   // não encosta nos personagens da cena
   const ocupados = []; const minimo = m.espaco ?? (modo === 'natural' ? 3.2 : 2.8);
   const livreDe = (x, z) => ocupados.every(([ox, oz]) => Math.hypot(x - ox, z - oz) >= minimo);
-  const ponto = () => { for (let k = 0; k < 80; k++) { const x = r.entre(x0, x1), z = r.entre(z0, z1); if (!evitar(x, z) && livreDe(x, z)) { ocupados.push([x, z]); return [x, z]; } } return null; };
+  const noChao = m.chaoLivre || (() => true), caminhoLivre = m.livreAte ? (x, z, a, L) => m.livreAte(x, z, a, L) >= L : () => true;
+  const ponto = () => { for (let k = 0; k < 80; k++) { const x = r.entre(x0, x1), z = r.entre(z0, z1); if (!evitar(x, z) && livreDe(x, z) && noChao(x, z)) { ocupados.push([x, z]); return [x, z]; } } return null; };
   // posições conforme o modo
   const lugares = [];
   if (modo === 'natural') {   // mistura de gente sozinha, conversas soltas, quem passa e quem está sentado
@@ -136,7 +156,11 @@ function criarMultidao(m, seed) {
     while (lugares.length < n) {
       const resta = n - lugares.length, tipo = nPass > 0 && r() < 0.3 ? 'passa' : resta >= 2 && r() < 0.55 ? 'conversa' : 'sozinho';
       const pt = ponto(); if (!pt) break; const [cx, cz] = pt;
-      if (tipo === 'passa') { nPass--; const v = r.entre(-180, 180); lugares.push({ x: cx, z: cz, vira: v, vel: r.entre(2.6, 4.2), acao: r.item(['andar', 'andar', 'andar_celular', 'passear_cachorro']) }); continue; }
+      if (tipo === 'passa') { nPass--; const vel = r.entre(2.4, 3.6), L = vel * (m.dur || 3) + 1.2; let v = null;   // só anda para onde não há parede, banco nem personagem
+        for (let k = 0; k < 10 && v === null; k++) { const a = r.entre(-180, 180), ar = a * Math.PI / 180;
+          const pelo = [0.33, 0.66, 1].every(f => !evitar(cx + Math.sin(ar) * L * f, cz + Math.cos(ar) * L * f));
+          if (pelo && caminhoLivre(cx, cz, ar, L)) v = a; }
+        if (v !== null) { lugares.push({ x: cx, z: cz, vira: v, vel, acao: r.item(['andar', 'andar', 'andar_celular', 'passear_cachorro']) }); continue; } }
       if (tipo === 'sozinho') { lugares.push({ x: cx, z: cz, vira: praCamera(r.entre(-160, 160), 0.45), acao: r.item(['parado', 'celular', 'olhar_redor', 'esperar', 'celular', 'cocar_cabeca', 'pensar']) }); continue; }
       const k = Math.min(resta, r() < 0.7 ? 2 : 3), eixo = r.entre(-0.6, 0.6) + (r() < 0.5 ? 0 : Math.PI);   // dupla de frente ou trio em meia-lua, nunca círculo
       const membros = k === 2 ? [[-1, 0], [1, 0]] : [[-1.1, 0.25], [1.1, 0.25], [0.15, -1.05]];

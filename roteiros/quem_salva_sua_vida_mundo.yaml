@@ -18,8 +18,8 @@ cenas:
     cam: medio
     mov: seguir
     foco: garoto
-    multidao: { n: 4, modo: natural, area: [-14, 14, -6, 6] }
-    atores: [{ id: garoto, acao: andar, rosto: feliz, x: -5, vira: 90 }]
+    multidao: { n: 4, modo: natural, area: [-12, 12, -10, 10] }
+    atores: [{ id: garoto, acao: andar, rosto: feliz, x: -6.4, z: -6, vira: 0 }]   # anda pela calçada, ao longo da rua
   - fala: o celular diz quem vai salvar a sua vida.
     onde: celular
     tela: { tipo: notificacao, app: Destino, titulo: Quem vai salvar sua vida, texto: "..." }
