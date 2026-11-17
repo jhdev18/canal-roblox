@@ -24,12 +24,12 @@ export async function montarVideo({ cenas, trabalho, saida, musica, cfg }) {
     else filtros.push(`aevalsrc=0:c=mono:s=44100:d=${c.dur.toFixed(4)}[s${i}]`);
     return `[s${i}]`;
   });
-  const mus = acharAsset('musicas', musica);
+  const mus = musica?.arquivo; // { arquivo, inicio } decidido por musica.mjs
   filtros.push(`${segs.join('')}concat=n=${segs.length}:v=0:a=1,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100${mus ? ',asplit=2[narr][chave]' : '[narr]'}`);
   const mix = ['[narr]'];
   if (mus) { // música em loop que abaixa sozinha enquanto a voz fala (ducking)
-    args.push('-stream_loop', '-1', '-i', mus);
-    filtros.push(`[${k++}:a]aresample=44100,aformat=channel_layouts=mono,volume=${cfg.audio.musica_volume},atrim=0:${total.toFixed(3)},afade=t=out:st=${Math.max(0, total - 1.2).toFixed(3)}:d=1.2[musb]`);
+    args.push('-stream_loop', '-1', ...(musica.inicio ? ['-ss', musica.inicio.toFixed(2)] : []), '-i', mus);
+    filtros.push(`[${k++}:a]aresample=44100,aformat=channel_layouts=mono,volume=${cfg.audio.musica_volume},atrim=0:${total.toFixed(3)},afade=t=in:d=0.4,afade=t=out:st=${Math.max(0, total - 1.2).toFixed(3)}:d=1.2[musb]`);
     filtros.push(cfg.audio.ducking === false ? '[musb]anull[mus];[chave]anullsink' : `[musb][chave]sidechaincompress=threshold=0.03:ratio=4:attack=30:release=400:makeup=1[mus]`);
     mix.push('[mus]');
   }

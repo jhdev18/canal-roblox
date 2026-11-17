@@ -1,6 +1,6 @@
 """Compositor procedural de trilhas originais (sem direitos de terceiros -> sem Content ID).
 
-Gera loops perfeitos (o fim emenda no começo) em assets/musicas/<nome>.mp3.
+Gera loops perfeitos (o fim emenda no começo) em assets/musicas/<clima>/original_<clima>.mp3.
 Uso:  python ferramentas/compor_musicas.py            # gera todas
       python ferramentas/compor_musicas.py suspense   # gera só uma
       python ferramentas/compor_musicas.py --seed 7   # outra variação das melodias
@@ -347,10 +347,12 @@ def salvar(nome, x):
     with wave.open(caminho, 'wb') as w:
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
         w.writeframes((est * 32767).astype('<i2').tobytes())
-    dst = os.path.join(SAIDA, nome + '.mp3')
+    clima = 'calmo' if nome == 'lofi' else nome
+    os.makedirs(os.path.join(SAIDA, clima), exist_ok=True)
+    dst = os.path.join(SAIDA, clima, 'original_' + clima + '.mp3')
     subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', caminho, '-af', 'loudnorm=I=-16:TP=-1.5:LRA=11', '-ar', '44100', '-c:a', 'libmp3lame', '-b:a', '160k', dst], check=True)
     os.remove(caminho)
-    print(f'  {nome}.mp3  ({len(x) / SR:.0f} s)')
+    print(f'  {clima}/original_{clima}.mp3  ({len(x) / SR:.0f} s)')
 
 
 if __name__ == '__main__':

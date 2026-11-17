@@ -19,4 +19,4 @@ Pipeline: roteiro YAML → voz (ElevenLabs via .env; Piper/espeak como alternati
 - Cache em `cache/` (áudio por texto, clipe por hash da cena + código do motor). Saída em `saida/`.
 - Convenções 3D: unidades = studs, Y para cima, atores perto da origem, fundo em −Z, câmera em +Z. Direita do personagem = −X.
 - Teste sem GPU/voz/créditos: `--voz espeak --gpu nao --rapido`. Nunca commitar `.env`.
-- Músicas: `assets/musicas/*.mp3` geradas por `ferramentas/compor_musicas.py` (CC0).
+- Músicas: `assets/musicas/<clima>/` (escolha automática em `src/node/musica.mjs`); `original_*` são geradas por `ferramentas/compor_musicas.py` (CC0).

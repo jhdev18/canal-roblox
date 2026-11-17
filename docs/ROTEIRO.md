@@ -6,7 +6,8 @@ Lista atualizada de tudo que existe: `npm run catalogo`.
 ```yaml
 titulo: Nesse mundo todos sabem quem é seu inimigo
 destaque: [inimigo]        # (opcional) palavras da legenda em amarelo
-musica: nenhuma            # (opcional) nenhuma (padrão) | suspense, triste, alegre, engracado, epico, curioso, lofi, perseguicao
+clima: suspense            # (opcional) suspense, triste, alegre, engracado, epico, curioso, calmo, perseguicao (omitido = detectado pelas falas)
+musica: auto               # (opcional) auto (padrão) | nenhuma | <nome de um arquivo em assets/musicas>
 padrao: { hora: dia }      # (opcional) valores aplicados a todas as cenas
 voz: { velocidade: 1.15 }  # (opcional) sobrescreve config.yaml > voz (ex.: outro voice_id do ElevenLabs)
 legenda: { tamanho: 100 }  # (opcional) sobrescreve config.yaml > legenda
@@ -86,7 +87,7 @@ arvore, pinheiro, arbusto, casa, predio, poste, carro, banco, mesa, carteira, ca
 
 ## Música
 
-`musica:` escolhe a trilha (arquivo em assets/musicas). Combine o clima: suspense (revelação), triste (perda), alegre (final feliz), engracado (comédia), epico (virada), curioso (infância/sonho), lofi (calmo), perseguicao (fuga). Sem `musica` = `audio.musica_padrao` do config. Padrão do config: `nenhuma` (a música popular é adicionada no app do YouTube ao publicar).
+Automática: escolhe uma faixa de `assets/musicas/<clima>/` (suas faixas antes das `original_*`), em rodízio entre vídeos, pulando a introdução e com ducking. `clima:` força o clima; `musica: nenhuma` desliga.
 
 ## Dicas de estilo (o que funciona nesse formato)
 

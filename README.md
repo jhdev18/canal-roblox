@@ -47,18 +47,27 @@ node gerar.mjs roteiros/exemplo_inimigo.yaml
 
 **Como escrever roteiros:** veja [`docs/ROTEIRO.md`](docs/ROTEIRO.md) e o exemplo em `roteiros/exemplo_inimigo.yaml`.
 
-## Música (popular, sem crédito)
+## Música (automática)
 
-Por padrão o vídeo sai **só com narração** (`musica_padrao: nenhuma`). Para usar uma música **popular e em alta**:
+O vídeo já sai **pronto: imagem + narração + música**. A música é escolhida sozinha:
 
-1. No app do YouTube, toque em **Criar → Enviar vídeo** (ou abra o Short no editor do YouTube Studio).
-2. Toque em **Adicionar som** e escolha uma música em alta **sem letra**, para não competir com a narração. Na busca, use termos como
-   `instrumental`, `phonk`, `piano`, `suspense`, `sad piano`, `lofi`, `beat` ou `<nome da música> instrumental`. Ouça um trecho antes de escolher, porque algumas têm voz no refrão.
-3. Em **Volume**, deixe o som original (a narração) em ~100% e a música em ~15–25%.
+1. **Clima:** detectado pelas falas e cenários da história ("hospital", "morreu" → triste; "segredo", "inimigo" → suspense…).
+   Para forçar, use `clima: triste` no roteiro.
+2. **Faixa:** sorteada da pasta `assets/musicas/<clima>/`, em rodízio para não repetir entre vídeos.
+   Renderizar o mesmo vídeo de novo mantém a mesma música.
+3. **Mixagem:** pula a introdução parada da música, faz fade, e abaixa a música enquanto a voz fala (ducking).
 
-As músicas dessa biblioteca são licenciadas pelo próprio YouTube para Shorts: são legais, não precisam de crédito e não geram reivindicação de Content ID. No TikTok e no Reels o processo é o mesmo.
+Pastas de clima: `suspense, triste, alegre, engracado, epico, curioso, calmo, perseguicao`.
 
-Se quiser música já embutida no arquivo, o projeto traz 8 trilhas originais sem direitos autorais em `assets/musicas/` (`musica: suspense` no roteiro). Veja [`assets/musicas/LICENCA.md`](assets/musicas/LICENCA.md).
+**Coloque suas músicas populares nessas pastas uma vez**, e todos os vídeos passam a usá-las. Elas têm prioridade sobre
+as trilhas `original_*` que vêm com o projeto (que só entram quando a pasta não tem outra faixa).
+Para não ter problema de direitos nem precisar de crédito, use músicas **instrumentais** marcadas como
+"atribuição não obrigatória", por exemplo:
+- **YouTube Studio → Biblioteca de áudio**: filtre por *Atribuição não obrigatória* e escolha gênero/clima.
+- **Pixabay Music**: licença livre, sem crédito.
+
+`node gerar.mjs --musicas` mostra o que há em cada pasta. No roteiro: `musica: nenhuma` desliga, e
+`musica: <nome do arquivo>` força uma faixa específica.
 
 ## GPU (importante)
 

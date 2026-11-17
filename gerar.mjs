@@ -15,6 +15,7 @@ import { temposPalavras, gerarASS } from './src/node/legendas.mjs';
 import { abrirMotor, renderizarCena } from './src/node/render.mjs';
 import { montarVideo } from './src/node/montagem.mjs';
 import { servir } from './src/node/servidor.mjs';
+import { escolherMusica, CLIMAS } from './src/node/musica.mjs';
 
 function argumentos(argv) {
   const o = { _: [] };
@@ -35,7 +36,8 @@ async function principal() {
   const a = argumentos(process.argv.slice(2));
   const cfg = YAML.parse(fs.readFileSync(p('config.yaml'), 'utf8'));
   if (a.vozes) { for (const v of await listarVozes(cfg.voz.eleven_url)) console.log(`${v.id}  ${v.nome.padEnd(22)} ${v.categoria || ''}  ${v.tags}`); return; }
-  if (a.musicas) { for (const f of fs.readdirSync(p('assets', 'musicas')).filter(f => /\.(mp3|wav|ogg|m4a)$/i.test(f))) console.log(f.replace(/\.[^.]+$/, '')); return; }
+  if (a.musicas) { for (const c of CLIMAS) { const d = p('assets', 'musicas', c); const fs_ = fs.existsSync(d) ? fs.readdirSync(d).filter(f => /\.(mp3|wav|ogg|m4a|flac)$/i.test(f)) : [];
+    console.log(`${c.padEnd(12)} ${fs_.join(', ') || '(vazia)'}`); } return; }
   if (a.catalogo) { for (const [k, v] of Object.entries(catalogo())) console.log(`${k.padEnd(13)} ${v.join(', ')}`); return; }
   const arq = a._[0];
   if (!arq) { console.log('uso: node gerar.mjs roteiros/<nome>.yaml [--preview] [--rapido] [--cenas 1-3] [--voz espeak]\n      node gerar.mjs --catalogo'); process.exit(1); }
@@ -106,7 +108,8 @@ async function principal() {
   fs.writeFileSync(path.join(trabalho, 'legendas.ass'), gerarASS(palavras, cfg.render, { ...cfg.legenda, palavras_destaque: rot.destaque }));
   const pasta = garantirDir(p(cfg.saida?.pasta || 'saida'));
   const saida = path.join(pasta, `${nome}${a.cenas ? '_parcial' : ''}${a.rapido ? '_rapido' : ''}.mp4`);
-  const musica = rot.musica ?? cfg.audio.musica_padrao;
+  const musica = await escolherMusica(rot, nome, cfg);
+  log(musica ? `música: ${path.relative(p(), musica.arquivo)} (clima ${musica.clima}${musica.inicio ? `, começa em ${musica.inicio.toFixed(1)} s` : ''})` : 'música: nenhuma');
   const total = await montarVideo({ cenas: cenas.map(c => ({ clipe: c.clipe, audio: c.audioArq, dur: c.dur, som: c.som })), trabalho, saida, musica, cfg });
   if (gastoElevenLabs()) log(`ElevenLabs: ${gastoElevenLabs()} caracteres usados nesta execução (falas repetidas vêm do cache)`);
   log(`pronto: ${path.relative(p(), saida)} (${fmt(total)})`);

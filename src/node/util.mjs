@@ -19,13 +19,13 @@ export function hashMotor() {
 export function garantirDir(d) { fs.mkdirSync(d, { recursive: true }); return d; }
 
 /** Executa um comando e devolve stdout. Rejeita com stderr se falhar. */
-export function rodar(cmd, args, { cwd, entrada, silencioso = true } = {}) {
+export function rodar(cmd, args, { cwd, entrada, silencioso = true, stderr = false } = {}) {
   return new Promise((res, rej) => {
     const pr = spawn(cmd, args, { cwd, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
     let out = '', err = '';
     pr.stdout.on('data', d => { out += d; }); pr.stderr.on('data', d => { err += d; if (!silencioso) process.stderr.write(d); });
     pr.on('error', e => rej(new Error(`Não consegui executar "${cmd}": ${e.message}`)));
-    pr.on('close', c => c === 0 ? res(out) : rej(new Error(`${cmd} saiu com código ${c}\n${err.slice(-2500)}`)));
+    pr.on('close', c => c === 0 ? res(stderr ? err : out) : rej(new Error(`${cmd} saiu com código ${c}\n${err.slice(-2500)}`)));
     if (entrada !== undefined) pr.stdin.end(entrada); else pr.stdin.end();
   });
 }

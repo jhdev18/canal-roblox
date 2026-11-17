@@ -84,5 +84,5 @@ export function carregarRoteiro(arquivo) {
     ant = cen; return cen;
   });
   cenas.forEach(c => delete c.atoresBrutos);
-  return { titulo: r.titulo || '', saida: r.saida, musica: r.musica, voz: r.voz, legenda: r.legenda, destaque: r.destaque || [], cenas };
+  return { titulo: r.titulo || '', saida: r.saida, musica: r.musica, clima: r.clima, voz: r.voz, legenda: r.legenda, destaque: r.destaque || [], cenas };
 }
