@@ -177,14 +177,14 @@ export const LOTES_MUNDO = [
   { id: 'mercado', f: [FR, -20], rot: -90 }, { id: 'delegacia', f: [FR, 21], rot: -90 },
 ];
 const CASA_LOTE = { id: 'casa', f: [78, -12], rot: 0 };
-const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { f: [0, 6.5], rot: 0, recuo: 2.5, chao: 0.45 }, fonte: { f: [0, -10], rot: 180, recuo: -5, chao: 0.45 },
-  parquinho: { f: [13, 13], rot: 0, recuo: 0, chao: 0.45 }, estatua: { f: [-12, 0], rot: -90, recuo: -4, chao: 0.45 }, rua_bairro: { f: [92, 0], rot: 90, recuo: 0, chao: 0.1 },
+const PONTOS = { praca: { f: [0, 18], rot: 0, recuo: 0, chao: 0.45 }, coreto: { f: [0, 6.5], rot: 0, recuo: 2.5, chao: 0.45 }, fonte: { f: [14, -14], rot: -45, recuo: 7, chao: 0.6 },
+  parquinho: { f: [13, 13], rot: 0, recuo: 0, chao: 0.45 }, estatua: { f: [-14, -14], rot: 45, recuo: 5.5, chao: 0.6 }, rua_bairro: { f: [92, 0], rot: 90, recuo: 0, chao: 0.1 },
   posto_gasolina: { f: [52, 9], rot: 180, recuo: 3, chao: 0.2 }, campinho: { f: [139, 22.5], rot: 90, recuo: 0, chao: 0.2 } };
 /** Centro de cada lugar no mapa (para desenhar a planta com nomes). */
 export function centrosMundo() {
   const out = LOTES_MUNDO.map(l => { const d = PREDIOS_MUNDO[l.id].d, r = l.rot * RAD; return { id: l.id, x: l.f[0] - Math.sin(r) * d / 2, z: l.f[1] - Math.cos(r) * d / 2 }; });
-  return [...out, { id: 'casa', x: CASA_LOTE.f[0], z: CASA_LOTE.f[1] - CASA.d / 2 }, { id: 'posto_gasolina', x: 60, z: 17 }, { id: 'coreto', x: 4, z: 4 }, { id: 'fonte', x: 0, z: -16 },
-    { id: 'estatua', x: -15, z: -6 }, { id: 'parquinho', x: 15, z: 15 }, { id: 'rua_bairro', x: 125, z: 0 }, { id: 'campinho', x: 139, z: 23 }, ...EXTRAS_MAPA.map(e => ({ id: '_' + e.nome, nome: e.nome, x: e.x, z: e.z }))];
+  return [...out, { id: 'casa', x: CASA_LOTE.f[0], z: CASA_LOTE.f[1] - CASA.d / 2 }, { id: 'posto_gasolina', x: 60, z: 17 }, { id: 'coreto', x: 4, z: 4 }, { id: 'fonte', x: 14, z: -14 },
+    { id: 'estatua', x: -14, z: -14 }, { id: 'parquinho', x: 15, z: 15 }, { id: 'rua_bairro', x: 125, z: 0 }, { id: 'campinho', x: 139, z: 23 }, ...EXTRAS_MAPA.map(e => ({ id: '_' + e.nome, nome: e.nome, x: e.x, z: e.z }))];
 }
 export const LOCAIS_MUNDO = [...LOTES_MUNDO.map(l => l.id), 'casa', ...Object.keys(PONTOS), 'vista'];
 export const LOCAIS_COM_INTERIOR = [...LOTES_MUNDO.map(l => l.id), 'casa'];
@@ -196,12 +196,17 @@ function praca(g, n, r) {
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
     const cx = sx * 14, cz = sz * 14; g.add(caixa(19, 0.6, 19, '#3fae3a', { pos: [cx, 0.3, cz] }));
     const cv = PROPS.cerca_viva({ n: 12 }); cv.position.set(cx - 8.6, 0.45, cz + sz * -9.2); cv.scale.set(1, 0.6, 0.7); g.add(cv);
-    for (let i = 0; i < 2; i++) { const a = PROPS.arvore({ tam: r.entre(1.0, 1.3) }); a.position.set(cx + r.entre(-5, 5), 0.6, cz + r.entre(-5, 5)); g.add(a); }
+    const temMonumento = sz < 0;   // jardins do norte recebem a fonte (NE) e a estátua (NO); as árvores vão para o canto de fora
+    for (let i = 0; i < 2; i++) { const a = PROPS.arvore({ tam: r.entre(1.0, 1.3) });
+      if (temMonumento) a.position.set(cx + sx * r.entre(6, 7.5), 0.6, cz + sz * r.entre(6, 7.5) + (i ? -sz * 6 : 0)); else a.position.set(cx + r.entre(-5, 5), 0.6, cz + r.entre(-5, 5)); g.add(a); }
     for (let i = 0; i < 14; i++) g.add(esfera(0.22, r.item(['#ff4f8b', '#ffd23f', '#ffffff', '#b06bff', '#ff8c1a']), { pos: [cx + r.entre(-8, 8), 0.75, cz - sz * r.entre(5.5, 8.5)], sombra: false }));
   }
   const co = PROPS.coreto({}); co.position.set(0, 0.45, 0); g.add(co);
-  const fo = PROPS.fonte(); fo.position.set(0, 0.45, -16); g.add(fo);
-  const es = PROPS.estatua({ texto: 'FUNDADOR' }); es.position.set(-16, 0.45, 0); es.rotation.y = 90 * RAD; g.add(es);
+  // fonte (jardim NE) e estátua (jardim NO): fora dos caminhos, viradas para o centro, com piso em volta
+  for (const [x, z] of [[14, -14], [-14, -14]]) g.add(cilindro(6.2, 6.2, 0.06, '#e6dcc6', { pos: [x, 0.62, z], seg: 32, sombra: false }));
+  for (const [x, z] of [[14, -14], [-14, -14]]) g.add(caixa(3, 0.06, 7.5, '#e6dcc6', { pos: [x * 0.62, 0.62, z * 0.62], rot: [0, x > 0 ? -45 : 45, 0], sombra: false }));   // caminho até o centro
+  const fo = PROPS.fonte(); fo.position.set(14, 0.6, -14); g.add(fo);
+  const es = PROPS.estatua({ texto: 'FUNDADOR' }); es.position.set(-14, 0.6, -14); es.rotation.y = 45 * RAD; g.add(es);
   por(g, 'balanco', {}, [14, 0.6, 15]); por(g, 'escorregador', {}, [18, 0.6, 10], -90); g.add(caixa(10, 0.05, 9, '#e8c58c', { pos: [15, 0.62, 12.5], sombra: false }));
   for (const [x, z, v] of [[-4.5, 9, 180], [4.5, 9, 180], [-4.5, -9, 0], [4.5, -9, 0], [-9, 4.5, 90], [-9, -4.5, 90], [9, 4.5, -90], [9, -4.5, -90], [-3.5, 20, 90], [3.5, 20, -90]]) por(g, 'banco', {}, [x, 0.45, z], v);
   for (const [x, z] of [[-4, 24], [4, 24], [-4, -24], [4, -24], [24, 4], [24, -4], [-24, 4], [-24, -4], [-7, 7], [7, -7]]) por(g, 'poste', { noite: n }, [x, 0.45, z], x < 0 ? 0 : 180);
