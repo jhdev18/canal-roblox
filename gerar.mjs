@@ -7,7 +7,7 @@
 //   node gerar.mjs --vozes  /  --musicas            -> lista vozes do ElevenLabs / músicas disponíveis
 // Opções: --rapido (540x960, sem AO) · --cenas 2-4 · --voz piper|espeak|nenhum · --gpu nao · --encoder h264_nvenc · --fps 24
 //          --sem-musica (só narração + efeitos) · --duas-versoes (gera com e sem música de uma vez)
-//          --texto-site (texto para gerar a narração no site do ElevenLabs; o MP3 baixado vai em audios/<nome>.mp3)
+//          --texto-site [v4] (texto para gerar a narração no site do ElevenLabs; v4 usa [long pause]; o MP3 baixado vai em audios/<nome>.mp3)
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
@@ -71,7 +71,7 @@ async function principal() {
   const nome = rot.saida || path.basename(arq).replace(/\.ya?ml$/i, '');
   const fps = cfg.render.fps;
   // ---- narração feita no site (audios/<nome>.mp3): corta nas pausas, uma parte por cena ----
-  if (a['texto-site']) { const dst = p('audios', `${nome}.txt`); garantirDir(p('audios')); fs.writeFileSync(dst, textoParaSite(rot.cenas));
+  if (a['texto-site']) { const dst = p('audios', `${nome}.txt`); garantirDir(p('audios')); const mod = typeof a['texto-site'] === 'string' ? a['texto-site'] : 'v2'; fs.writeFileSync(dst, textoParaSite(rot.cenas, mod));
     log(`texto para o site salvo em audios/${nome}.txt — cole no ElevenLabs (modelo Eleven Multilingual v2), gere, baixe e salve como audios/${nome}.mp3`); return; }
   const narracaoSite = acharNarracaoSite(nome);
   if (narracaoSite) { const comFala = rot.cenas.filter(c => c.fala && c.fala.trim() && !c.audio), partes = dividirNarracao(narracaoSite, comFala.length, cfg.ffmpeg);

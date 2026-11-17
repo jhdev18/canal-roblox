@@ -16,9 +16,11 @@ export function acharNarracaoSite(nome) {
   return null;
 }
 
-/** Texto para colar no site: uma fala por linha, com pausa entre as cenas (é ela que marca onde cortar). */
-export function textoParaSite(cenas) {
-  return cenas.filter(c => c.fala && c.fala.trim()).map(c => c.fala.trim()).join(`\n<break time="${PAUSA_SITE}s" />\n`) + '\n';
+/** Texto para colar no site: uma fala por linha, com pausa entre as cenas (é ela que marca onde cortar).
+ *  Modelos v2/turbo/flash leem <break>; o v3/v4 não — usa a tag de áudio [long pause]. */
+export function textoParaSite(cenas, modelo = 'v2') {
+  const pausa = /^v[34]/.test(String(modelo)) ? '[long pause]' : `<break time="${PAUSA_SITE}s" />`;
+  return cenas.filter(c => c.fala && c.fala.trim()).map(c => c.fala.trim()).join(`\n${pausa}\n`) + '\n';
 }
 
 /** Silêncios do áudio [{ini, fim}] pelo silencedetect do ffmpeg. */
