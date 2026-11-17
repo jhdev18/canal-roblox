@@ -34,7 +34,7 @@ cenas:
   - fala: Desde pequena, chovia em cima dela todo dia.
     onde: mundo
     local: casa
-    comodo: quarto
+    comodo: quarto_menina
     hora: dia
     cam: medio
     atores: [{ id: bia, acao: triste, rosto: chorando, x: -0.8, z: 0, vira: 10, sobre: { tipo: nuvem_cabeca, escala: 1.1, altura: 6.6 } }]
