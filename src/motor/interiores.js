@@ -162,7 +162,7 @@ export const INTERIORES = {
     sala(g, { parede: o.parede || '#e6f1f8', chao: '#d6e2ea' }); piso(g, 26, '#d6e2ea', '#c6d4de');
     add(g, 'balcao', { largura: 7, cor: '#1e88e5', tampo: '#f2f3f3' }, [-5, 0, -4]); add(g, 'computador', {}, [-6, 1.0, -4.2], 180);
     add(g, 'cadeiras_espera', { n: 5 }, [6, 0, 1], -90); add(g, 'cadeiras_espera', { n: 4 }, [-6, 0, 5]);
-    add(g, 'maca', {}, [8, 0, -5], 90);
+    add(g, 'maca', {}, [8, 0, -5], 90); g.add(caixa(0.2, 9, 6, '#cfe0ea', { pos: [4.2, 4.5, -5] }));
     const cz = grupo([caixa(0.6, 1.8, 0.2, '#e53935'), caixa(1.8, 0.6, 0.2, '#e53935')]); cz.position.set(-5, 8.5, -7.7); g.add(cz);
     placa(g, 'POSTO DE SAÚDE', 7, 1.0, [-5, 10.2, -7.7], { fundo: '#1e88e5', corTexto: '#fff' }); add(g, 'bebedouro', {}, [11.5, 0, -6]);
     const m = MOVEIS.mural({ texto: 'VACINE-SE!', largura: 4, altura: 2.4, cor: '#ffffff', cor_texto: '#e53935' }); m.position.set(0, 6, -7.6); g.add(m);
