@@ -1,7 +1,7 @@
 # Formato do roteiro (referência completa)
 
 Um vídeo = um arquivo `roteiros/<nome>.yaml`. Saída: `saida/<nome>.mp4`.
-Lista atualizada de tudo que existe: `npm run catalogo`.
+Lista atualizada de tudo que existe: `npm run catalogo`. **Prévia visual de cada asset:** `docs/preview/*.jpg` (gere de novo com `node ferramentas/preview_assets.mjs`).
 
 ```yaml
 titulo: Nesse mundo todos sabem quem é seu inimigo
@@ -55,6 +55,7 @@ Forma longa: `{ id: pai, acao: andar, rosto: feliz, x: 3, z: 0, vira: 90, vel: 8
 - `x` esquerda(−)/direita(+) da tela, `z` fundo(−)/frente(+). Sem `x` = distribui automaticamente.
 - `vira`: 0 = olha para a câmera, 90 = vira para a direita da tela, −90 = esquerda, 180 = de costas.
 - `andar`/`correr` andam na direção de `vira` (`vel` em studs/s). Use `mov: seguir` para a câmera acompanhar.
+- `deitar`/`dormir` vão sozinhos para a cama (quarto, hospital) e `sentar` para o sofá/banco/cadeira do cenário; informe `y` para posicionar manualmente.
 - Algumas ações já trocam o rosto (chorar→chorando, assustar→assustado…) e põem objeto na mão (celular).
 
 **Ações:** parado, falar, andar, correr, acenar, celular, digitar, sentar, deitar, dormir, assustar, chorar, triste, bravo, comemorar, pular, apontar, abracar, olhar_redor, cair, dancar, pensar, socar, palmas, ajoelhar, empurrar, tremer

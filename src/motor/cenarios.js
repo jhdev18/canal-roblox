@@ -7,7 +7,7 @@ import { PROPS } from './props.js';
 
 const CEU = { dia: '#8ec9ff', tarde: '#ffb27a', noite: '#0e1a3a' };
 function ambiente(hora, interno = false) {
-  if (hora === 'noite') return { ceu: CEU.noite, nevoa: [40, 160], sol: { dir: [0.4, 1, 0.6], forca: interno ? 0.6 : 0.5, cor: '#9db4ff' }, hemi: [interno ? '#c8d4ff' : '#5a6fb0', '#1a2240', interno ? 1.0 : 0.6] };
+  if (hora === 'noite') return { ceu: CEU.noite, nevoa: [40, 160], sol: { dir: [0.4, 1, 0.8], forca: interno ? 1.0 : 1.3, cor: '#aabfff' }, hemi: [interno ? '#d6deff' : '#7d90d0', '#2a3560', interno ? 1.4 : 1.2] };
   if (hora === 'tarde') return { ceu: CEU.tarde, nevoa: [60, 220], sol: { dir: [-0.9, 0.6, 0.7], forca: 3.0, cor: '#ffc08a' }, hemi: ['#ffd9b8', '#6b5a4a', 1.1] };
   return { ceu: CEU.dia, nevoa: [70, 260], sol: { dir: [-0.5, 1.1, 0.9], forca: 3.4, cor: '#fff4e0' }, hemi: ['#cfe8ff', '#6b8a5a', interno ? 1.6 : 1.3] };
 }
@@ -89,6 +89,7 @@ export const CENARIOS = {
     for (let i = 0; i < 22; i++) { const x = r.entre(-50, 50), z = r.entre(-60, -6); if (Math.abs(x + 6) < 4) continue; add(g, r() < 0.3 ? 'pinheiro' : 'arvore', { tam: r.entre(0.8, 1.3) }, [x, 0, z]); }
     for (let i = 0; i < 10; i++) add(g, 'arbusto', {}, [r.entre(-30, 30), 0, r.entre(-14, -4)]);
     add(g, 'banco', {}, [5, 0, -4]); add(g, 'banco', {}, [-14, 0, -6], 30);
+    g.userData.ancoras = { sentar: [5, 0.1, -3.8] };
     g.add(cilindro(7, 7, 0.1, mat('#4fa8e8', { rough: 0.1 }), { pos: [18, 0.05, -16], seg: 32 }));
     for (let i = 0; i < 40; i++) g.add(esfera(0.18, r.item(['#ff4f8b', '#ffd23f', '#ffffff', '#b06bff']), { pos: [r.entre(-20, 20), 0.15, r.entre(-10, 6)], sombra: false }));
     o.hora === 'noite' ? lua(g) : nuvens(g, r);
@@ -105,14 +106,16 @@ export const CENARIOS = {
   sala(o, g, r) {
     const n = o.hora === 'noite'; sala(g, { parede: o.parede || '#e8e6e1', chao: o.chao || '#bfb6a8' });
     janela(g, -6, 6, -7.6, 7, 5, n); janela(g, 6, 6, -7.6, 7, 5, n);
-    add(g, 'sofa', { cor: o.cor || '#6b6f80' }, [0, 0, -6]); add(g, 'tv', {}, [10, 0, -2], -60); add(g, 'planta', {}, [-11, 0, -6]);
+    add(g, 'sofa', { cor: o.cor || '#6b6f80' }, [0, 0, -6]); add(g, 'tv', {}, [10, 0, -2], -60);
+    g.userData.ancoras = { sentar: [0, 0, -5.6] }; add(g, 'planta', {}, [-11, 0, -6]);
     g.add(caixa(9, 0.05, 6, '#c76b5a', { pos: [0, 0.03, -1], sombra: false }));
     luzTeto(g, 0, 0, n);
   },
   quarto(o, g, r) {
     const n = o.hora === 'noite'; sala(g, { parede: o.parede || '#c9dcf2', chao: o.chao || '#a8805a' });
     janela(g, 4, 6.5, -7.6, 5, 4, n);
-    add(g, 'cama', { cor: o.cor || '#3b6fd8' }, [-7, 0, -3.6]); add(g, 'mesa', { largura: 4 }, [8, 0, -6]); add(g, 'computador', {}, [8, 0, -6.4]);
+    add(g, 'cama', { cor: o.cor || '#3b6fd8' }, [-7, 0, -3.6]);
+    g.userData.ancoras = { deitar: [-7, 1.45, -0.4], sentar: [8, 0, -3.8] }; add(g, 'mesa', { largura: 4 }, [8, 0, -6]); add(g, 'computador', {}, [8, 0, -6.4]);
     add(g, 'cadeira', {}, [8, 0, -3.8], 180);
     g.add(caixa(2.4, 3.2, 0.1, mat('#ff6b6b'), { pos: [-2, 7, -7.7] }));
     luzTeto(g, 0, 0, n);
@@ -128,6 +131,7 @@ export const CENARIOS = {
     const n = o.hora === 'noite'; sala(g, { parede: o.parede || '#dcecf2', chao: o.chao || '#c9d3d8' });
     g.add(caixa(1.2, 3.6, 0.2, '#e53935', { pos: [-4, 7, -7.6] })); g.add(caixa(3.6, 1.2, 0.2, '#e53935', { pos: [-4, 7, -7.6] }));
     add(g, 'cama', { cor: '#9fd0e8', lencol: '#ffffff' }, [3, 0, -3.5]);
+    g.userData.ancoras = { deitar: [3, 1.45, -0.3] };
     g.add(caixa(1.6, 1.2, 0.8, '#333', { pos: [7, 5, -6.8] })); g.add(plano(1.4, 1.0, mat('#0b2', { emissive: '#0f6', emissiveIntensity: 0.8 }), { pos: [7, 5, -6.39] }));
     g.add(cilindro(0.08, 0.08, 7, '#bbb', { pos: [7, 3.5, -6.8] }));
     janela(g, 10, 6, -7.6, 4, 4, n); luzTeto(g, 0, 0, n);
@@ -148,7 +152,7 @@ export const CENARIOS = {
     tel.add(plano(3.0, 6.0, new THREE.MeshBasicMaterial({ map: texturaTela(o.tela) }), { pos: [0, 0, 0.18] }));
     tel.position.set(0, 4.4, 0); tel.rotation.set(-0.05, 0, 0.04); g.add(tel);
   },
-  vazio(o, g, r) { g.add(caixa(500, 0.2, 500, o.chao || '#d9d9d9', { pos: [0, -0.1, 0] })); },
+  vazio(o, g, r) { g.add(caixa(500, 0.2, 500, o.chao || '#d5d9e2', { pos: [0, -0.1, 0] })); },
 };
 const INTERNOS = new Set(['sala', 'quarto', 'escola', 'hospital']);
 export const NOMES_CENARIOS = Object.keys(CENARIOS);
@@ -160,6 +164,6 @@ export function construirCenario(nome, o = {}) {
   g.traverse(m => { if (m.isMesh) { m.receiveShadow = true; if (m.castShadow === undefined) m.castShadow = true; } });
   const amb = ambiente(o.hora || 'dia', INTERNOS.has(nome));
   if (nome === 'celular') { amb.ceu = o.cor || '#6b7a99'; amb.nevoa = [200, 400]; }
-  if (nome === 'vazio' && o.cor) amb.ceu = o.cor;
-  return { grupo: g, ...amb, interno: INTERNOS.has(nome), cameraFixa: nome === 'celular' };
+  if (nome === 'vazio') { amb.ceu = o.cor || '#eef1f6'; amb.nevoa = [60, 140]; }
+  return { grupo: g, ...amb, ancoras: g.userData.ancoras || {}, interno: INTERNOS.has(nome), cameraFixa: nome === 'celular' };
 }

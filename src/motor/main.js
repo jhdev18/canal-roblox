@@ -37,9 +37,16 @@ function iniciar(c) {
 }
 
 /** Posição base de cada ator (auto-distribui quem não tem x). */
-function posicoes(atores) {
-  const semX = atores.filter(a => a.x === undefined); const n = semX.length;
+const ANCORA_DA_ACAO = { deitar: 'deitar', dormir: 'deitar', cair: null, sentar: 'sentar' };
+function posicoes(atores, ancoras = {}) {
+  const usadas = {};
+  const semX = atores.filter(a => a.x === undefined && !(ancoras[ANCORA_DA_ACAO[a.acao]] && a.y === undefined)); const n = semX.length;
   return atores.map(a => {
+    const anc = ancoras[ANCORA_DA_ACAO[a.acao]];
+    if (anc && a.y === undefined) { // vai sozinho para a cama/sofá do cenário (y explícito no roteiro = posição manual)
+      const k = usadas[a.acao] = (usadas[a.acao] ?? -1) + 1;
+      return { x: anc[0] + (a.acao === 'sentar' ? k * 2.2 : k * 0), y: anc[1], z: anc[2], vira: 0 };
+    }
     let x = a.x, vira = a.vira;
     if (x === undefined) { const i = semX.indexOf(a); x = (i - (n - 1) / 2) * 3.4; }
     if (vira === undefined) vira = atores.length > 1 ? (x < 0 ? 25 : x > 0 ? -25 : 0) : 0;
@@ -60,7 +67,7 @@ async function montar(c) {
   sol.color = cor(cen.sol.cor); sol.intensity = cen.sol.forca; hemi.color = cor(cen.hemi[0]); hemi.groundColor = cor(cen.hemi[1]); hemi.intensity = cen.hemi[2];
   for (const p of c.props || []) { const o = criarProp(p); if (o) raiz.add(o); }
   await carregarRostosPersonalizados((c.atores || []).flatMap(a => [a.rosto, a.spec?.rosto]).filter(Boolean));
-  const bases = posicoes(c.atores || []);
+  const bases = posicoes(c.atores || [], cen.ancoras);
   const atores = (c.atores || []).map((a, i) => {
     const p = criarPersonagem(a.spec); raiz.add(p.raiz);
     p.setRosto(a.rosto || p.rostoPadrao(a.acao), a.spec.extras || []);

@@ -27,7 +27,7 @@ function checar(tipo, nome, lista, onde) {
 }
 
 /** Resolve um personagem: template (assets/personagens.yaml) + sobrescritas. Suporta herança via `base`. */
-function resolverSpec(def, templates, pilha = []) {
+export function resolverSpec(def, templates, pilha = []) {
   if (typeof def === 'string') def = { base: def };
   const base = def.base ? templates[def.base] : null;
   if (def.base && !base) throw new Error(`Personagem base "${def.base}" não existe.${sugerir(def.base, Object.keys(templates))}`);

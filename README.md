@@ -45,6 +45,8 @@ node gerar.mjs roteiros/exemplo_inimigo.yaml
 | `node gerar.mjs <roteiro> --encoder h264_nvenc` | codifica o vídeo na GPU (mais rápido) |
 | `npm run catalogo` | lista todos os cenários, ações, rostos, acessórios, personagens… |
 
+**Ver todos os assets:** pranchas em [`docs/preview/`](docs/preview/) (personagens, rostos, acessórios, roupas, ações, cenários, telas, props).
+
 **Como escrever roteiros:** veja [`docs/ROTEIRO.md`](docs/ROTEIRO.md) e o exemplo em `roteiros/exemplo_inimigo.yaml`.
 
 ## Música (automática)
