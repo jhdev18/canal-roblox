@@ -180,7 +180,7 @@ function posar(t) {
   sol.target.position.copy(foco); sol.position.copy(foco).addScaledVector(d, 60 + (atual.cen.sombra || 35)); sol.target.updateMatrixWorld();
 }
 
-const _v = new THREE.Vector3(), _rc = new THREE.Raycaster();
+const _v = new THREE.Vector3(), _lado = new THREE.Vector3(), _rc = new THREE.Raycaster();
 /** A cada quadro: portas abrem quando alguém chega perto; paredes/tetos entre a câmera e os atores somem (vista em corte). */
 function portasECortes() {
   for (const pt of atual.portas) {
@@ -191,7 +191,8 @@ function portasECortes() {
   for (const u of atual.unidades) u.visible = !u.userData.oculto;
   const foco = atual.c.foco; // com foco, só o ator em foco abre o corte (quem está do outro lado não apaga a fachada)
   for (const a of atual.atores) { if (a.figurante || (foco && a.id !== foco)) continue; a.ator.raiz.getWorldPosition(_v);
-    for (const dy of [4.4, 2.6, 0.9]) { const p = _v.clone(); p.y += dy; const dir = p.sub(cam.position); const dist = dir.length(); _rc.set(cam.position, dir.normalize()); _rc.far = dist - 0.25;
+    cam.updateMatrixWorld(); _lado.setFromMatrixColumn(cam.matrixWorld, 0).setY(0).normalize();   // também ao lado do ator: parede que tapa meia tela some (ex.: câmera de lado num cômodo estreito)
+    for (const [dy, dl] of [[4.4, 0], [2.6, 0], [0.9, 0], [2.6, -2.2], [2.6, 2.2]]) { const p = _v.clone().addScaledVector(_lado, dl); p.y += dy; const dir = p.sub(cam.position); const dist = dir.length(); _rc.set(cam.position, dir.normalize()); _rc.far = dist - 0.25;
       for (const h of _rc.intersectObjects(atual.corteMeshes, false)) { const u = h.object.userData.unidade; if (!u) continue;
         if (u.userData.movel && u.userData.caixa.distanceToPoint(_v) < 2.6) continue;   // móvel colado no ator (cadeira, cama): fica
         u.visible = false; } } }

@@ -68,14 +68,14 @@ const CATEGORIAS = {
       M('casa: cozinha', { local: 'casa', comodo: 'cozinha', angulo: -20 }, [ator(spec('mae'), 'cozinhar')])]; },
   comodos: () => { const A = (b, acao = 'parado', o = {}) => ({ ...ator(spec(b), acao, o), id: b });
     const M = (nome, o, atores = [], t = 0.5) => ({ nome, t, cena: { cenario: 'mundo', mov: 'fixo', dur: 2, camera: 'aberto', dist: 1.5, ...o, atores } });
-    return [M('escola (de cima)', { local: 'escola', camera: 'mapa', dist: 0.7, alvo_xz: [0, -20.6] }, [A('garoto', 'parado', { x: 0, z: -20.6 })]),
+    return [M('escola (de cima)', { local: 'escola', camera: 'mapa', dist: 0.8, alvo_xz: [0, -22.6] }, [A('garoto', 'parado', { x: 0, z: -22.6 })]),
       M('escola: corredor', { local: 'escola', comodo: 'corredor' }, [A('garoto', 'andar'), A('menina', 'acenar')]),
       M('escola: sala_aula', { local: 'escola', comodo: 'sala_aula', angulo: 15 }, [A('valentao', 'bravo'), A('garoto', 'triste')]),
       M('sala_aula: sentar', { local: 'escola', comodo: 'sala_aula', angulo: 180, dist: 1.1 }, [A('garoto', 'sentar'), A('menina', 'sentar'), A('valentao', 'sentar')]),
       M('escola: biblioteca', { local: 'escola', comodo: 'biblioteca', angulo: 10 }, [A('menina', 'sentar'), A('garoto')]),
       M('escola: diretoria', { local: 'escola', comodo: 'diretoria', angulo: 15 }, [A('professora', 'sentar'), A('garoto', 'tremer', { x: 1.2 })]),
       M('escola: cantina', { local: 'escola', comodo: 'cantina', angulo: 20 }, [A('cidada', 'atender'), A('garoto', 'parado', { x: 0.5, z: 0.4, vira: 180 }), A('menina', 'sentar')]),
-      M('posto (de cima)', { local: 'posto_saude', camera: 'mapa', dist: 0.75, alvo_xz: [0, -21.6] }, [A('garoto', 'parado', { x: 0, z: -21.6 })]),
+      M('posto (de cima)', { local: 'posto_saude', camera: 'mapa', dist: 0.8, alvo_xz: [0, -22.6] }, [A('garoto', 'parado', { x: 0, z: -22.6 })]),
       M('posto: recepcao', { local: 'posto_saude', comodo: 'recepcao', angulo: 15 }, [A('cidada', 'atender'), A('idosa', 'sentar')]),
       M('posto: corredor', { local: 'posto_saude', comodo: 'corredor' }, [A('medico', 'andar'), A('idosa', 'sentar')]),
       M('posto: consultorio', { local: 'posto_saude', comodo: 'consultorio', angulo: 15 }, [A('medico', 'sentar'), A('idosa', 'falar', { x: 1, z: -0.5, vira: -20 })]),
