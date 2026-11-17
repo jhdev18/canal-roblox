@@ -8,6 +8,7 @@ Leia `docs/CONTINUAR.md`: estado atual, roteiros prontos, pendências e regras c
 ## Para criar um vídeo novo (economize tokens)
 1. Leia **só** `docs/ROTEIRO.md` (formato + catálogo completo) e, para o estilo, `docs/REFERENCIAS.md`. Não leia `src/` para escrever roteiros.
 2. Escreva `roteiros/<nome>.yaml` reaproveitando personagens de `assets/personagens.yaml`.
+   **Casa / ambiente residencial:** toda cena dentro de uma casa (do protagonista, do avô, da vizinha, de um amigo…) usa a casa do protagonista do mundo (`onde: mundo`, `local: casa`, `comodo: sala | cozinha | quarto | quarto_menina | banheiro | quarto_pais | sotao`). Não crie casa nova: cada história (ou cada casa diferente dentro da mesma história, por cena) recebe outra `decoracao:` (`padrao | vovo | moderna | colorida | simples` ou um número). Antes de escolher, veja as decorações já usadas nos roteiros (`grep -h "^decoracao" roteiros/*.yaml`) e prefira uma diferente. Quarto: `quarto` para menino, `quarto_menina` para menina.
 3. Valide com o rascunho grátis: `node gerar.mjs roteiros/<nome>.yaml` (erros de nome vêm com sugestão).
    A versão final (`--final`, ElevenLabs) só roda depois de um rascunho do roteiro atual — e quem renderiza é o usuário, na máquina dele. Não renderize sem ele pedir.
 

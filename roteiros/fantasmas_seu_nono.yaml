@@ -79,7 +79,7 @@ cenas:
     cam: alto
     angulo: 0
     foco: nono
-    atores: [{ id: nono, acao: dormir, sobre: zzz }, { id: f3, acao: cocar_cabeca, rosto: desconfiado, x: -2.7, z: -3, vira: 40 }]
+    atores: [{ id: nono, acao: dormir, sobre: zzz }, { id: f3, acao: cocar_cabeca, rosto: desconfiado, x: 3.0, z: -1.2, vira: -60 }]
 
   # --- final ---
   - fala: Hoje os três tomam café com ele toda manhã
@@ -104,4 +104,4 @@ cenas:
     angulo: 0
     foco: nono
     mov: tremor
-    atores: [{ id: nono, acao: dormir, sobre: { texto: "RONC!", cor: "#ffd23f" } }, { id: f1, acao: assustar, x: -2.7, z: -3, vira: 40 }]
+    atores: [{ id: nono, acao: dormir, sobre: { texto: "RONC!", cor: "#ffd23f" } }, { id: f1, acao: assustar, x: 3.0, z: -1.2, vira: -60 }]

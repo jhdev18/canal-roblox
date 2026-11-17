@@ -67,7 +67,7 @@ cenas:
     local: casa
     comodo: quarto
     cam: medio
-    atores: [{ id: leo, acao: sentar, rosto: triste }]
+    atores: [{ id: leo, acao: triste, rosto: triste, x: 0, z: 0 }]
   - fala: Anos atrás, o pai dele disse "eu volto logo",
     onde: mundo
     local: casa
