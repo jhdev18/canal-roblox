@@ -1,7 +1,7 @@
 # Exemplo completo. Cada cena = 1 corte (~1,5 s). Campos omitidos usam padrões inteligentes.
 titulo: Nesse mundo todos sabem quem é seu inimigo
 destaque: [inimigo, pai]          # palavras da legenda em amarelo
-# musica: tensa                   # arquivo em assets/musicas/ (opcional)
+musica: suspense                  # trilha em assets/musicas (veja LICENCA.md)
 
 elenco:
   garoto: noob

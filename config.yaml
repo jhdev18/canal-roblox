@@ -10,10 +10,18 @@ render:
   encoder: libx264    # libx264 | h264_nvenc (usa a GTX 1050 Ti para codificar)
 
 voz:
-  motor: piper        # piper | espeak | nenhum
+  motor: elevenlabs   # elevenlabs | piper | espeak | nenhum   (rascunho grátis: --voz espeak)
+  # --- ElevenLabs (chave no arquivo .env) ---
+  voice_id: ""        # rode: node gerar.mjs --vozes  e cole o id aqui
+  modelo_eleven: eleven_multilingual_v2   # ou eleven_flash_v2_5 (mais barato/rápido)
+  estabilidade: 0.45  # menor = mais expressivo
+  similaridade: 0.8
+  estilo: 0.3
+  # idioma: pt        # só para modelos que aceitam language_code (ex.: eleven_flash_v2_5)
+  # --- Piper (local) ---
   modelo: assets/vozes/pt_BR-faber-medium.onnx
   comando: [python, -m, piper]   # no Windows pode ser [py, -m, piper]
-  velocidade: 1.12    # >1 = fala mais rápido (estilo shorts)
+  velocidade: 1.1     # >1 = fala mais rápido (ElevenLabs aceita 0.7–1.2)
   pausa: 0.12         # silêncio extra no fim de cada cena (s)
   cuda: false
   voz_espeak: pt-br
@@ -33,7 +41,9 @@ legenda:
   destaque: "#ffd23f" # cor das palavras listadas em `destaque:` no roteiro
 
 audio:
-  musica_volume: 0.12
+  musica_padrao: suspense   # usada quando o roteiro não define `musica` (nenhuma = sem música)
+  musica_volume: 0.25
+  ducking: true             # música abaixa enquanto a voz fala
   sfx_volume: 0.8
 
 saida:

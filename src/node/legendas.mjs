@@ -1,12 +1,17 @@
 // Legenda palavra por palavra (estilo shorts): tempos estimados pela narração + arquivo .ass com efeito "pop".
 
 /** Divide a fala em palavras com início/fim (segundos, relativos à cena) proporcionais ao tamanho de cada palavra. */
-export function temposPalavras(fala, dur, cfg = {}) {
-  const brutas = String(fala || '').split(/\s+/).filter(Boolean);
+export function temposPalavras(fala, dur, cfg = {}, exatas = null) {
+  const brutas = String(fala || '').replace(/[*_#~`]/g, '').split(/\s+/).filter(Boolean);
   if (!brutas.length || !dur) return [];
-  const peso = brutas.map(w => w.replace(/[^\p{L}\p{N}]/gu, '').length + 1.2 + (/[,;:]$/.test(w) ? 2.5 : /[.!?…]$/.test(w) ? 4 : 0));
-  const total = peso.reduce((a, b) => a + b, 0);
-  let t = 0; const out = brutas.map((w, i) => { const ini = t; t += dur * peso[i] / total; return { texto: w, ini, fim: t }; });
+  let out;
+  if (exatas?.length === brutas.length) { // tempos reais (ElevenLabs): cada palavra fica até a próxima começar
+    out = brutas.map((w, i) => ({ texto: w, ini: exatas[i].ini, fim: exatas[i + 1]?.ini ?? exatas[i].fim }));
+  } else { // estimativa proporcional ao tamanho da palavra + pausas de pontuação
+    const peso = brutas.map(w => w.replace(/[^\p{L}\p{N}]/gu, '').length + 1.2 + (/[,;:]$/.test(w) ? 2.5 : /[.!?…]$/.test(w) ? 4 : 0));
+    const total = peso.reduce((a, b) => a + b, 0);
+    let t = 0; out = brutas.map((w, i) => { const ini = t; t += dur * peso[i] / total; return { texto: w, ini, fim: t }; });
+  }
   // junta palavras curtinhas com a próxima ("do tempo", "a casa")
   const lim = cfg.juntar_curtas ?? 2; const grupos = [];
   for (let i = 0; i < out.length; i++) {

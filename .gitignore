@@ -5,3 +5,4 @@ cache/
 saida/
 assets/vozes/*.onnx
 assets/vozes/*.onnx.json
+.env

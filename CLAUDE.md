@@ -1,6 +1,6 @@
 # canal-roblox — gerador local de shorts animados estilo Roblox
 
-Pipeline: roteiro YAML → voz (Piper) → cenas 3D (three.js no Chromium, quadro a quadro) → FFmpeg (legenda palavra por palavra + música).
+Pipeline: roteiro YAML → voz (ElevenLabs via .env; Piper/espeak como alternativa) → cenas 3D (three.js no Chromium, quadro a quadro) → FFmpeg (legenda palavra por palavra + música).
 
 ## Para criar um vídeo novo (economize tokens)
 1. Leia **só** `docs/ROTEIRO.md` (formato + catálogo completo). Não leia `src/` para escrever roteiros.
@@ -18,4 +18,5 @@ Pipeline: roteiro YAML → voz (Piper) → cenas 3D (three.js no Chromium, quadr
 - `gerar.mjs` CLI · `src/node/` (roteiro, tts, legendas, render, montagem) · `src/motor/` (código que roda no navegador)
 - Cache em `cache/` (áudio por texto, clipe por hash da cena + código do motor). Saída em `saida/`.
 - Convenções 3D: unidades = studs, Y para cima, atores perto da origem, fundo em −Z, câmera em +Z. Direita do personagem = −X.
-- Teste sem GPU/voz: `--voz espeak --gpu nao --rapido`.
+- Teste sem GPU/voz/créditos: `--voz espeak --gpu nao --rapido`. Nunca commitar `.env`.
+- Músicas: `assets/musicas/*.mp3` geradas por `ferramentas/compor_musicas.py` (CC0).

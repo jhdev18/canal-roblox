@@ -3,13 +3,14 @@
 //   node gerar.mjs roteiros/exemplo.yaml            -> saida/exemplo.mp4
 //   node gerar.mjs roteiros/exemplo.yaml --preview  -> prévia ao vivo no navegador
 //   node gerar.mjs --catalogo                        -> lista todos os assets disponíveis
+//   node gerar.mjs --vozes  /  --musicas            -> lista vozes do ElevenLabs / músicas disponíveis
 // Opções: --rapido (540x960, sem AO) · --cenas 2-4 · --voz piper|espeak|nenhum · --gpu nao · --encoder h264_nvenc · --fps 24
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 import { p, hash, hashMotor, garantirDir, log, rodar, duracaoWav } from './src/node/util.mjs';
 import { carregarRoteiro, catalogo } from './src/node/roteiro.mjs';
-import { narrar } from './src/node/tts.mjs';
+import { narrar, listarVozes, gastoElevenLabs } from './src/node/tts.mjs';
 import { temposPalavras, gerarASS } from './src/node/legendas.mjs';
 import { abrirMotor, renderizarCena } from './src/node/render.mjs';
 import { montarVideo } from './src/node/montagem.mjs';
@@ -33,6 +34,8 @@ const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(
 async function principal() {
   const a = argumentos(process.argv.slice(2));
   const cfg = YAML.parse(fs.readFileSync(p('config.yaml'), 'utf8'));
+  if (a.vozes) { for (const v of await listarVozes(cfg.voz.eleven_url)) console.log(`${v.id}  ${v.nome.padEnd(22)} ${v.categoria || ''}  ${v.tags}`); return; }
+  if (a.musicas) { for (const f of fs.readdirSync(p('assets', 'musicas')).filter(f => /\.(mp3|wav|ogg|m4a)$/i.test(f))) console.log(f.replace(/\.[^.]+$/, '')); return; }
   if (a.catalogo) { for (const [k, v] of Object.entries(catalogo())) console.log(`${k.padEnd(13)} ${v.join(', ')}`); return; }
   const arq = a._[0];
   if (!arq) { console.log('uso: node gerar.mjs roteiros/<nome>.yaml [--preview] [--rapido] [--cenas 1-3] [--voz espeak]\n      node gerar.mjs --catalogo'); process.exit(1); }
@@ -62,7 +65,7 @@ async function principal() {
     c.audioArq = audio?.arquivo;
     const bruto = c.dur ?? (audio ? audio.dur + cfg.voz.pausa : 1.5);
     c.dur = Math.max(1, Math.round(bruto * fps)) / fps;  // alinhado a quadros
-    c.palavras = temposPalavras(c.fala, audio ? audio.dur : c.dur * 0.9, cfg.legenda);
+    c.palavras = temposPalavras(c.fala, audio ? audio.dur : c.dur * 0.9, cfg.legenda, audio?.palavras);
   }
   const visual = (c) => ({ cenario: c.cenario, hora: c.hora, seed: c.seed, cor: c.cor, chao: c.chao, parede: c.parede, tela: c.tela, camera: c.camera, mov: c.mov,
     angulo: c.angulo, dist: c.dist, altura: c.altura, inclinar: c.inclinar, foco: c.foco, props: c.props, dur: c.dur,
@@ -103,7 +106,8 @@ async function principal() {
   fs.writeFileSync(path.join(trabalho, 'legendas.ass'), gerarASS(palavras, cfg.render, { ...cfg.legenda, palavras_destaque: rot.destaque }));
   const pasta = garantirDir(p(cfg.saida?.pasta || 'saida'));
   const saida = path.join(pasta, `${nome}${a.cenas ? '_parcial' : ''}${a.rapido ? '_rapido' : ''}.mp4`);
-  const total = await montarVideo({ cenas: cenas.map(c => ({ clipe: c.clipe, audio: c.audioArq, dur: c.dur, som: c.som })), trabalho, saida, musica: rot.musica, cfg });
+  const total = await montarVideo({ cenas: cenas.map(c => ({ clipe: c.clipe, audio: c.audioArq, dur: c.dur, som: c.som })), trabalho, saida, musica: rot.musica ?? cfg.audio.musica_padrao, cfg });
+  if (gastoElevenLabs()) log(`ElevenLabs: ${gastoElevenLabs()} caracteres usados nesta execução (falas repetidas vêm do cache)`);
   log(`pronto: ${path.relative(p(), saida)} (${fmt(total)})`);
 }
 

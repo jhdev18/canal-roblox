@@ -3,7 +3,7 @@
 Gera vídeos verticais (1080×1920) no estilo "animação Roblox": bonecos de bloco, narração em PT-BR, legenda palavra por palavra e cortes rápidos. **Tudo roda no seu PC** (feito para uma GTX 1050 Ti 4 GB).
 
 ```
-roteiro.yaml ─► voz (Piper) ─► cenas 3D (three.js) ─► FFmpeg ─► saida/video.mp4
+roteiro.yaml ─► voz (ElevenLabs) ─► cenas 3D (three.js) ─► FFmpeg ─► saida/video.mp4
 ```
 
 Cada vídeo é só um arquivo YAML curto. Personagens, rostos, cenários, ações e câmeras são **assets reutilizáveis**, e cenas e áudios já gerados ficam em cache (refazer um vídeo mudando uma fala só renderiza aquela cena).
@@ -12,10 +12,14 @@ Cada vídeo é só um arquivo YAML curto. Personagens, rostos, cenários, açõe
 
 1. **Node.js 20+**: https://nodejs.org
 2. **FFmpeg**: `winget install Gyan.FFmpeg` (feche e abra o terminal depois)
-3. **Python 3.10+** e o Piper (voz neural local):
+3. **Voz (ElevenLabs):** copie `.env.exemplo` para `.env` e cole sua chave (`ELEVENLABS_API_KEY=...`).
+   Depois liste suas vozes e coloque o id escolhido em `voz.voice_id` no `config.yaml`:
    ```bash
-   pip install piper-tts
+   node gerar.mjs --vozes
    ```
+   O `.env` fica fora do git. Cada fala é gerada **uma única vez** e guardada em `cache/audio` (não gasta créditos de novo),
+   e a legenda usa o tempo **exato** de cada palavra devolvido pelo ElevenLabs.
+   Para rascunhos sem gastar créditos: `--voz espeak`. Voz local alternativa: Piper (`pip install piper-tts`, `voz.motor: piper`).
 4. Na pasta do projeto:
    ```bash
    npm install
@@ -23,11 +27,6 @@ Cada vídeo é só um arquivo YAML curto. Personagens, rostos, cenários, açõe
    ```bash
    npx playwright install chromium
    ```
-   ```bash
-   python -m piper.download_voices pt_BR-faber-medium --download-dir assets/vozes
-   ```
-   Outras vozes PT-BR: `pt_BR-cadu-medium`, `pt_BR-jeff-medium` (mude `voz.modelo` no `config.yaml`).
-   Se `python` não funcionar, troque `voz.comando` para `[py, -m, piper]`.
 
 ## Uso
 
@@ -40,11 +39,20 @@ node gerar.mjs roteiros/exemplo_inimigo.yaml
 | `node gerar.mjs <roteiro> --preview` | abre uma prévia ao vivo no navegador (com voz e legenda), sem renderizar |
 | `node gerar.mjs <roteiro> --rapido` | 540×960 sem AO, para conferir rápido |
 | `node gerar.mjs <roteiro> --cenas 3-5` | só essas cenas (`saida/<nome>_parcial.mp4`) |
-| `node gerar.mjs <roteiro> --voz espeak` | voz robótica, sem precisar do Piper |
+| `node gerar.mjs <roteiro> --voz espeak` | voz robótica grátis (rascunho, não gasta créditos) |
+| `node gerar.mjs --vozes` | lista as vozes da sua conta ElevenLabs |
+| `node gerar.mjs --musicas` | lista as músicas de fundo disponíveis |
 | `node gerar.mjs <roteiro> --encoder h264_nvenc` | codifica o vídeo na GPU (mais rápido) |
 | `npm run catalogo` | lista todos os cenários, ações, rostos, acessórios, personagens… |
 
 **Como escrever roteiros:** veja [`docs/ROTEIRO.md`](docs/ROTEIRO.md) e o exemplo em `roteiros/exemplo_inimigo.yaml`.
+
+## Músicas de fundo
+
+8 trilhas **originais, compostas por código e em domínio público (CC0)** já vêm em `assets/musicas/`:
+`suspense, triste, alegre, engracado, epico, curioso, lofi, perseguicao`. Use `musica: triste` no roteiro
+(padrão: `suspense`; `musica: nenhuma` desliga). A música abaixa sozinha enquanto a voz fala (ducking).
+Detalhes, como gerar variações e outras fontes gratuitas: [`assets/musicas/LICENCA.md`](assets/musicas/LICENCA.md).
 
 ## GPU (importante)
 
