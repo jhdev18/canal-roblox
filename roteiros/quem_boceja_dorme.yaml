@@ -1,0 +1,296 @@
+titulo: Nesse mundo quem boceja dorme
+clima: engracado
+destaque: [bocejo, dorme, pão]
+# História original (docs/HISTORIAS.md · longa 1) — comédia em cadeia, ~2 min, no mundo integrado.
+
+elenco:
+  nina: nina
+  tiao: seu_tiao
+  prefeito: prefeito
+  padeiro: padeiro
+  farma: farmaceutica
+  prof: professora
+  palhaco: { base: professora, camisa: vermelho, calca: amarelo, acessorios: [cartola], cartola_cor: verde, extras: [blush] }
+  motorista: motorista
+  colega: crianca
+  guarda: policial
+  homem: cidadao
+  mulher: cidada
+  fofoqueira: vizinha_fofoqueira
+  vizinho: vizinho
+
+cenas:
+  # ---------- a regra ----------
+  - fala: Nesse mundo, bocejo é contagioso de verdade.
+    onde: mundo
+    local: praca
+    cam: medio
+    multidao: { n: 6, modo: natural, area: [-14, 14, -12, 4] }
+    atores: [{ id: homem, acao: bocejar, x: -1.6, vira: 25 }, { id: mulher, acao: cochilar, x: 1.6, vira: -25, sobre: zzz }]
+  - fala: Quem vê alguém bocejar cai no sono na hora, onde estiver.
+    onde: mundo
+    local: rua_bairro
+    cam: medio
+    atores: [{ id: vizinho, acao: cochilar, x: -6.3, z: 1.5, vira: 20, sobre: zzz }, { id: guarda, acao: cochilar, x: -6.0, z: -3.0, vira: 20, sobre: zzz }]
+  - fala: Por isso, aula chata é proibida por lei.
+    onde: mundo
+    local: escola
+    dentro: true
+    cam: medio
+    atores: [{ id: prof, acao: falar, x: 3.1, z: 3.5, vira: -20 }]
+  - fala: Professor de matemática dá aula fantasiado de palhaço.
+    cam: medio
+    atores: [{ id: palhaco, acao: dancar, rosto: rindo, x: 3.1, z: 3.5, vira: -20 }]
+  - fala: Nos ônibus, todo mundo viaja de óculos escuros.
+    onde: mundo
+    local: rua_bairro
+    cam: aberto
+    props: [{ tipo: ponto_onibus, x: -6.6, z: -3, vira: 90 }]
+    atores: [{ id: homem, acao: esperar, x: -5.4, z: -2, vira: 60, spec: { extras: [oculos_escuros] } }, { id: mulher, acao: celular, x: -5.6, z: 0.6, vira: 80, spec: { extras: [oculos_escuros] } }]
+  - fala: E quem boceja em público leva multa da prefeitura.
+    onde: mundo
+    local: prefeitura
+    cam: medio
+    atores: [{ id: guarda, acao: apontar, rosto: bravo, x: -1.6, vira: 30, prop: prancheta }, { id: homem, acao: triste, x: 1.6, vira: -30 }]
+  - fala: Todo mundo tem medo de bocejo.
+    onde: mundo
+    local: praca
+    cam: aberto
+    multidao: { n: 10, modo: natural, area: [-16, 16, -14, 6], acao: [olhar_redor, tremer, esperar] }
+    atores: [{ id: mulher, acao: tremer, rosto: nervoso }]
+
+  # ---------- personagens ----------
+  - fala: Menos a Nina, de onze anos.
+    onde: mundo
+    local: rua_bairro
+    cam: medio
+    mov: seguir
+    foco: nina
+    atores: [{ id: nina, acao: andar, rosto: feliz, x: -6.4, z: -5, vira: 0 }]
+  - fala: Ela vê alguém bocejar e… nada.
+    onde: mundo
+    local: escola
+    dentro: true
+    cam: medio
+    atores: [{ id: colega, acao: bocejar, x: -3.1, z: 3.5, vira: 25 }, { id: nina, acao: parado, rosto: confiante, x: 3.1, z: 3.5, vira: -25 }]
+  - fala: Nunca dormiu.
+    cam: close
+    foco: nina
+    atores: [{ id: nina, acao: parado, rosto: confiante, x: 3.1, z: 3.5 }]
+  - fala: O avô dela, o Seu Tião, é o contrário. Boceja o dia inteiro.
+    onde: mundo
+    local: casa
+    comodo: sala
+    cam: medio
+    angulo: 25
+    atores: [{ id: tiao, acao: bocejar }]
+  - fala: Por isso vive trancado em casa,
+    cam: medio
+    atores: [{ id: tiao, acao: sentar, rosto: triste }]
+  - fala: e a cidade chama ele de "Seu Sono".
+    onde: mundo
+    local: rua_bairro
+    cam: medio
+    atores: [{ id: fofoqueira, acao: cochichar, x: -6.0, z: -1, vira: 40 }, { id: vizinho, acao: rir, x: -3.8, z: 0.6, vira: -55 }]
+  - fala: E tem o prefeito Cardoso, que ama discurso comprido.
+    onde: mundo
+    local: prefeitura
+    dentro: true
+    cam: medio
+    atores: [{ id: prefeito, acao: discursar, x: 9, z: -4 }]
+
+  # ---------- o gatilho ----------
+  - fala: Até que chegou a inauguração da estátua nova da praça.
+    onde: mundo
+    local: estatua
+    cam: aberto
+    multidao: { n: 10, modo: natural, area: [-12, 12, -4, 10] }
+    atores: [{ id: nina, acao: comemorar, x: 2 }]
+  - fala: A cidade inteira foi.
+    onde: mundo
+    local: praca
+    cam: alto
+    dist: 2.2
+    multidao: { n: 22, modo: natural, area: [-20, 20, -18, 8] }
+    atores: [{ id: nina, acao: parado }]
+  - fala: O prefeito subiu pra discursar e falou.
+    onde: mundo
+    local: coreto
+    cam: baixo
+    foco: prefeito
+    atores: [{ id: prefeito, acao: discursar, x: 0, z: -2.4 }]
+  - fala: E falou.
+    cam: baixo
+    foco: prefeito
+    atores: [{ id: prefeito, acao: discursar, x: 0, z: -2.4 }]
+  - fala: E falou.
+    onde: mundo
+    local: praca
+    cam: aberto
+    multidao: { n: 14, modo: natural, area: [-16, 16, -12, 6], acao: [esperar, cocar_cabeca, olhar_redor, pensar] }
+    atores: [{ id: homem, acao: esperar, rosto: nervoso }]
+  - fala: Quarenta minutos depois, o padeiro bocejou.
+    cam: close
+    foco: padeiro
+    atores: [{ id: padeiro, acao: bocejar }]
+  - fala: Quem viu o padeiro, dormiu.
+    cam: medio
+    atores: [{ id: padeiro, acao: cochilar, x: 0, sobre: zzz }, { id: homem, acao: cochilar, x: -2.8, z: 1, vira: 30, sobre: zzz }, { id: mulher, acao: cochilar, x: 2.8, z: 1, vira: -30, sobre: zzz }]
+  - fala: Quem viu esses, bocejou e dormiu também.
+    cam: aberto
+    multidao: { n: 12, modo: natural, area: [-16, 16, -12, 6], acao: [cochilar], sobre: zzz }
+    atores: [{ id: farma, acao: bocejar }]
+  - fala: Em um minuto, a praça inteira estava roncando.
+    cam: alto
+    dist: 2.2
+    multidao: { n: 22, modo: natural, area: [-20, 20, -18, 8], acao: [cochilar], sobre: zzz }
+    atores: [{ id: prefeito, acao: cochilar, sobre: zzz }]
+  - fala: Até o motorista do caminhão de sorvete,
+    onde: mundo
+    local: rua_bairro
+    cam: aberto
+    dist: 1.5
+    angulo: 20
+    alvo_xz: [-0.5, -6]
+    props: [{ tipo: caminhao_sorvete, x: 0, z: -8, vira: 0 }]
+    atores: [{ id: motorista, acao: sentar, x: -1.0, y: 1.85, z: -4.8, vira: 0, sobre: zzz }]
+  - fala: que vinha descendo a rua,
+    cam: aberto
+    mov: zoom_in
+    dist: 1.6
+    angulo: 25
+    alvo_xz: [0, -8]
+    props: [{ tipo: caminhao_sorvete, x: 0, z: -8, vira: 0 }]
+    atores: [{ id: nina, acao: assustar, x: -6.4, z: 3, vira: 150 }]
+  - fala: sem ninguém acordado no volante.
+    cam: medio
+    angulo: -20
+    alvo_xz: [-1, -4.8]
+    props: [{ tipo: caminhao_sorvete, x: 0, z: -8, vira: 0 }]
+    atores: [{ id: motorista, acao: sentar, x: -1.0, y: 1.85, z: -4.8, vira: 0, sobre: zzz }]
+
+  # ---------- a solução em cadeia ----------
+  - fala: A Nina era a única acordada.
+    onde: mundo
+    local: praca
+    cam: medio
+    multidao: { n: 12, modo: natural, area: [-16, 16, -12, 6], acao: [cochilar], sobre: zzz }
+    atores: [{ id: nina, acao: olhar_redor, rosto: surpreso }]
+  - fala: E ela lembrou de uma coisa.
+    cam: close
+    atores: [{ id: nina, acao: pensar, rosto: pensativo }]
+  - fala: O avô sempre acorda quando ela faz pão de manhã.
+    onde: mundo
+    local: casa
+    comodo: cozinha
+    cam: medio
+    angulo: 30
+    atores: [{ id: nina, acao: cozinhar }, { id: tiao, acao: espreguicar, x: -2.6, z: 2.4, vira: 30 }]
+  - fala: Cheiro de pão quente acorda quem dorme por bocejo.
+    onde: mundo
+    local: padaria
+    dentro: true
+    cam: close
+    alvo_xz: [-2, -3.4]
+    atores: [{ id: nina, acao: apontar, rosto: confiante, x: -3.6, z: -0.6, vira: 160 }]
+  - fala: Ela correu pra padaria,
+    onde: mundo
+    local: padaria
+    cam: aberto
+    mov: seguir
+    foco: nina
+    atores: [{ id: nina, acao: correr, x: 4, z: 3, vira: 180, caminho: [[0.8, 0.6], [0, -2]] }]
+  - fala: abriu o forno
+    onde: mundo
+    local: padaria
+    dentro: true
+    cam: medio
+    alvo_xz: [6.6, -7.6]
+    atores: [{ id: nina, acao: cozinhar, x: 6.6, z: -6.2, vira: 0 }]
+  - fala: e arrastou as bandejas pra porta.
+    cam: aberto
+    mov: seguir
+    foco: nina
+    atores: [{ id: nina, acao: carregar, prop: bandeja_paes, x: 3, z: -3, vira: 0, caminho: [[-3, 1], [-4, 6]] }]
+  - fala: O vento levou o cheiro pela praça.
+    onde: mundo
+    local: praca
+    cam: aberto
+    multidao: { n: 12, modo: natural, area: [-16, 16, -12, 6], acao: [cochilar], sobre: zzz }
+    atores: [{ id: nina, acao: carregar, prop: bandeja_paes }]
+  - fala: O padeiro acordou primeiro,
+    cam: medio
+    atores: [{ id: padeiro, acao: espreguicar, rosto: surpreso }]
+  - fala: cheirou o pão,
+    cam: close
+    foco: padeiro
+    atores: [{ id: padeiro, acao: parado, rosto: apaixonado }, { id: nina, acao: carregar, prop: bandeja_paes, x: 2.4, vira: -40 }]
+  - fala: e saiu correndo atrás da Nina com mais bandejas.
+    onde: mundo
+    local: rua_bairro
+    cam: aberto
+    mov: seguir
+    atores: [{ id: nina, acao: correr, prop: bandeja_paes, x: -6.4, z: -2, vira: 0 }, { id: padeiro, acao: correr, prop: bandeja_paes, x: -6.0, z: -6.5, vira: 0 }]
+  - fala: Depois a farmacêutica.
+    onde: mundo
+    local: praca
+    cam: medio
+    multidao: { n: 8, modo: natural, area: [-16, 16, -12, 6], acao: [cochilar], sobre: zzz }
+    atores: [{ id: farma, acao: espreguicar }]
+  - fala: Depois a professora.
+    cam: medio
+    multidao: { n: 8, modo: natural, area: [-16, 16, -12, 6], acao: [cochilar], sobre: zzz }
+    atores: [{ id: prof, acao: espreguicar }]
+  - fala: Dois, quatro, oito… a cidade inteira acordando e carregando pão.
+    cam: alto
+    dist: 2.2
+    multidao: { n: 20, modo: natural, area: [-20, 20, -18, 8], acao: [carregar, espreguicar, comemorar], prop: bandeja_paes }
+    atores: [{ id: nina, acao: comemorar }]
+  - fala: Mas o caminhão já estava chegando na praça.
+    onde: mundo
+    local: rua_bairro
+    cam: baixo
+    mov: tremor
+    alvo_xz: [-2, -4]
+    props: [{ tipo: caminhao_sorvete, x: 0, z: -8, vira: 0 }]
+    atores: [{ id: nina, acao: correr, prop: pao, x: -4.6, z: -1, vira: 180 }]
+  - fala: A Nina subiu no estribo
+    cam: medio
+    angulo: -30
+    alvo_xz: [-2.4, -4.6]
+    props: [{ tipo: caminhao_sorvete, x: 0, z: -8, vira: 0 }]
+    atores: [{ id: nina, acao: maos_pra_cima, prop: pao, x: -3.1, y: 0.9, z: -4.4, vira: 90 }, { id: motorista, acao: sentar, x: -1.0, y: 1.85, z: -4.8, vira: 0, sobre: zzz }]
+  - fala: e enfiou um pão quente debaixo do nariz do motorista,
+    cam: close
+    angulo: -30
+    alvo_xz: [-1.8, -4.6]
+    props: [{ tipo: caminhao_sorvete, x: 0, z: -8, vira: 0 }]
+    atores: [{ id: motorista, acao: sentar, x: -1.0, y: 1.85, z: -4.8, vira: 0, sobre: zzz }, { id: nina, acao: apontar, prop: pao, x: -3.1, y: 0.9, z: -4.4, vira: 80 }]
+  - fala: e ele pisou no freio a um palmo da praça.
+    cam: medio
+    mov: tremor
+    alvo_xz: [-1, -4.8]
+    props: [{ tipo: caminhao_sorvete, x: 0, z: -8, vira: 0 }]
+    atores: [{ id: motorista, acao: sentar, rosto: assustado, x: -1.0, y: 1.85, z: -4.8, vira: 0 }]
+
+  # ---------- epílogo ----------
+  - fala: Hoje, todo discurso do prefeito tem um padeiro do lado.
+    onde: mundo
+    local: coreto
+    cam: baixo
+    atores: [{ id: prefeito, acao: discursar, x: -1.6, z: -2.4 }, { id: padeiro, acao: carregar, prop: bandeja_paes, x: 1.8, z: -2.0, vira: -20 }]
+  - fala: O Seu Tião voltou pra rua e virou o guarda oficial dos pães.
+    onde: mundo
+    local: padaria
+    cam: medio
+    atores: [{ id: tiao, acao: continencia, rosto: confiante, x: 1.6, z: 1 }, { id: nina, acao: carregar, prop: bandeja_paes, x: -1.6, z: 1 }]
+  - fala: E o prefeito? No discurso da semana seguinte, ele mesmo bocejou,
+    onde: mundo
+    local: coreto
+    cam: baixo
+    foco: prefeito
+    atores: [{ id: prefeito, acao: bocejar, x: 0, z: -2.4 }]
+  - fala: e dormiu ali mesmo, em pé.
+    cam: baixo
+    mov: zoom_out
+    atores: [{ id: prefeito, acao: cochilar, x: 0, z: -2.4, sobre: zzz }, { id: padeiro, acao: rir, x: 3.4, y: 0, z: -1.6, vira: -30 }]

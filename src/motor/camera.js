@@ -43,6 +43,7 @@ export function posicionarCamera(cam, c, t, dur, alvoFn, espalhamento = 0) {
   const alvo = alvoFn(mov === 'seguir' ? t : 0).clone().add(new THREE.Vector3(0, alt, 0));
   const a = THREE.MathUtils.degToRad(ang), b = THREE.MathUtils.degToRad(el);
   cam.position.set(alvo.x + Math.sin(a) * Math.cos(b) * dist, alvo.y + Math.sin(b) * dist, alvo.z + Math.cos(a) * Math.cos(b) * dist);
+  if (cam.position.y < 0.9) cam.position.y = 0.9;   // nunca abaixo do chão (câmera baixa + grupo largo afastava até atravessar o piso)
   if (mov === 'tremor') { cam.position.x += Math.sin(t * 47) * 0.08; cam.position.y += Math.sin(t * 61) * 0.08; }
   cam.lookAt(alvo);
   if (c.inclinar) cam.rotateZ(THREE.MathUtils.degToRad(c.inclinar));

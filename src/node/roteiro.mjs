@@ -73,7 +73,7 @@ export function carregarRoteiro(arquivo) {
       camera: c.cam ?? c.camera ?? CAM_CICLO[i % CAM_CICLO.length][0], mov: c.mov, angulo: c.angulo ?? (c.cam || c.camera ? undefined : CAM_CICLO[i % CAM_CICLO.length][1]),
       dist: c.dist, altura: c.altura, inclinar: c.inclinar, foco: c.foco, props: c.props || [],
       multidao: c.multidao,
-      texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque, alcance: c.alcance,
+      texto: c.texto, texto_palanque: c.texto_palanque, palanque: c.palanque, alcance: c.alcance, alvo_xz: c.alvo_xz,
     };
     if (c.fila) { // fila de pessoas (lotérica, banco, mercado, padaria, farmácia, posto de saúde)
       const f = typeof c.fila === 'number' ? { n: c.fila } : c.fila;
@@ -95,7 +95,7 @@ export function carregarRoteiro(arquivo) {
     cen.atoresBrutos = lista;
     cen.atores = (lista || []).map(a => {
       if (typeof a === 'string') { const [id, acao, rosto] = a.trim().split(/\s+/); a = { id, acao, rosto }; }
-      const s = spec(a.id, onde);
+      const s = a.spec ? { ...spec(a.id, onde), ...a.spec, extras: a.spec.extras ?? spec(a.id, onde).extras } : spec(a.id, onde);   // `spec:` no ator ajusta só nesta cena (ex.: óculos escuros)
       const ator = { id: a.id, spec: s, acao: a.acao || 'parado', rosto: a.rosto, x: a.x, z: a.z, y: a.y, vira: a.vira, prop: a.prop, atraso: a.atraso,
         prop_texto: a.prop_texto, prop_cor: a.prop_cor, pet: a.pet, pet_cor: a.pet_cor, caminho: a.caminho, ate: a.ate, sobre: a.sobre, p: { vel: a.vel, ao_chegar: a.ao_chegar } };
       for (const pt of [...(a.caminho || []), ...(a.ate ? [a.ate] : [])]) if (!Array.isArray(pt) || pt.length !== 2 || pt.some(v => typeof v !== 'number'))
