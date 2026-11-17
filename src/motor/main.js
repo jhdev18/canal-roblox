@@ -9,7 +9,7 @@ import { construirCenario } from './cenarios.js';
 import { criarProp } from './props.js';
 import { posicionarCamera } from './camera.js';
 import { ACOES, LOCOMOCAO, percorrer, ROSTO_DA_ACAO, PROP_DA_ACAO } from './acoes.js';
-import { rng } from './util.js';
+import { rng, canvas, texturaCanvas } from './util.js';
 import { carregarRostosPersonalizados } from './rostos.js';
 import { cor } from './util.js';
 const RAD = Math.PI / 180;
@@ -104,9 +104,10 @@ async function montar(c) {
   const trilhas = []; for (const a of atores) { const pts = rotaDe(a);   // pontos por onde os personagens passam (a multidão não fica no caminho)
     for (let k = 0; k < pts.length; k++) { trilhas.push(pts[k]); if (k) { const [ax, az] = pts[k - 1], [bx, bz] = pts[k], L = Math.hypot(bx - ax, bz - az);
       for (let s = 1.5; s < L; s += 1.5) trilhas.push([ax + (bx - ax) * s / L, az + (bz - az) * s / L]); } } }
+  for (const a of atores) if (a.sobre) colocarSobre(a);
   const usados = new Set(bases.map(b => [b.x, b.y, b.z].join()));
   const assentosLivres = Array.isArray(cen.ancoras.sentar?.[0]) ? cen.ancoras.sentar.filter(p => !usados.has([p[0], p[1], p[2]].join())) : [];
-  if (c.multidao) for (const f of criarMultidao({ ...c.multidao, ancoraFila: cen.ancoras.fila, assentos: assentosLivres, principais: trilhas, livreAte, chaoLivre, dur }, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); atores.push(f); }
+  if (c.multidao) for (const f of criarMultidao({ ...c.multidao, ancoraFila: cen.ancoras.fila, assentos: assentosLivres, principais: trilhas, livreAte, chaoLivre, dur }, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); if (c.multidao.sobre) { f.sobre = c.multidao.sobre; colocarSobre(f); } atores.push(f); }
   const prin = atores.filter(a => !a.figurante).map(a => a.base.x);
   const xs = prin; const espalha = xs.length > 1 ? Math.max(...xs) - Math.min(...xs) : 0;
   atual = { c, raiz, atores, cen, dur: c.dur, espalha, nquadros: Math.max(1, Math.round(c.dur * cfg.fps)) };
@@ -207,10 +208,29 @@ function alvo(t) {
   const v = new THREE.Vector3(); (foco.length ? foco : atores).forEach(a => v.add(posNoTempo(a, t))); return v.divideScalar(foco.length || atores.length);
 }
 
+/** `sobre:` = o que flutua acima da cabeça (a regra do mundo visível): 'zzz', { texto, cor } ou o nome de um prop. */
+function colocarSobre(a) {
+  const v = typeof a.sobre === 'string' ? { tipo: a.sobre } : a.sobre; let o;
+  if (v.tipo === 'zzz' || v.texto) { const [cv, g] = canvas(256, 128); g.font = '900 84px Arial Black, Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = 12; g.strokeStyle = '#1d3b72';
+    const t = v.texto || 'Zzz'; g.strokeText(t, 128, 64); g.fillStyle = v.cor || '#ffffff'; g.fillText(t, 128, 64);
+    o = new THREE.Sprite(new THREE.SpriteMaterial({ map: texturaCanvas(cv), transparent: true, depthWrite: false })); o.scale.set(v.tamanho || 2.2, (v.tamanho || 2.2) / 2, 1); o.layers.set(1); }   // camada 1: desenhada por cima, sem AO
+  else { o = criarProp({ tipo: v.tipo, ...v }); if (!o) return; }
+  o.position.set(0.4, v.altura ?? 6.6, 0); a.ator.raiz.add(o); a.sobreObj = o; a.sobreY = o.position.y;
+}
+
+/** Imagem final: cena com AO/sombras e, por cima, a camada 1 (indicadores flutuantes como "Zzz", que o AO estragaria). */
+function renderizar() {
+  cam.layers.set(0); composer.render();
+  let tem = false; cena.traverse(o => { if (o.isSprite && o.layers.isEnabled(1)) tem = true; });
+  if (!tem) return;
+  const ac = R.autoClear, fundo = cena.background; R.autoClear = false; cena.background = null; R.clearDepth(); cam.layers.set(1); R.render(cena, cam); cam.layers.set(0); cena.background = fundo; R.autoClear = ac;
+}
+
 function posar(t) {
   const { atores, c, dur } = atual;
-  for (const a of atores) {
+  for (const [i, a] of atores.entries()) {
     a.ator.posar(a.acao, t + (a.atraso || 0), dur, a.p || {}, a.base);
+    if (a.sobreObj) { a.sobreObj.position.y = a.sobreY + Math.sin(t * 2.4 + i) * 0.18; a.sobreObj.position.x = 0.4 + Math.sin(t * 1.3 + i) * 0.12; }
     if (a.pet) { // animal de estimação acompanha o dono (ao lado direito, um pouco à frente)
       const rz = a.ator.raiz, ang = rz.rotation.y, ox = a.acao === 'passear_cachorro' ? 0.9 : -1.9, oz = a.acao === 'passear_cachorro' ? 2.6 : 0.6;
       a.pet.position.set(rz.position.x + ox * Math.cos(ang) + oz * Math.sin(ang), Math.abs(Math.sin(t * 11)) * (LOCOMOCAO.has(a.acao) ? 0.1 : 0), rz.position.z - ox * Math.sin(ang) + oz * Math.cos(ang));
@@ -276,7 +296,7 @@ function liberarVisao() {
 }
 
 function quadro(f, formato = 'image/jpeg', q = 0.93) {
-  posar(f / cfg.fps); composer.render();
+  posar(f / cfg.fps); renderizar();
   return R.domElement.toDataURL(formato, q);
 }
 function quadros(f0, n) { const out = []; for (let f = f0; f < Math.min(f0 + n, atual.nquadros); f++) out.push(quadro(f)); return out; }
@@ -295,7 +315,7 @@ async function preview() {
     const t0 = performance.now();
     const loop = () => { if (job.cenas[i] !== c) return; if (pausado) return requestAnimationFrame(loop);
       const t = (performance.now() - t0) / 1000; if (t >= c.dur) return tocar(i + 1);
-      posar(t); composer.render(); const w = (c.palavras || []).find(p => t >= p.ini && t < p.fim); leg.textContent = w ? w.texto : '';
+      posar(t); renderizar(); const w = (c.palavras || []).find(p => t >= p.ini && t < p.fim); leg.textContent = w ? w.texto : '';
       requestAnimationFrame(loop); };
     loop();
   }

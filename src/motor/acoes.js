@@ -87,6 +87,8 @@ export const ACOES = {
   regar: (t) => { const b = respirar(poseBase(), t, 0.4); b.bd = [70 + S(t * 2) * 8, -6]; b.cab[0] = 18; return b; },
   gritar: (t) => { const b = poseBase(); b.bd = [140, -35]; b.be = [140, -35]; b.tor[0] = -8; b.cab[0] = -14; b.y = Math.abs(S(t * 10)) * 0.05; return b; },
   bater_porta: (t) => { const b = respirar(poseBase(), t, 0.3); b.bd = [95 + Math.max(0, S(t * 14)) * 18, -5]; return b; },
+  bocejar: (t) => { const b = poseBase(), k = Math.max(0, S(Math.min(t, 2.2) / 2.2 * Math.PI)); b.bd = [150 * k, 12]; b.be = [0, 10 + 35 * k]; b.cab[0] = -22 * k; b.tor[0] = -6 * k; b.y = 0.08 * k; return b; },   // mão na boca, cabeça pra trás
+  cochilar: (t) => { const b = respirar(poseBase(), t, 0.5); b.cab[0] = 24 + S(t * 1.4) * 7; b.tor[0] = 7; b.bd = [4, 2]; b.be = [4, 2]; b.dx = S(t * 0.9) * 0.06; return b; },   // dorme em pé, cabeça caindo
   espreguicar: (t) => { const b = poseBase(); const k = ease(t / 0.8); b.bd = [0, 20 + 150 * k]; b.be = [0, 20 + 150 * k]; b.tor[0] = -10 * k; b.cab[0] = -20 * k; b.y = 0.1 * k; return b; },
   cozinhar: (t) => { const b = respirar(poseBase(), t, 0.3); b.bd = [60, -18 + S(t * 6) * 14]; b.be = [50, -10]; b.cab[0] = 22; return b; },
   comer: (t) => { const b = respirar(poseBase(), t, 0.3); const k = Math.max(0, S(t * 4)); b.bd = [60 + k * 70, -25 * k]; b.be = [40, -10]; b.cab[0] = 10 - k * 6; return b; },
@@ -124,7 +126,7 @@ export function percorrer(x0, z0, caminho, dist) {
 }
 
 /** Rosto padrão quando o roteiro não define `rosto` para o ator. */
-export const ROSTO_DA_ACAO = { chorar: 'chorando', assustar: 'assustado', bravo: 'bravo', comemorar: 'rindo', dormir: 'dormindo',
+export const ROSTO_DA_ACAO = { bocejar: 'bocejando', cochilar: 'dormindo', chorar: 'chorando', assustar: 'assustado', bravo: 'bravo', comemorar: 'rindo', dormir: 'dormindo',
   cair: 'assustado', triste: 'triste', pensar: 'pensativo', tremer: 'nervoso', dancar: 'feliz', socar: 'bravo',
   discursar: 'confiante', andar_confiante: 'confiante', acenar_multidao: 'sorriso', correr_medo: 'assustado', fugir: 'assustado',
   maos_pra_cima: 'assustado', implorar: 'triste', espiar: 'desconfiado', cochichar: 'malandro', comemorar_vitoria: 'rindo',

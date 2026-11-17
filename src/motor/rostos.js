@@ -59,6 +59,7 @@ export const EXPRESSOES = {
   assustado: g => { olhosGrandes(g, { pup: 6 }); traco(g, [[92, 186], [102, 176], [114, 186], [126, 176], [138, 186], [150, 176], [162, 186]], 7); },
   surpreso: g => { sobrancelhas(g, 'surpreso'); olhosGrandes(g, { pup: 9 }); oval(g, 128, 186, 16, 22); },
   bravo: g => { sobrancelhas(g, 'bravo'); olhos(g, { ry: 15, dy: 4 }); bocaAberta(g, [[90, 192], [128, 166, 166, 192], [128, 200, 90, 192]]); },
+  bocejando: g => { for (const x of [OE, OD]) traco(g, [[x - 14, OY + 2], [x + 14, OY - 2]], 7); oval(g, 128, 192, 18, 30); },
   dormindo: g => { for (const x of [OE, OD]) traco(g, [[x - 15, OY + 4], [x + 15, OY + 4]], 7); oval(g, 128, 182, 8, 6);
     g.fillStyle = P; g.font = 'bold 34px sans-serif'; g.fillText('z', 196, 70); g.font = 'bold 24px sans-serif'; g.fillText('z', 222, 44); },
   apaixonado: g => { coracao(g, OE, OY, 20); coracao(g, OD, OY, 20); traco(g, [[88, 162], [128, 200, 168, 162]], 9); },

@@ -106,6 +106,9 @@ export const PROPS_MAO = {
   garfo: () => grupo([cilindro(0.03, 0.03, 0.6, '#ccc', { pos: [0, 0.2, 0] }), caixa(0.16, 0.18, 0.03, '#ccc', { pos: [0, 0.55, 0] })]),
   sacola: () => grupo([caixa(0.9, 1.0, 0.5, '#f2f3f3', { pos: [0, -0.7, 0] }), caixa(0.5, 0.06, 0.06, '#f2f3f3', { pos: [0, -0.1, 0] })]),
   coleira: () => cilindro(0.025, 0.025, 2.6, '#c4281c', { pos: [0, -0.9, 0.9], rot: [-55, 0, 0] }),
+  bandeja_paes: () => { const g = grupo([caixa(1.8, 0.1, 1.2, mat('#b8bcc6', { metal: 0.6, rough: 0.35 }), { pos: [0, -0.4, 0.5] })]);
+    for (let i = 0; i < 6; i++) g.add(caixa(0.5, 0.26, 0.32, '#d39a52', { pos: [-0.6 + (i % 3) * 0.6, -0.22, 0.25 + Math.floor(i / 3) * 0.5], round: 0.12 })); return g; },
+  pao: () => grupo([caixa(0.75, 0.36, 0.44, '#d39a52', { pos: [0, 0.2, 0], round: 0.16 })]),
   bola_mao: () => grupo([esfera(0.42, '#ffffff', { pos: [0, -0.3, 0.2] })]),
   bandeirinha: (o) => grupo([cilindro(0.03, 0.03, 1.6, '#ddd', { pos: [0, 0.8, 0] }), caixa(0.9, 0.6, 0.03, o.cor || '#1f9d48', { pos: [0.47, 1.3, 0] })]),
   cartaz: (o) => { const [c, g] = canvas(256, 160); g.fillStyle = '#fff'; g.fillRect(0, 0, 256, 160); g.strokeStyle = '#c4281c'; g.lineWidth = 10; g.strokeRect(5, 5, 246, 150);
@@ -151,6 +154,12 @@ export function criarPersonagem(spec = {}) {
     (a.onde === 'cabeca' ? cab : torsoAnc).add(a.obj);
   }
   raiz.traverse(o => { if (o.isMesh && o !== rosto) { o.castShadow = true; o.receiveShadow = true; } });
+  if (s.fantasma) {   // fantasma clássico: sem pernas, com "cauda" de lençol, levemente translúcido e brilhando
+    pd.visible = false; pe.visible = false;
+    corpo.add(cilindro(1.25, 0.35, 2.0, mat('#eef5ff'), { pos: [0, -0.95, 0], seg: 14 }));
+    raiz.traverse(o => { if (o.isMesh && o.visible) { o.material = o.material.clone(); if (o !== rosto) o.material.color?.set('#eef5ff');
+      Object.assign(o.material, { transparent: true, opacity: o === rosto ? 0.95 : 0.8 }); if (o.material.emissive) { o.material.emissive.set('#bcd8ff'); o.material.emissiveIntensity = 0.45; } o.castShadow = false; } });
+  }
   raiz.scale.setScalar(s.escala || 1);
 
   let propAtual = null, propNome = null;
@@ -172,7 +181,7 @@ export function criarPersonagem(spec = {}) {
         if (r.chegou) q = ACOES[p.ao_chegar || 'parado'](t, dur, p);
         bx = r.x; bz = r.z; vira = rad(r.vira); q.frente = 0;
       }
-      raiz.position.set(bx + Math.sin(vira) * q.frente + q.dx * Math.cos(vira), (base.y || 0), bz + Math.cos(vira) * q.frente);
+      raiz.position.set(bx + Math.sin(vira) * q.frente + q.dx * Math.cos(vira), (base.y || 0) + (s.fantasma ? 0.45 + Math.sin(t * 2.2) * 0.2 : 0), bz + Math.cos(vira) * q.frente);
       raiz.rotation.set(rad(q.raiz[0]), vira + rad(q.raiz[1]), rad(q.raiz[2]), 'YXZ');
       corpo.position.y = 2 + q.y;
       corpo.rotation.set(rad(q.tor[0]), rad(q.tor[1]), rad(q.tor[2]));

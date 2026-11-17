@@ -57,3 +57,12 @@ entregador:        { pele: pele_media, camisa: vermelho, calca: preto, acessorio
 carteiro:          { pele: pele_clara, camisa: amarelo, calca: azul, acessorios: [bone, mochila], bone_cor: azul, mochila_cor: amarelo }
 pedreiro:          { pele: pele_escura, camisa: cinza, calca: azul, acessorios: [capacete], capacete_cor: amarelo, extras: [bigode] }
 jogador:           { pele: amarelo, camisa: amarelo, calca: azul, roupa: uniforme, acessorios: [cabelo_espetado], cabelo_cor: "#111" }
+
+# --- histórias originais (docs/HISTORIAS.md) ---
+padeiro:       { pele: pele_clara, camisa: branco, calca: "#5a5d66", acessorios: [touca], touca_cor: branco, extras: [bigode], rosto: sorriso }
+farmaceutica:  { pele: pele_media, camisa: branco, calca: azul, roupa: jaleco, acessorios: [rabo_de_cavalo], cabelo_cor: preto, extras: [oculos, cilios] }
+seu_tiao:      { base: vovo, camisa: "#7c5c46", calca: bege }
+nina:          { base: menina, camisa: laranja, laco_cor: amarelo }
+seu_nono:      { base: vovo, camisa: "#4f6f8f", calca: bege, extras: [bigode], rosto: neutro }
+fantasma:      { pele: branco, camisa: branco, calca: branco, rosto: assustado, fantasma: true }
+motorista:     { base: vendedor, camisa: rosa, acessorios: [bone], bone_cor: branco }

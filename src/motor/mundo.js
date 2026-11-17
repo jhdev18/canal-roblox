@@ -514,6 +514,7 @@ export function enquadrarMundo(g, { local, dentro, comodo }) {
     else if (dentro) { lp = [0, -(ref?.userData.d || 12) * 0.42]; chao = 0.4; }
     const [dx, dz] = rot(lp[0], lp[1], rb); S = [lote.f[0] + dx, lote.f[1] + dz];
     if (dentro || comodo) ancLocal = ref?.userData.ancoras || {};
+    if (comodo && Array.isArray(ancLocal.sentar?.[0])) ancLocal = { ...ancLocal, sentar: ancLocal.sentar.slice().sort((p, q) => Math.hypot(p[0] - lp[0], p[2] - lp[1]) - Math.hypot(q[0] - lp[0], q[2] - lp[1])) };   // no cômodo, senta nos assentos dele
   } else if (pto) { const rb = pto.rot * RAD; r = pto.rot; S = [pto.f[0] + Math.sin(rb) * pto.recuo, pto.f[1] + Math.cos(rb) * pto.recuo]; chao = pto.chao; }
   else { g.position.set(0, -0.45, 0); return { ancoras: {} }; }
   const th = -r * RAD; g.rotation.y = th;

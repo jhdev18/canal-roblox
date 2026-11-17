@@ -218,6 +218,17 @@ export const PROPS = {
     ...[[-0.95, 0.85], [0.95, 0.85], [-0.95, -0.85], [0.95, -0.85]].map(([x, z]) => caixa(0.15, 0.95, 0.15, o.cor || '#f2f3f3', { pos: [x, 0.47, z] }))]),
   saco_lixo: () => grupo([esfera(0.6, '#1b1b1b', { pos: [0, 0.55, 0], mat: { rough: 0.3 } }), esfera(0.5, '#1b1b1b', { pos: [0.8, 0.45, 0.2], mat: { rough: 0.3 } })]),
   vaso_flor: (o = {}) => grupo([cilindro(0.45, 0.35, 0.8, '#b5653b', { pos: [0, 0.4, 0] }), ...[0, 1, 2, 3].map(i => esfera(0.22, o.cor || ['#ff4f8b', '#ffd23f', '#e53935', '#b06bff'][i], { pos: [Math.sin(i * 1.6) * 0.25, 1.05, Math.cos(i * 1.6) * 0.25] }))]),
+  caminhao_sorvete: (o = {}) => { const c = o.cor || '#ff8fb1', g = grupo([caixa(4.4, 1.0, 10, '#3a3d44', { pos: [0, 1.2, 0] }),
+      caixa(4.2, 0.3, 3.0, '#f2f3f3', { pos: [0, 1.85, 3.4] }), caixa(4.2, 0.25, 3.0, '#f2f3f3', { pos: [0, 4.95, 3.4] }), caixa(4.2, 1.3, 0.2, '#f2f3f3', { pos: [0, 2.6, 4.85] }),   // cabine aberta: dá pra ver o motorista
+      ...[-2.0, 2.0].map(x => caixa(0.2, 1.3, 3.0, '#f2f3f3', { pos: [x, 2.6, 3.4] })), ...[-2.0, 2.0].map(x => caixa(0.2, 3.1, 0.25, '#f2f3f3', { pos: [x, 3.4, 4.85] })),
+      caixa(3.8, 1.6, 0.08, new THREE.MeshStandardMaterial({ color: 0x9fd8ff, roughness: 0.05, transparent: true, opacity: 0.25, depthWrite: false }), { pos: [0, 4.05, 4.88], sombra: false }),
+      caixa(1.6, 0.9, 1.2, '#3a3d44', { pos: [-1.0, 2.4, 3.0] }), cilindro(0.45, 0.45, 0.1, '#222', { pos: [-1.0, 3.5, 4.3], rot: [60, 0, 0], seg: 14 }),   // banco e volante caixa(4.4, 5.0, 6.6, c, { pos: [0, 4.2, -1.6], round: 0.15 }),
+      caixa(4.45, 0.6, 6.6, '#ffffff', { pos: [0, 3.0, -1.6] }), cilindro(0, 0.7, 1.8, '#d9a25a', { pos: [0, 7.6, -1.6], rot: [180, 0, 0], seg: 12 }), esfera(0.9, '#ffd6e6', { pos: [0, 8.8, -1.6] })]);
+    for (const x of [-2.1, 2.1]) for (const z of [3.2, -3.6]) g.add(cilindro(0.9, 0.9, 0.6, '#1b1b1b', { pos: [x, 0.9, z], rot: [0, 0, 90], seg: 14 }));
+    const pl = placaTexto(o.texto || 'SORVETES', 3.8, 1.1, { fundo: '#ffffff', corTexto: '#e0207a' }); pl.position.set(2.24, 5.4, -1.6); pl.rotation.y = Math.PI / 2; g.add(pl);
+    const p2 = placaTexto(o.texto || 'SORVETES', 3.8, 1.1, { fundo: '#ffffff', corTexto: '#e0207a' }); p2.position.set(-2.24, 5.4, -1.6); p2.rotation.y = -Math.PI / 2; g.add(p2); return g; },
+  corrente: (o = {}) => { const g = grupo([]), n = o.n || 10; for (let i = 0; i < n; i++) g.add(caixa(0.45, i % 2 ? 0.12 : 0.3, i % 2 ? 0.3 : 0.12, mat('#8c8f99', { metal: 0.7, rough: 0.35 }), { pos: [i * 0.36, 0, 0] })); return g; },
+  espelho: () => grupo([caixa(2.6, 3.6, 0.15, '#c9a24a'), caixa(2.2, 3.2, 0.05, mat('#cfe8f5', { metal: 0.85, rough: 0.05 }), { pos: [0, 0, 0.1], sombra: false })]),   // pendurado na parede (pos = centro)
   // --- mobiliário urbano ---
   ponto_onibus: (o = {}) => { const g = grupo([caixa(6.4, 0.15, 2.6, '#c3c7cf', { pos: [0, 0.08, 0] }), caixa(6.8, 0.25, 3.0, o.cor || '#1d3b72', { pos: [0, 6.5, 0.1] }),
       caixa(6.2, 4.6, 0.08, new THREE.MeshStandardMaterial({ color: 0xdff2ff, transparent: true, opacity: 0.3, roughness: 0.05, depthWrite: false }), { pos: [0, 3.2, -1.1], sombra: false })]);
