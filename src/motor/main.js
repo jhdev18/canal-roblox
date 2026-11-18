@@ -291,7 +291,7 @@ function liberarVisao() {
   const alvos = atual.atores.filter(a => !a.figurante); if (atual.cen.cameraFixa || atual.c.liberar_visao === false) return;
   const raizCen = atual.cen.grupo, rc = new THREE.Raycaster(), caixa = new THREE.Box3(), tam = new THREE.Vector3(), escondidos = new Set();
   const topo = (o) => { while (o.parent && o.parent !== raizCen) o = o.parent; return o.parent === raizCen ? o : null; };
-  for (const t of [0, atual.dur * 0.5, atual.dur]) {
+  for (const t of Array.from({ length: 11 }, (_, k) => atual.dur * k / 10)) {   // vários instantes: árvore/poste que cruza a lente no meio de um 'seguir' também sai
     posar(t); cena.updateMatrixWorld(true);
     for (const o of raizCen.children) { // objetos colados na lente (copas de árvore, postes) também saem
       if (escondidos.has(o)) continue; caixa.setFromObject(o).getSize(tam);
