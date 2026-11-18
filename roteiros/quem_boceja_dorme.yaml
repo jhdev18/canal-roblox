@@ -98,9 +98,12 @@ cenas:
   - fala: E tem o prefeito Cardoso, que ama discurso comprido.
     onde: mundo
     local: prefeitura
-    dentro: true
-    cam: medio
-    atores: [{ id: prefeito, acao: discursar, x: 9, z: -4 }]
+    cam: aberto
+    angulo: 0
+    foco: prefeito
+    # na frente da prefeitura, falando para uma plateia que já boceja
+    multidao: { n: 7, modo: espalhado, area: [-6, 6, 4, 10], olhar_z: 0, acao: [parado, bocejar, esperar] }
+    atores: [{ id: prefeito, acao: discursar, x: 0, z: 0, vira: 0 }]
 
   # ---------- o gatilho ----------
   - fala: Até que chegou a inauguração da estátua nova da praça.
