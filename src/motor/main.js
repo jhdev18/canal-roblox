@@ -236,7 +236,8 @@ function posar(t) {
   const { atores, c, dur } = atual;
   for (const [i, a] of atores.entries()) {
     a.ator.posar(a.acao, t + (a.atraso || 0), dur, a.p || {}, a.base);
-    if (a.sobreObj && !a.sobreFixo) { a.sobreObj.position.y = a.sobreY + Math.sin(t * 2.4 + i) * 0.18; a.sobreObj.position.x = a.sobreX + Math.sin(t * 1.3 + i) * 0.12; }
+    if (a.sobreObj) { const pulo = (a.ator.corpo?.position.y ?? 2) - 2;   // o indicador acompanha o corpo quando a pessoa pula/agacha
+      a.sobreObj.position.y = a.sobreY + pulo + (a.sobreFixo ? 0 : Math.sin(t * 2.4 + i) * 0.18); if (!a.sobreFixo) a.sobreObj.position.x = a.sobreX + Math.sin(t * 1.3 + i) * 0.12; }
     if (a.pet) { // animal de estimação acompanha o dono (ao lado direito, um pouco à frente)
       const rz = a.ator.raiz, ang = rz.rotation.y, ox = a.acao === 'passear_cachorro' ? 0.9 : -1.9, oz = a.acao === 'passear_cachorro' ? 2.6 : 0.6;
       a.pet.position.set(rz.position.x + ox * Math.cos(ang) + oz * Math.sin(ang), Math.abs(Math.sin(t * 11)) * (LOCOMOCAO.has(a.acao) ? 0.1 : 0), rz.position.z - ox * Math.sin(ang) + oz * Math.cos(ang));

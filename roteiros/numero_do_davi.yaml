@@ -80,7 +80,9 @@ cenas:
     local: rua_bairro
     hora: tarde
     cam: medio
-    atores: [{ id: cida, acao: abracar, rosto: chorando, x: 0.6, vira: -70 }, { id: davi, acao: abracar, rosto: feliz, x: -0.7, vira: 70, pet: cachorro }]
+    angulo: 0
+    dist: 1.2
+    atores: [{ id: davi, acao: abracar_lado_e, rosto: feliz, x: -1.15, vira: 0 }, { id: cida, acao: abracar_lado, rosto: chorando, x: 1.15, vira: 0 }]   # abraço de lado: rosto dos dois aparece
   - fala: E o número dele mudou pela primeira vez.
     cam: medio
     atores: [{ id: davi, acao: olhar_redor, rosto: surpreso, sobre: { texto: "0", altura: 5.6, cor: "#ff5a5a" } }]

@@ -42,7 +42,9 @@ export const ACOES = {
     b.y = Math.abs(S(t * 6)) * 1.1; b.cab[0] = -10; return b; },
   pular: (t) => { const b = poseBase(); const k = Math.max(0, S(t * TAU * 0.9)); b.y = k * 2.2; b.bd = [0, 30 + k * 120]; b.be = [0, 30 + k * 120]; b.pd[0] = k * 20; b.pe[0] = -k * 20; return b; },
   apontar: (t) => { const b = respirar(poseBase(), t, 0.5); b.bd = [90, 0]; return b; },
-  abracar: (t) => { const b = respirar(poseBase(), t, 0.5); b.bd = [85, -28]; b.be = [85, -28]; return b; },
+  abracar_lado: (t) => { const b = respirar(poseBase(), t, 0.5); b.bd = [-35, 84 + S(t * 3) * 3]; return b; },   // braço direito por cima do ombro de quem está à ESQUERDA dele na tela (os dois de frente para a câmera)
+  abracar_lado_e: (t) => { const b = respirar(poseBase(), t, 0.5); b.be = [-35, 84 + S(t * 3) * 3]; return b; },   // braço esquerdo por cima do ombro de quem está à DIREITA dele na tela
+  abracar: (t) => { const b = respirar(poseBase(), t, 0.5); b.bd = [72, -52]; b.be = [72, -52]; b.tor[0] = 6 + S(t * 2) * 2; b.cab[0] = 8; return b; },   // braços envolvendo o outro (use os dois a ~1,5 stud, virados um para o outro)
   olhar_redor: (t) => { const b = respirar(poseBase(), t); b.cab[1] = S(t * 2.2) * 50; return b; },
   cair: (t) => { const b = poseBase(); const k = ease(t / 0.55); b.raiz = [-90 * k, 0, 0]; b.y = 0.5 * k; b.bd = [0, 10 + 60 * k]; b.be = [0, 10 + 60 * k]; return b; },
   dancar: (t) => { const b = poseBase(); const s = S(t * TAU * 1.6); b.bd = [0, 90 + s * 70]; b.be = [0, 90 - s * 70]; b.tor[2] = s * 8; b.cab[2] = -s * 10;
