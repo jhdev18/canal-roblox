@@ -27,7 +27,7 @@ Leia este arquivo primeiro. Ele resume o que já existe, as regras de trabalho c
 |---|---|---|
 | `quem_salva_sua_vida_mundo.yaml` | curto, 15 cenas | conferido cena a cena |
 | `fantasmas_seu_nono.yaml` | curto, 14 cenas (comédia em lista) | conferido |
-| `reflexo_adiantado.yaml` | curto, 14 cenas (terror) | conferido |
+| `numero_do_davi.yaml` | curto, 14 cenas (emoção; substitui o antigo `reflexo_adiantado`, removido porque reflexos não ficam bons) | conferido |
 | `nuvem_da_bia.yaml` | curto, 15 cenas (terror → emoção) | conferido |
 | `quem_boceja_dorme.yaml` | longo, 48 cenas (~2 min, comédia em cadeia) | conferido |
 | `peso_das_promessas.yaml` | longo, 48 cenas (~2 min, aventura) | conferido; cenas do telhado (33–41) ajustadas por último |
@@ -44,7 +44,7 @@ Personagem 5,2 de altura. Andar de casa 7 studs, porta 6,2, janela de 3 a 6 (vit
 - `sobre:` = a regra visível acima da cabeça (`zzz`, `{ texto }`, ou prop como `nuvem_cabeca`, `pedra`, `saco_pedras`, com `altura/x/z/escala/fixo`).
 - `spec:` no ator (ajuste só na cena), `alvo_xz:` na cena (para onde a câmera mira), `hora: vermelho` (céu em chamas).
 - Multidão `modo: natural` (sozinhos, conversas soltas, quem passa, quem senta).
-- Personagens especiais: `fantasma: true`, `reflexo: true`. Ações novas: `bocejar`, `cochilar`, `nadar`.
+- Personagens especiais: `fantasma: true` (evite histórias com reflexo/espelho: ficam estranhas). `pet_sobre:` põe um número/indicador em cima do animal. Ações novas: `bocejar`, `cochilar`, `nadar`.
 
 ## Narração pelo site do ElevenLabs (plano grátis)
 A API do plano grátis não aceita vozes da biblioteca, por isso `voz.motor: site` no config.yaml (padrão): a versão final NUNCA chama a API; sem `audios/<nome>.mp3` ela para e explica. Fluxo: `node gerar.mjs roteiros/x.yaml --texto-site [v4|corrido]` → `audios/x.txt` (falas separadas por `<break time="1.2s" />`, `[long pause]` no v4, ou sem pausas com `corrido`; o corte acha as trocas de cena pela quantidade de texto + silêncio entre frases) → o usuário cola no site (modelo **Eleven Multilingual v2**), baixa o MP3 e salva como `audios/x.mp3` → `node gerar.mjs roteiros/x.yaml` (rascunho) e `--final`: o áudio é cortado nas pausas (uma parte por cena) e a legenda segue a duração de cada parte. Código: `src/node/narracao_site.mjs`. A pasta `audios/` não vai para o git.

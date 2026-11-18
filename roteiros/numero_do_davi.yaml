@@ -1,0 +1,105 @@
+titulo: Nesse mundo todo mundo tem um número na cabeça
+clima: emocionante
+decoracao: moderna   # decoração da casa do protagonista nesta história
+destaque: [número, falta, cachorro]
+# História original (docs/HISTORIAS.md · curta 4) — emoção, ~35 s. Substitui "O reflexo adiantado" (reflexos não ficavam bons).
+# Regra visível: o número acima da cabeça (`sobre: { texto }`). O cachorro ganha um número no fim (`pet_sobre`).
+
+elenco:
+  davi: davi
+  rafa: { base: crianca, acessorios: [bone], camisa: vermelho }
+  colega: crianca
+  colega2: { base: crianca, camisa: roxo }
+  cida: idosa
+  homem: cidadao
+  mulher: cidada
+
+cenas:
+  # --- regra ---
+  - fala: Nesse mundo, todo mundo tem um número em cima da cabeça.
+    som: pop
+    onde: mundo
+    local: praca
+    hora: dia
+    cam: aberto
+    mov: orbita
+    atores: [{ id: homem, acao: andar, x: -3, z: 1, vira: 60, sobre: { texto: "48", altura: 6.3, cor: "#ffd23f" } }, { id: mulher, acao: celular, x: 0.5, z: -1, sobre: { texto: "120", altura: 6.3, cor: "#ffd23f" } }, { id: colega, acao: acenar, x: 3.2, z: 0.6, vira: -30, sobre: { texto: "7", altura: 5.6, cor: "#ffd23f" } }]
+  - fala: Ele mostra quantas pessoas sentiriam a sua falta.
+    cam: medio
+    atores: [{ id: mulher, acao: falar, rosto: feliz, x: -1.4, vira: 30, sobre: { texto: "120", altura: 6.3, cor: "#ffd23f" } }, { id: homem, acao: parado, rosto: sorriso, x: 1.4, vira: -30, sobre: { texto: "48", altura: 6.3, cor: "#ffd23f" } }]
+
+  # --- o popular e a exceção ---
+  - fala: O Rafa, o mais popular da escola, tinha trezentos e doze.
+    onde: mundo
+    local: escola
+    dentro: true
+    cam: medio
+    mov: zoom_in
+    atores: [{ id: rafa, acao: comemorar, rosto: rindo, sobre: { texto: "312", altura: 5.6, cor: "#7fd35a" } }, { id: colega, acao: palmas, x: -2.6, vira: 40 }, { id: colega2, acao: palmas, x: 2.6, vira: -40 }]
+  - fala: Já o Davi tinha zero.
+    som: drama
+    cam: medio
+    mov: zoom_rapido
+    atores: [{ id: davi, acao: triste, rosto: triste, sobre: { texto: "0", altura: 5.6, cor: "#ff5a5a" } }]
+  - fala: Na escola, ninguém sentava do lado dele.
+    cam: aberto
+    angulo: 160
+    atores: [{ id: davi, acao: sentar, rosto: triste, sobre: { texto: "0", altura: 5.6, cor: "#ff5a5a" } }]
+
+  # --- o gatilho ---
+  - fala: Até que um dia, o cachorro da Dona Cida fugiu pela rua.
+    onde: mundo
+    local: rua_bairro
+    hora: tarde
+    cam: aberto
+    alvo_xz: [1.4, -2]
+    props: [{ tipo: cachorro, x: 3.6, z: -5, vira: 0 }]
+    atores: [{ id: cida, acao: gritar, rosto: assustado, x: -1, vira: 30, sobre: { texto: "2", altura: 6.3, cor: "#ffd23f" } }]
+  - fala: Todo mundo pegou o celular pra filmar.
+    cam: medio
+    mov: pan
+    atores: [{ id: rafa, acao: filmar, x: -2.6, vira: 20, sobre: { texto: "312", altura: 5.6, cor: "#7fd35a" } }, { id: colega, acao: filmar, x: 0, z: -0.6 }, { id: homem, acao: filmar, x: 2.6, vira: -20 }]
+  - fala: Só o Davi correu atrás dele.
+    som: whoosh
+    cam: medio
+    mov: seguir
+    foco: davi
+    atores: [{ id: davi, acao: correr, rosto: confiante, x: -6.3, z: 4, vira: 180, sobre: { texto: "0", altura: 5.6, cor: "#ff5a5a" } }]
+
+  # --- a virada ---
+  - fala: Ele atravessou a cidade inteira e trouxe o cachorro de volta.
+    onde: mundo
+    local: praca
+    hora: tarde
+    cam: medio
+    mov: seguir
+    foco: davi
+    atores: [{ id: davi, acao: passear_cachorro, rosto: feliz, x: 0, z: -6, vira: 0, sobre: { texto: "0", altura: 5.6, cor: "#ff5a5a" } }]
+  - fala: A Dona Cida abraçou o Davi chorando.
+    onde: mundo
+    local: rua_bairro
+    hora: tarde
+    cam: medio
+    atores: [{ id: cida, acao: abracar, rosto: chorando, x: 0.6, vira: -70 }, { id: davi, acao: abracar, rosto: feliz, x: -0.7, vira: 70, pet: cachorro }]
+  - fala: E o número dele mudou pela primeira vez.
+    cam: medio
+    atores: [{ id: davi, acao: olhar_redor, rosto: surpreso, sobre: { texto: "0", altura: 5.6, cor: "#ff5a5a" } }]
+  - fala: Agora era um.
+    som: boom
+    cam: medio
+    dist: 1.3
+    mov: zoom_in
+    atores: [{ id: davi, acao: comemorar, rosto: rindo, sobre: { texto: "1", altura: 5.6, cor: "#7fd35a" } }]
+
+  # --- final que retoma o começo ---
+  - fala: E em cima do cachorro apareceu um número também.
+    cam: medio
+    dist: 1.35
+    alvo_xz: [-0.4, 0.4]
+    atores: [{ id: davi, acao: parado, rosto: surpreso, x: 0.6, vira: 0, pet: cachorro, sobre: { texto: "1", altura: 5.6, cor: "#7fd35a" }, pet_sobre: { texto: "1", altura: 2.4, cor: "#7fd35a", tamanho: 1.6 } }]
+  - fala: Um. Era o Davi.
+    cam: medio
+    mov: zoom_in
+    dist: 1.35
+    alvo_xz: [-0.4, 0.4]
+    atores: [{ id: davi, acao: comemorar, rosto: rindo, x: 0.6, vira: 0, pet: cachorro, sobre: { texto: "1", altura: 5.6, cor: "#7fd35a" }, pet_sobre: { texto: "1", altura: 2.4, cor: "#7fd35a", tamanho: 1.6 } }]

@@ -5,20 +5,18 @@ o protagonista que é a exceção, o gatilho ("Até que um dia…"), a virada qu
 
 ---
 
-## CURTA 1 — "O reflexo adiantado" (terror · ~35 s · ~115 palavras)
+## CURTA 1 — "O número do Davi" (emoção · ~35 s) — substitui "O reflexo adiantado"
 
-**Regra visível:** todo reflexo (espelho, vitrine, poça) se mexe um segundo **depois** da pessoa.
+**Regra visível:** todo mundo tem um número em cima da cabeça: quantas pessoas sentiriam a sua falta.
 
-> Nesse mundo, todo reflexo se mexe um segundo atrasado. As pessoas acreditam que é o espelho pensando, e que isso dá sorte.
-> Mas o reflexo do Davi era diferente. Ele se mexia um segundo **antes**. Na escola, ninguém queria sentar do lado dele. Diziam que o espelho do Davi era amaldiçoado.
-> Até que um dia, na vitrine da padaria, o reflexo do Davi parou. E apontou pra janela da casa do outro lado da rua.
-> O Davi olhou. Todos os reflexos da cidade estavam parados, olhando pra ele.
-> Foi aí que ele entendeu: os reflexos nunca estiveram atrasados. Eles estavam **aprendendo** a imitar a gente.
-> E o dele… já tinha aprendido tudo.
-> Naquela noite, o reflexo do Davi sorriu… e o Davi não.
+> Nesse mundo, todo mundo tem um número em cima da cabeça. Ele mostra quantas pessoas sentiriam a sua falta.
+> O Rafa, o mais popular da escola, tinha trezentos e doze. Já o Davi tinha zero. Na escola, ninguém sentava do lado dele.
+> Até que um dia, o cachorro da Dona Cida fugiu pela rua. Todo mundo pegou o celular pra filmar. Só o Davi correu atrás dele.
+> Ele atravessou a cidade inteira e trouxe o cachorro de volta. A Dona Cida abraçou o Davi chorando.
+> E o número dele mudou pela primeira vez. Agora era um.
+> E em cima do cachorro apareceu um número também. Um. Era o Davi.
 
-**Cenas (14):** rua do bairro, gente parando em frente à vitrine (reflexos atrasados) · escola, Davi sozinho na carteira · padaria (vitrine) · casa do outro lado · close do reflexo · quarto do Davi à noite (espelho) · final escurecendo.
-**Assets novos:** `espelho` (reflexo do personagem com atraso/adiantamento) · tingir a cena de escuro no final.
+**Roteiro:** `roteiros/numero_do_davi.yaml` (praça, escola, rua do bairro; número com `sobre: { texto }`, o do cachorro com `pet_sobre`).
 
 ---
 
@@ -46,7 +44,7 @@ o protagonista que é a exceção, o gatilho ("Até que um dia…"), a virada qu
 > Nesse mundo, toda casa velha tem um fantasma. E quem mora nela tem que deixar ele assustar todo dia, senão o fantasma fica triste e leva a sorte da casa embora.
 > Porém, o Seu Nonô, de 92 anos, é impossível de assustar.
 > O primeiro fantasma arrasta correntes no sótão. O Seu Nonô reclama do barulho e manda ele passar óleo na corrente.
-> O segundo fantasma aparece no espelho do banheiro. O Seu Nonô, sem óculos, acha que é o próprio reflexo e penteia o cabelo dele.
+> O segundo fantasma se esconde no guarda-roupa e pula em cima dele. O Seu Nonô, sem óculos, acha que é um lençol e pendura ele no varal.
 > O terceiro fantasma apaga todas as luzes à meia-noite. Mas o Seu Nonô dorme às sete.
 > Hoje os três tomam café com ele toda manhã e assistem novela juntos.
 > E agora quem dorme de luz acesa são os fantasmas… com medo do ronco do Seu Nonô.
@@ -106,7 +104,7 @@ o protagonista que é a exceção, o gatilho ("Até que um dia…"), a virada qu
 
 | História | Formato | Tom | Assets novos | Esforço |
 |---|---|---|---|---|
-| O reflexo adiantado | curta | terror | espelho com atraso | baixo |
+| O número do Davi | curta | emoção | número na cabeça (já existe) | baixo |
 | A nuvem da Bia | curta | terror → emoção | nuvem na cabeça, céu vermelho | médio |
 | Os fantasmas do Seu Nonô | curta | comédia em lista | fantasma translúcido | baixo |
 | Quem boceja, dorme | longa | comédia em cadeia | "Z" de sono, caminhão | médio (usa muito do mundo) |

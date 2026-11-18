@@ -54,21 +54,20 @@ cenas:
     atores: [{ id: nono, acao: apontar, rosto: bravo, x: -1.8, vira: 40 }, { id: f1, acao: triste, rosto: surpreso, x: 1.8, vira: -40 }]
 
   # --- 2º fantasma ---
-  - fala: O segundo fantasma aparece no espelho do banheiro.
-    comodo: banheiro
+  - fala: O segundo fantasma se esconde no guarda-roupa e pula em cima dele.
+    comodo: quarto_pais
     hora: dia
     cam: medio
-    alvo_xz: [0, -1]
-    props: [{ tipo: espelho_grande, x: 0, z: -1 }]
-    # o fantasma está na frente do espelho, do lado da câmera, mas só aparece no reflexo
-    atores: [{ id: f2, acao: maos_pra_cima, rosto: bravo, x: 0, z: 1.6, vira: 180, so_no_espelho: true }]
-  - fala: O Seu Nonô, sem óculos, acha que é o próprio reflexo e penteia o cabelo dele.
+    angulo: -25
+    atores: [{ id: f2, acao: assustar, rosto: bravo, x: 4.4, z: -0.6, vira: -90 }, { id: nono, acao: parado, rosto: neutro, x: 1.2, z: 0.4, vira: 90 }]
+  - fala: O Seu Nonô, sem óculos, acha que é um lençol e pendura ele no varal.
+    onde: mundo
+    local: casa
+    hora: dia
     cam: medio
-    angulo: 35
-    alvo_xz: [0, -0.4]
-    props: [{ tipo: espelho_grande, x: 0, z: -1 }]
-    # o Seu Nonô não aparece no espelho; no lugar dele, o reflexo é o fantasma imitando o pente
-    atores: [{ id: nono, acao: cocar_cabeca, rosto: feliz, x: 0, z: 0.9, vira: 180, fora_do_espelho: true }, { id: f2, acao: cocar_cabeca, rosto: surpreso, x: 0, z: 0.9, vira: 180, so_no_espelho: true }]
+    alvo_xz: [1.4, 0.8]
+    props: [{ tipo: varal, x: 3, z: 0.4, escala: 1.5 }]
+    atores: [{ id: f2, acao: triste, rosto: surpreso, x: 3, y: 0.2, z: 0.4 }, { id: nono, acao: palmas, rosto: feliz, x: -0.8, z: 1.6, vira: 40 }]
 
   # --- 3º fantasma ---
   - fala: O terceiro fantasma apaga todas as luzes à meia-noite.

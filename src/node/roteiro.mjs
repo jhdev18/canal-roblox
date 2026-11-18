@@ -97,7 +97,7 @@ export function carregarRoteiro(arquivo) {
     cen.atores = (lista || []).map(a => {
       if (typeof a === 'string') { const [id, acao, rosto] = a.trim().split(/\s+/); a = { id, acao, rosto }; }
       const s = a.spec ? { ...spec(a.id, onde), ...a.spec, extras: a.spec.extras ?? spec(a.id, onde).extras } : spec(a.id, onde);   // `spec:` no ator ajusta só nesta cena (ex.: óculos escuros)
-      const ator = { id: a.id, spec: s, acao: a.acao || 'parado', rosto: a.rosto, x: a.x, z: a.z, y: a.y, vira: a.vira, prop: a.prop, atraso: a.atraso, so_no_espelho: a.so_no_espelho, fora_do_espelho: a.fora_do_espelho,
+      const ator = { id: a.id, spec: s, acao: a.acao || 'parado', rosto: a.rosto, x: a.x, z: a.z, y: a.y, vira: a.vira, prop: a.prop, atraso: a.atraso, pet_sobre: a.pet_sobre, so_no_espelho: a.so_no_espelho, fora_do_espelho: a.fora_do_espelho,
         prop_texto: a.prop_texto, prop_cor: a.prop_cor, pet: a.pet, pet_cor: a.pet_cor, caminho: a.caminho, ate: a.ate, sobre: a.sobre, p: { vel: a.vel, ao_chegar: a.ao_chegar } };
       for (const pt of [...(a.caminho || []), ...(a.ate ? [a.ate] : [])]) if (!Array.isArray(pt) || pt.length !== 2 || pt.some(v => typeof v !== 'number'))
         throw new Error(`${onde}: ator ${a.id}: cada ponto de caminho/ate deve ser [x, z], ex.: ate: [6, -2]`);

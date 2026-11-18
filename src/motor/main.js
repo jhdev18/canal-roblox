@@ -106,7 +106,7 @@ async function montar(c) {
   const trilhas = []; for (const a of atores) { const pts = rotaDe(a);   // pontos por onde os personagens passam (a multidão não fica no caminho)
     for (let k = 0; k < pts.length; k++) { trilhas.push(pts[k]); if (k) { const [ax, az] = pts[k - 1], [bx, bz] = pts[k], L = Math.hypot(bx - ax, bz - az);
       for (let s = 1.5; s < L; s += 1.5) trilhas.push([ax + (bx - ax) * s / L, az + (bz - az) * s / L]); } } }
-  for (const a of atores) if (a.sobre) colocarSobre(a);
+  for (const a of atores) { if (a.sobre) colocarSobre(a); if (a.pet_sobre) colocarSobre(a, true); }
   const usados = new Set(bases.map(b => [b.x, b.y, b.z].join()));
   const assentosLivres = Array.isArray(cen.ancoras.sentar?.[0]) ? cen.ancoras.sentar.filter(p => !usados.has([p[0], p[1], p[2]].join())) : [];
   if (c.multidao) for (const f of criarMultidao({ ...c.multidao, ancoraFila: cen.ancoras.fila, assentos: assentosLivres, principais: trilhas, livreAte, chaoLivre, dur }, c.seed ?? c.cenario)) { raiz.add(f.ator.raiz); if (f.pet) raiz.add(f.pet); if (c.multidao.sobre) { f.sobre = c.multidao.sobre; colocarSobre(f); } atores.push(f); }
@@ -214,13 +214,14 @@ function alvo(t) {
 }
 
 /** `sobre:` = o que flutua acima da cabeça (a regra do mundo visível): 'zzz', { texto, cor } ou o nome de um prop. */
-function colocarSobre(a) {
-  const v = typeof a.sobre === 'string' ? { tipo: a.sobre } : a.sobre; let o;
+function colocarSobre(a, doPet = false) {
+  const s0 = doPet ? a.pet_sobre : a.sobre, v = typeof s0 === 'string' ? { tipo: s0 } : s0; let o;
   if (v.tipo === 'zzz' || v.texto) { const [cv, g] = canvas(256, 128); g.font = '900 84px Arial Black, Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = 12; g.strokeStyle = '#1d3b72';
     const t = v.texto || 'Zzz'; g.strokeText(t, 128, 64); g.fillStyle = v.cor || '#ffffff'; g.fillText(t, 128, 64);
     o = new THREE.Sprite(new THREE.SpriteMaterial({ map: texturaCanvas(cv), transparent: true, depthWrite: false })); o.scale.set(v.tamanho || 2.2, (v.tamanho || 2.2) / 2, 1); o.layers.set(1); }   // camada 1: desenhada por cima, sem AO
   else { o = criarProp({ tipo: v.tipo, ...v }); if (!o) return; }
-  if (v.escala) o.scale.multiplyScalar(v.escala); o.position.set(v.x ?? 0.4, v.altura ?? 6.6, v.z ?? 0); a.ator.raiz.add(o); a.sobreObj = o; a.sobreY = o.position.y; a.sobreX = o.position.x; a.sobreFixo = !!v.fixo;
+  if (v.escala) o.scale.multiplyScalar(v.escala); if (doPet) { if (!a.pet) return; o.position.set(v.x ?? 0, v.altura ?? 2.6, v.z ?? 0); a.pet.add(o); return; }   // número/indicador em cima do animal
+  o.position.set(v.x ?? 0.4, v.altura ?? 6.6, v.z ?? 0); a.ator.raiz.add(o); a.sobreObj = o; a.sobreY = o.position.y; a.sobreX = o.position.x; a.sobreFixo = !!v.fixo;
 }
 
 /** Imagem final: cena com AO/sombras e, por cima, a camada 1 (indicadores flutuantes como "Zzz", que o AO estragaria). */
