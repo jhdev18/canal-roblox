@@ -256,5 +256,6 @@ Automática: escolhe uma faixa de `assets/musicas/<clima>/` (suas faixas antes d
 ## Dicas de estilo (o que funciona nesse formato)
 
 - Gancho na 1ª cena ("Nesse mundo…", "E se…"), cortes a cada 1–2 s, 10–16 cenas (~20–30 s).
+- **Mostre o lugar:** a 1ª cena em cada local novo é `cam: geral` (com `dist: 1.4`, `altura: 6` mostra a praça/rua inteira). Plateia olhando um palco: `multidao: { modo: espalhado, olhar_z: <z do palco> }` + `cam: aberto, angulo: 0`. Dois atores lado a lado de frente: ponha `vira: 0` nos dois (sem isso eles viram 25° um para o outro e um tapa o outro).
 - Alterne `close` (emoção) com `medio`/`aberto` (situação). `zoom_rapido` + `tremor` em revelações.
 - Use `celular` com `tela` para mostrar a informação-chave da história.

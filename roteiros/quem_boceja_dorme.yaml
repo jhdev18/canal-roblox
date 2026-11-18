@@ -106,21 +106,29 @@ cenas:
   - fala: Até que chegou a inauguração da estátua nova da praça.
     onde: mundo
     local: estatua
-    cam: aberto
+    cam: geral
+    mov: orbita
     multidao: { n: 10, modo: natural, area: [-12, 12, -4, 10] }
     atores: [{ id: nina, acao: comemorar, x: 2 }]
   - fala: A cidade inteira foi.
     onde: mundo
     local: praca
-    cam: alto
-    dist: 2.2
+    cam: geral
+    dist: 1.4
+    altura: 6
+    mov: zoom_out
     multidao: { n: 22, modo: natural, area: [-20, 20, -18, 8] }
     atores: [{ id: nina, acao: parado }]
   - fala: O prefeito subiu pra discursar e falou.
     onde: mundo
     local: coreto
-    cam: baixo
+    cam: aberto
+    angulo: 0
+    dist: 1.5
+    altura: 2
     foco: prefeito
+    # plateia de costas para a câmera, olhando o coreto: mostra a praça cheia e o prefeito de frente
+    multidao: { n: 16, modo: espalhado, area: [-10, 10, 3, 13], olhar_z: -2.4, acao: [parado, esperar, palmas] }
     atores: [{ id: prefeito, acao: discursar, x: 0, z: -2.4 }]
   - fala: E falou.
     cam: baixo
@@ -220,7 +228,8 @@ cenas:
   - fala: O vento levou o cheiro pela praça.
     onde: mundo
     local: praca
-    cam: aberto
+    cam: geral
+    mov: pan
     multidao: { n: 12, modo: natural, area: [-16, 16, -12, 6], acao: [cochilar], sobre: zzz }
     atores: [{ id: nina, acao: carregar, prop: bandeja_paes }]
   - fala: O padeiro acordou primeiro,
@@ -235,7 +244,7 @@ cenas:
     local: rua_bairro
     cam: aberto
     mov: seguir
-    atores: [{ id: nina, acao: correr, prop: bandeja_paes, x: -6.4, z: -2, vira: 0 }, { id: padeiro, acao: correr, prop: bandeja_paes, x: -6.0, z: -6.5, vira: 0 }]
+    atores: [{ id: nina, acao: correr, prop: bandeja_paes, x: -6.4, z: -2, vira: 0 }, { id: padeiro, acao: correr, prop: bandeja_paes, x: -4.2, z: -6.5, vira: 0 }]
   - fala: Depois a farmacêutica.
     onde: mundo
     local: praca
@@ -247,8 +256,10 @@ cenas:
     multidao: { n: 8, modo: natural, area: [-16, 16, -12, 6], acao: [cochilar], sobre: zzz }
     atores: [{ id: prof, acao: espreguicar }]
   - fala: Dois, quatro, oito… a cidade inteira acordando e carregando pão.
-    cam: alto
-    dist: 2.2
+    cam: geral
+    dist: 1.4
+    altura: 6
+    mov: orbita
     multidao: { n: 20, modo: natural, area: [-20, 20, -18, 8], acao: [carregar, espreguicar, comemorar], prop: bandeja_paes }
     atores: [{ id: nina, acao: comemorar }]
   - fala: Mas o caminhão já estava chegando na praça.
@@ -283,8 +294,10 @@ cenas:
   - fala: Hoje, todo discurso do prefeito tem um padeiro do lado.
     onde: mundo
     local: coreto
-    cam: baixo
-    atores: [{ id: prefeito, acao: discursar, x: -1.6, z: -2.4 }, { id: padeiro, acao: carregar, prop: bandeja_paes, x: 1.8, z: -2.0, vira: -20 }]
+    cam: medio
+    angulo: 0
+    atores: [{ id: prefeito, acao: discursar, x: -1.8, z: -2.4, vira: 0 }, { id: padeiro, acao: carregar, prop: bandeja_paes, x: 1.8, z: -2.4, vira: 0 }]
+    alvo_xz: [0, -2.4]
   - fala: O Seu Tião voltou pra rua e virou o guarda oficial dos pães.
     onde: mundo
     local: padaria
