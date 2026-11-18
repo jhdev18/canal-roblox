@@ -276,7 +276,7 @@ function casaProtagonista(ctx) {
   const por = (gg, tipo, o, pos, vira = 0, esc) => { const p = PROPS[tipo](o); p.userData.tipo = tipo; p.position.set(...pos); p.rotation.y = vira * RAD; if (esc) p.scale.setScalar(esc); gg.add(p);
     p.userData.movel = true; p.userData.comodo = qual(pos[0], pos[2]); unidade(p, unidades); if (cm && p.userData.comodo !== cm) p.userData.oculto = true; return p; };
   g.add(caixa(w, 0.2, d, D.piso, { pos: [0, 0.1, -d / 2] }));
-  for (const [x0, x1, z0, z1, c] of [[1, 13, 0, -10, D.piso_cozinha], [-4, 3, -10, -20, '#e8ece8']]) g.add(caixa(x1 - x0, 0.02, Math.abs(z1 - z0), c, { pos: [(x0 + x1) / 2, 0.21, (z0 + z1) / 2], sombra: false }));
+  for (const [x0, x1, z0, z1, c] of [[1, 13, 0, -10, D.piso_cozinha], [-4, 3, -10, -20, '#e8ece8']]) g.add(caixa(x1 - x0, 0.02, Math.abs(z1 - z0), c, { pos: [(x0 + x1) / 2, 0.235, (z0 + z1) / 2], sombra: false }));
   const ext = (len, vaos) => parede(len, h, cor, vaos, n);
   const fr = ext(w, [{ x: -6, w: 2.4, y0: 0, y1: 6.3 }, { x: -11, w: 3, y0: 3.0, y1: 6.2, vidro: true }, { x: 7, w: 3.5, y0: 3.0, y1: 6.2, vidro: true }]); fr.position.set(0, 0, -0.2);
   const pf = porta(2.4, 6.2, '#7a4b2a', false, portas); pf.position.set(-7.2, 0.2, 0); fr.add(pf); g.add(unidade(fr, unidades));
@@ -606,7 +606,7 @@ export function enquadrarMundo(g, { local, dentro, comodo }) {
     let R;   // retângulo do ambiente em coordenadas do lote [x0, x1, z0, z1]
     if (local === 'casa') { const C = { sala: [-13, 1, -10, 0], cozinha: [1, 13, -10, 0], quarto: [-13, -4, -20, -10], quarto_menina: [-13, -4, -20, -10], banheiro: [-4, 3, -20, -10], quarto_pais: [3, 13, -20, -10] }[comodo || 'sala'];
       if (comodo === "sotao") R = [-CW / 2 + 1.5, CW / 2 - 1.5, -CD / 2 - 8.5, -CD / 2 + 8.5];
-      else if (C) R = [C[0] * CSX, C[1] * CSX, C[2] * CSZ, C[3] * CSZ + QUARTA_PAREDE]; }   // a câmera pode recuar além da parede da frente do cômodo (ela some no corte), como num set
+      else if (C) R = [C[0] * CSX, C[1] * CSX - (comodo === 'cozinha' ? 2.4 : 0), C[2] * CSZ, C[3] * CSZ + QUARTA_PAREDE]; }   // cozinha: a câmera não entra na bancada   // a câmera pode recuar além da parede da frente do cômodo (ela some no corte), como num set
     else if (ref) R = [-ref.userData.w / 2, ref.userData.w / 2, -ref.userData.d, 0];
     if (R) { const pts = [[R[0], R[2]], [R[1], R[2]], [R[0], R[3]], [R[1], R[3]]].map(([lx, lz]) => { const [ax, az] = rot(lx, lz, lote.rot * RAD); return rot(lote.f[0] + ax - S[0], lote.f[1] + az - S[1], th); });
       const m = 0.7, xs = pts.map(p => p[0]), zs = pts.map(p => p[1]);

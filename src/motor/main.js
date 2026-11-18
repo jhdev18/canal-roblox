@@ -27,7 +27,7 @@ function iniciar(c) {
   cena = new THREE.Scene();
   cam = new THREE.PerspectiveCamera(40, cfg.largura / cfg.altura, 0.4, 1200);   // near maior = mais precisão de profundidade (menos z-fighting)
   hemi = new THREE.HemisphereLight(0xcfe8ff, 0x6b8a5a, 1.3); cena.add(hemi);
-  sol = new THREE.DirectionalLight(0xfff4e0, 3.4); sol.castShadow = true;
+  sol = new THREE.DirectionalLight(0xfff4e0, 3.4); sol.castShadow = true; sol.shadow.camera.layers.enable(3);   // quem não aparece no espelho ainda faz sombra
   Object.assign(sol.shadow.camera, { left: -35, right: 35, top: 35, bottom: -35, near: 1, far: 220 });
   sol.shadow.mapSize.set(cfg.sombra, cfg.sombra); sol.shadow.radius = 6; sol.shadow.bias = -0.0004; sol.shadow.normalBias = 0.02;
   cena.add(sol, sol.target);
@@ -81,6 +81,7 @@ async function montar(c) {
   const bases = posicoes(c.atores || [], cen.ancoras);
   const atores = (c.atores || []).map((a, i) => {
     const p = criarPersonagem(a.spec); raiz.add(p.raiz);
+    if (a.so_no_espelho || a.fora_do_espelho) { const L = a.so_no_espelho ? 2 : 3; p.raiz.traverse(o => o.layers.set(L)); }   // só no reflexo / invisível no reflexo
     p.setRosto(a.rosto || p.rostoPadrao(a.acao), a.spec.extras || []);
     p.setProp(a.prop === undefined ? p.propPadrao(a.acao) : a.prop, { texto: a.prop_texto, cor: a.prop_cor });
     const petTipo = a.pet || (a.acao === 'passear_cachorro' ? 'cachorro' : null);
@@ -119,6 +120,7 @@ async function montar(c) {
   atual.unidades = cen.unidades || []; atual.corteMeshes = []; for (const u of atual.unidades) { u.traverse(m => { if (m.isMesh) atual.corteMeshes.push(m); }); if (u.userData.movel) u.userData.caixa = new THREE.Box3().setFromObject(u); }
   atual.portas = (cen.portas || []).map(piv => ({ piv, c: piv.localToWorld(new THREE.Vector3(1.2, 0, 0)) }));
   liberarVisao();
+  fixarCortes();
   posar(0); // garante shaders compilados antes do 1º quadro
   R.compile(cena, cam);
   return atual.nquadros;
@@ -223,7 +225,7 @@ function colocarSobre(a) {
 
 /** Imagem final: cena com AO/sombras e, por cima, a camada 1 (indicadores flutuantes como "Zzz", que o AO estragaria). */
 function renderizar() {
-  cam.layers.set(0); composer.render();
+  cam.layers.set(0); cam.layers.enable(3); composer.render();
   let tem = false; cena.traverse(o => { if (o.isSprite && o.layers.isEnabled(1)) tem = true; });
   if (!tem) return;
   const ac = R.autoClear, fundo = cena.background; R.autoClear = false; cena.background = null; R.clearDepth(); cam.layers.set(1); R.render(cena, cam); cam.layers.set(0); cena.background = fundo; R.autoClear = ac;
@@ -249,7 +251,7 @@ function posar(t) {
     else { cam.position.x = Math.max(-L.x, Math.min(L.x, cam.position.x)); cam.position.z = Math.max(L.z, cam.position.z); }
     cam.position.y = Math.max(0.8, Math.min(L.y, cam.position.y)); cam.lookAt(mira); }
   if (atual.portas?.length || atual.unidades?.length) { cena.updateMatrixWorld(true); portasECortes(); }
-  const foco = alvo(t); const d = new THREE.Vector3(...atual.cen.sol.dir).normalize();
+  const foco = (atual.focoSol ??= alvo(0).clone()); const d = new THREE.Vector3(...atual.cen.sol.dir).normalize();   // sombra presa ao início da cena: não "salta" quando o ator flutua/anda
   sol.target.position.copy(foco); sol.position.copy(foco).addScaledVector(d, 60 + (atual.cen.sombra || 35)); sol.target.updateMatrixWorld();
 }
 
@@ -261,13 +263,24 @@ function portasECortes() {
     pt.piv.rotation.y = THREE.MathUtils.degToRad(85) * Math.min(1, Math.max(0, (4.6 - dmin) / 2.0));
   }
   if (!atual.unidades.length) return;
-  for (const u of atual.unidades) u.visible = !u.userData.oculto && !(u.userData.movel && u.userData.caixa && u.userData.caixa.distanceToPoint(cam.position) < 3.2);   // móvel colado na lente (TV de costas etc.) some
+  if (atual.cortes) { for (const u of atual.unidades) u.visible = !u.userData.oculto && !atual.cortes.has(u); return; }   // decisão fixa da cena: nada pisca de um quadro para o outro
+  const col = atual.coletando;   // fase de coleta (antes da cena): junta tudo o que tapa a câmera em algum momento
+  const esconder = (u) => { u.visible = false; if (col) col.add(u); };
+  for (const u of atual.unidades) { u.visible = !u.userData.oculto; if (u.userData.movel && u.userData.caixa && u.userData.caixa.distanceToPoint(cam.position) < 3.2) esconder(u); }   // móvel colado na lente (TV de costas etc.) some
   const foco = atual.c.foco; // com foco, só o ator em foco abre o corte (quem está do outro lado não apaga a fachada)
   for (const a of atual.atores) { if (a.figurante || (foco && a.id !== foco)) continue; a.ator.raiz.getWorldPosition(_v);
     for (const dy of [4.4, 2.6, 0.9]) { const p = _v.clone(); p.y += dy; const dir = p.sub(cam.position); const dist = dir.length(); _rc.set(cam.position, dir.normalize()); _rc.far = dist - 0.25;
       for (const h of _rc.intersectObjects(atual.corteMeshes, false)) { const u = h.object.userData.unidade; if (!u) continue;
         if (u.userData.movel && ANCORA_DA_ACAO[a.acao] && u.userData.caixa.distanceToPoint(_v) < 2.6) continue;   // móvel que o ator está usando (cadeira, cama, balcão): fica
-        u.visible = false; } } }
+        esconder(u); } } }
+}
+
+/** Antes de gravar a cena: testa vários instantes e decide UMA vez o que some (paredes/móveis que tapam a câmera em algum momento). */
+function fixarCortes() {
+  atual.cortes = null; if (!atual.unidades?.length) return;
+  atual.coletando = new Set();
+  for (let k = 0; k <= 12; k++) { posar(atual.dur * k / 12); }
+  atual.cortes = atual.coletando; atual.coletando = null;
 }
 
 /**

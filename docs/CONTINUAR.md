@@ -18,6 +18,7 @@ Leia este arquivo primeiro. Ele resume o que já existe, as regras de trabalho c
   - `node ferramentas/folha_cenas.mjs roteiros/x.yaml saida.jpg 1-16` → 1 foto por cena (no máx. 16 por folha).
   - `node ferramentas/quadros_cena.mjs roteiros/x.yaml saida.jpg 3,7` → cada cena em 0 s / 1,5 s / 3 s.
   - `node ferramentas/preview_assets.mjs [categoria]` → atualiza `docs/preview/*.jpg`.
+  - `node ferramentas/tremor.mjs roteiros/x.yaml [1-14]` → **sem imagens**: mede quanto cada quadro muda do anterior e aponta PICOS (objeto que pisca, câmera entrando em móvel). Rode depois de mexer em câmera, cortes ou cômodos.
   - `node ferramentas/conferir_mundo.mjs [hora]` → **sem imagens**: lista construções sobrepostas, objetos dentro de construções, construções baixas demais , móveis atravessando móveis e janelas abaixo da cabeça. Rode depois de mexer no mundo, em prédios ou em móveis (tem que dar tudo 0).
 - Validar roteiro sem render: `node -e "import('./src/node/roteiro.mjs').then(m=>m.carregarRoteiro('roteiros/x.yaml'))"`.
 

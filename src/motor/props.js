@@ -1,6 +1,7 @@
 // Objetos de cenário reutilizáveis. Todos com a base em y=0 e de frente para +Z.
 // Uso no roteiro: props: [{tipo: carro, x: 4, z: -6, vira: 90, cor: vermelho}]
 import * as THREE from 'three';
+import { Reflector } from 'three/addons/objects/Reflector.js';
 import { caixa, cilindro, esfera, plano, grupo, mat, cor, canvas, texturaCanvas } from './util.js';
 
 /** Placa com texto (canvas). */
@@ -17,6 +18,9 @@ export function placaTexto(texto, w, h, { fundo = '#ffffff', corTexto = '#111111
 const janelaMat = (noite) => mat('#a8dcff', noite ? { emissive: '#ffd27a', emissiveIntensity: 1.2 } : { rough: 0.15, metal: 0.1 });
 
 const cai = (m, y0, y1, v) => { m.userData.cai = [y0, y1, v]; return m; };   // gota/brasa que cai em loop (animada em main.js)
+/** Superfície de espelho real (reflete a cena). Quem tem `so_no_espelho` (camada 2) só aparece aqui; `fora_do_espelho` (camada 3) não aparece aqui. */
+function reflexo(w, h, pos) { const m = new Reflector(new THREE.PlaneGeometry(w, h), { textureWidth: 512, textureHeight: Math.round(512 * h / w), color: 0xc8d2d8, clipBias: 0.003 });
+  m.position.set(...pos); m.camera.layers.enable(2); m.camera.layers.disable(3); m.userData.espelho = true; return m; }
 const achatar = (sx, sz, g) => { g.scale.set(sx, 1, sz); return g; };   // ajusta largura/comprimento sem mexer na altura
 export const PROPS = {
   arvore: (o = {}) => { const h = o.altura || 3.6; return grupo([cilindro(0.45, 0.55, h, '#7b5230', { pos: [0, h / 2, 0] }),
@@ -232,12 +236,12 @@ export const PROPS = {
   corrente: (o = {}) => { const g = grupo([]), n = o.n || 10; for (let i = 0; i < n; i++) g.add(caixa(0.45, i % 2 ? 0.12 : 0.3, i % 2 ? 0.3 : 0.12, mat('#8c8f99', { metal: 0.7, rough: 0.35 }), { pos: [i * 0.36, 0, 0] })); return g; },
   vidro: (o = {}) => { const w = o.largura || 4.6, h = o.altura || 6.4; return grupo([caixa(w, h, 0.06, new THREE.MeshStandardMaterial({ color: 0xcfe8ff, roughness: 0.05, metalness: 0.3, transparent: true, opacity: 0.2, depthWrite: false }), { pos: [0, h / 2 + 0.3, 0], sombra: false }),
     caixa(w + 0.3, 0.25, 0.25, '#5a5d66', { pos: [0, h + 0.4, 0] }), caixa(w + 0.3, 0.3, 0.3, '#5a5d66', { pos: [0, 0.15, 0] }), caixa(0.25, h + 0.4, 0.25, '#5a5d66', { pos: [-w / 2, h / 2 + 0.3, 0] }), caixa(0.25, h + 0.4, 0.25, '#5a5d66', { pos: [w / 2, h / 2 + 0.3, 0] })]); },   // vitrine/vidro solto (reflexo fica logo atrás)
-  espelho_grande: (o = {}) => { const w = o.largura || 3.6, h = o.altura || 6, ouro = o.cor || '#c9a24a';   // espelho de pé: o "reflexo" (ou o fantasma) fica logo atrás do vidro
-    return grupo([caixa(w, h, 0.05, new THREE.MeshStandardMaterial({ color: 0xbfe3f2, roughness: 0.04, metalness: 0.4, transparent: true, opacity: 0.32, depthWrite: false }), { pos: [0, h / 2 + 0.6, 0], sombra: false }),
-      caixa(w + 0.5, 0.35, 0.3, ouro, { pos: [0, h + 0.75, 0] }), caixa(w + 0.5, 0.35, 0.3, ouro, { pos: [0, 0.45, 0] }), caixa(0.3, h + 0.6, 0.3, ouro, { pos: [-w / 2 - 0.1, h / 2 + 0.6, 0] }),
-      caixa(0.3, h + 0.6, 0.3, ouro, { pos: [w / 2 + 0.1, h / 2 + 0.6, 0] }), caixa(0.6, 0.6, 0.6, ouro, { pos: [0, h + 1.1, 0], round: 0.2 }),
-      caixa(0.25, 0.3, 1.8, '#7c5c46', { pos: [-w / 2, 0.15, 0] }), caixa(0.25, 0.3, 1.8, '#7c5c46', { pos: [w / 2, 0.15, 0] })]); },
-  espelho: () => grupo([caixa(2.6, 3.6, 0.15, '#c9a24a'), caixa(2.2, 3.2, 0.05, mat('#cfe8f5', { metal: 0.85, rough: 0.05 }), { pos: [0, 0, 0.1], sombra: false })]),   // pendurado na parede (pos = centro)
+  espelho_grande: (o = {}) => { const w = o.largura || 3.6, h = o.altura || 6, ouro = o.cor || '#c9a24a';   // espelho de pé COM REFLEXO DE VERDADE
+    const g = grupo([caixa(w + 0.5, 0.35, 0.3, ouro, { pos: [0, h + 0.75, 0] }), caixa(w + 0.5, 0.35, 0.3, ouro, { pos: [0, 0.45, 0] }), caixa(0.3, h + 0.6, 0.3, ouro, { pos: [-w / 2 - 0.1, h / 2 + 0.6, 0] }),
+      caixa(0.3, h + 0.6, 0.3, ouro, { pos: [w / 2 + 0.1, h / 2 + 0.6, 0] }), caixa(0.6, 0.6, 0.6, ouro, { pos: [0, h + 1.1, 0], round: 0.2 }), caixa(w, h, 0.1, '#5a5d66', { pos: [0, h / 2 + 0.6, -0.08] }),
+      caixa(0.25, 0.3, 1.8, '#7c5c46', { pos: [-w / 2, 0.15, 0] }), caixa(0.25, 0.3, 1.8, '#7c5c46', { pos: [w / 2, 0.15, 0] })]);
+    g.add(reflexo(w, h, [0, h / 2 + 0.6, 0.0])); return g; },
+  espelho: () => { const g = grupo([caixa(2.6, 3.6, 0.15, '#c9a24a')]); g.add(reflexo(2.2, 3.2, [0, 0, 0.09])); return g; },   // pendurado na parede (pos = centro)
   // --- histórias: regra visível, festa, enchente ---
   nuvem_cabeca: (o = {}) => { const g = grupo([]), c = o.cor || '#8c95a6';
     for (const [x, y, r] of [[-0.9, 0, 0.75], [0, 0.25, 0.95], [0.9, 0, 0.75], [0.35, -0.15, 0.7], [-0.4, -0.1, 0.7]]) g.add(esfera(r, c, { pos: [x, y, 0], sombra: false }));
